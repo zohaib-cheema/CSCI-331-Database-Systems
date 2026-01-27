@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Assignment 08 - Entity-Relationship Diagrams</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
+        h1 { color: #333; }
+        h2 { color: #555; border-bottom: 2px solid #333; padding-bottom: 5px; }
+        h3 { color: #777; }
+        code { background-color: #f4f4f4; padding: 2px 5px; border-radius: 3px; }
+        pre { background-color: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        table { margin: 20px 0; }
+        th, td { padding: 8px; text-align: left; border: 1px solid #ddd; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+        img { max-width: 100%; height: auto; display: block; margin: 20px 0; }
+        @media print {
+            body { margin: 20px; }
+            img { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+<p><h1>Database Systems (CSCI 331) Winter 2026</h1>
+<h2>Assignment #8: Entity-Relationship Diagrams</h2></p><p><strong>Name:</strong> Zohaib Cheema  
+<strong>Date:</strong> January 2026  
+</p>
+
+<p><h2>Section 1: Task [1] MySQL Workbench Reverse Engineer ERD</h2></p>
+
+<p><strong>Screenshot/Export of ERD from MySQL Workbench</strong></p>
+
+<p><img src="ERD__WorkBench.png" alt="MySQL Workbench ERD" style="max-width:100%; height:auto; display:block; margin:20px 0;"></p>
+
+<p><strong>Description:</strong></p>
+
+<p>I used the Database → Reverse Engineer feature in MySQL Workbench to create the ERD. I selected Local instance and chose the university schema, then included all tables and excluded views. I enabled the "place objects on diagram" option so it would automatically arrange everything. The ERD shows 12 tables from the university database (advisor, takes, classroom, department, prereq, section, grade_points, student, time_slot, teaches, course, instructor) plus the query table from the meta database. It shows all the attributes, primary keys, and foreign key relationships using crow's foot notation.</p>
+
+<p><h2>Section 2: Task [2] Second ER Tool ERD</h2></p>
+
+<p><strong>Screenshot/Export of ERD from Second Tool (dbdiagram.io)</strong></p>
+
+<p><img src="ERD__dbdiagram.png" alt="dbdiagram.io ERD" style="max-width:100%; height:auto; display:block; margin:20px 0;"></p>
+
+<p><strong>Description:</strong></p>
+
+<p>I created the ERD using dbdiagram.io. I imported the database schema and used the automatic layout feature to arrange the tables. The ERD shows 11 tables from the university database (time_slot, classroom, department, instructor, course, student, section, advisor, prereq, teaches, takes). It shows all the columns, data types, and relationships between tables. The relationships are shown as lines with arrows that connect foreign key columns to primary key columns.</p>
+
+<p><h2>Section 3: Task [3] Comparison Table of 10 ERD Features</h2></p>
+
+<table border="1" style="border-collapse:collapse;width:100%;">
+<tr>
+<td>1. Entities/tables as boxes</td>
+<td>Tables are represented as rectangular boxes in the diagram</td>
+<td>Each table appears as a rectangular box with a light blue background and table name in a darker blue header. 12 tables are shown: advisor, takes, classroom, department, prereq, section, grade_points, student, time_slot, teaches, course, instructor, and query (from meta database).</td>
+<td>Tables are represented as rectangular boxes with blue headers containing the table name. 11 university tables are shown: time_slot, classroom, department, instructor, course, student, section, advisor, prereq, teaches, takes. Columns are listed below each table name.</td>
+</tr>
+<tr>
+<td>2. Primary key visibility</td>
+<td>Primary keys are clearly marked/identified in the table representation</td>
+<td>Primary keys are shown with a yellow key icon (↑) next to the column name. For example, student.ID, instructor.ID, course.course_id have the key icon. Composite PKs like section(course_id, sec_id, semester, year) show the key icon on all PK columns. Regular attributes marked with diamond icon (◇).</td>
+<td>Primary keys are indicated by being part of the composite primary key notation shown at the bottom of each table box (e.g., "Primary Key: (course_id, sec_id, semester, year)"). Single-column PKs like ID, course_id, dept_name are clearly marked as Primary Key in the notation.</td>
+</tr>
+<tr>
+<td>3. Foreign key relationships drawn only when FK constraints exist</td>
+<td>Relationship lines appear only between tables that have actual foreign key constraints in the database</td>
+<td>Relationship lines connect tables that have FK constraints: student↔advisor↔instructor, takes↔student, takes↔section, takes↔grade_points (dashed line), section↔course, section↔classroom, teaches↔instructor, teaches↔section, prereq↔course (self-referential), course↔department, instructor↔department, student↔department. time_slot appears isolated with no relationship line to section, indicating section.time_slot_id doesn't have an FK constraint.</td>
+<td>FK relationships shown as lines with arrows connecting foreign key columns to primary key columns. Relationships include: department referenced by instructor/course/student, classroom referenced by section, course referenced by section/prereq, instructor referenced by advisor/teaches, student referenced by advisor/takes, section referenced by teaches/takes. time_slot shows no relationship line to section.</td>
+</tr>
+<tr>
+<td>4. Cardinality display (1, many)</td>
+<td>The diagram shows whether relationships are one-to-one, one-to-many, or many-to-many</td>
+<td>Uses crow's foot notation: many side shows crow's foot (three pronged), one side shows single vertical bar. Examples: student(one) ↔ (many)takes, instructor(one) ↔ (many)teaches, course(one) ↔ (many)section, student(one) ↔ (one)advisor ↔ (one)instructor, department(one) ↔ (many)course/instructor/student.</td>
+<td>Cardinality is shown through the direction of arrows and the relationship structure. One-to-many relationships are clear: department→instructor/course/student, instructor→teaches, student→takes, course→section, section→teaches/takes. One-to-one relationships shown for advisor linking student and instructor.</td>
+</tr>
+<tr>
+<td>5. Relationship notation style</td>
+<td>The visual style used to represent relationships (crow's foot vs classic/diamond notation)</td>
+<td>Uses crow's foot notation (Martin/Chen style). Relationship lines connect directly between tables with crow's feet on the many side and single bar on the one side. No diamond shapes are used. One relationship (takes to grade_points) uses a dashed line.</td>
+<td>Uses line notation with arrows. Lines connect tables directly with arrows pointing from foreign key to primary key. No diamond shapes or crow's foot symbols, but relationship direction is clear from arrows.</td>
+</tr>
+<tr>
+<td>6. Optional vs mandatory participation</td>
+<td>Indicates whether participation in a relationship is required (mandatory) or optional</td>
+<td>The ERD shows relationship cardinality but does not explicitly show optional vs mandatory participation through circles or "0..1" notation. All relationships appear as solid lines connecting the tables (except takes→grade_points which uses a dashed line).</td>
+<td>The tool shows foreign keys as part of the column definitions (marked as Foreign Key) but does not explicitly indicate optional vs mandatory participation through additional notation. All relationships appear as direct line connections.</td>
+</tr>
+<tr>
+<td>7. Composite primary keys</td>
+<td>Shows when a primary key consists of multiple columns (e.g., section, takes, teaches tables)</td>
+<td>Composite PKs clearly shown with key icon on each PK column: section has PK (course_id, sec_id, semester, year), takes has PK (ID, course_id, sec_id, semester, year), teaches has PK (ID, course_id, sec_id, semester, year), advisor has PK (s_ID) only, prereq has PK (course_id, prereq_id), classroom has PK (building, room_number), time_slot has PK (time_slot_id, day, start_hr, start_min).</td>
+<td>Composite PKs displayed with notation at bottom of table: section Primary Key (course_id, sec_id, semester, year), takes Primary Key (ID, course_id, sec_id, semester, year), teaches Primary Key (ID, course_id, sec_id, semester, year), prereq Primary Key (course_id, prereq_id), classroom Primary Key (building, room_number). advisor shows only s_ID as Primary Key.</td>
+</tr>
+<tr>
+<td>8. Data types / attribute metadata shown in diagram</td>
+<td>Column data types (VARCHAR, INT, etc.) and other metadata are visible in the table boxes</td>
+<td>Each column shows data type: ID VARCHAR(5), name VARCHAR(20), dept_name VARCHAR(20), tot_cred DECIMAL(3,0), salary DECIMAL(8,2), credits DECIMAL(2,0), etc. NOT NULL constraints shown (e.g., instructor.name, student.name). Regular attributes marked with diamond icon (◇).</td>
+<td>Data types shown for each column: ID varchar(5), name varchar(20) NN (Not Null), dept_name varchar(20), tot_cred numeric(3,0), salary numeric(8,2), credits numeric(2,0), etc. Column names, data types, and NOT NULL constraints (marked as NN) are visible.</td>
+</tr>
+<tr>
+<td>9. Layout/editability</td>
+<td>Ability to drag and rearrange tables for better readability</td>
+<td>Tables are arranged automatically by Workbench's layout algorithm. Tables can be manually repositioned by dragging, and relationship lines automatically adjust to maintain connections. The layout groups related tables together.</td>
+<td>Tables are arranged in a logical flow from left to right and top to bottom (foundational tables like time_slot/classroom/department on left, relationship tables like advisor/prereq/teaches/takes on right). Layout appears automatically generated but can be customized.</td>
+</tr>
+</table>
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';</p><p>-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+-- -----------------------------------------------------
+-- Schema university
+-- -----------------------------------------------------</p><p>-- -----------------------------------------------------
+-- Schema university
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS <code>university</code> DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
+USE <code>university</code> ;</p><p>-- -----------------------------------------------------
+-- Table <code>university</code>.<code>department</code>
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS <code>university</code>.<code>department</code> (
+  <code>dept_name</code> VARCHAR(20) NOT NULL,
+  <code>building</code> VARCHAR(15) NULL DEFAULT NULL,
+  <code>budget</code> DECIMAL(12,2) NULL DEFAULT NULL,
+  PRIMARY KEY (<code>dept_name</code>))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;</p><p>
+-- -----------------------------------------------------
+-- Table <code>university</code>.<code>instructor</code>
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS <code>university</code>.<code>instructor</code> (
+  <code>ID</code> VARCHAR(5) NOT NULL,
+  <code>name</code> VARCHAR(20) NOT NULL,
+  <code>dept_name</code> VARCHAR(20) NULL DEFAULT NULL,
+  <code>salary</code> DECIMAL(8,2) NULL DEFAULT NULL,
+  PRIMARY KEY (<code>ID</code>),
+  INDEX <code>dept_name</code> (<code>dept_name</code> ASC) VISIBLE,
+  CONSTRAINT <code>instructor_ibfk_1</code>
+    FOREIGN KEY (<code>dept_name</code>)
+    REFERENCES <code>university</code>.<code>department</code> (<code>dept_name</code>)
+    ON DELETE SET NULL)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;</p><p>
+-- -----------------------------------------------------
+-- Table <code>university</code>.<code>student</code>
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS <code>university</code>.<code>student</code> (
+  <code>ID</code> VARCHAR(5) NOT NULL,
+  <code>name</code> VARCHAR(20) NOT NULL,
+  <code>dept_name</code> VARCHAR(20) NULL DEFAULT NULL,
+  <code>tot_cred</code> DECIMAL(3,0) NULL DEFAULT NULL,
+  PRIMARY KEY (<code>ID</code>),
+  INDEX <code>dept_name</code> (<code>dept_name</code> ASC) VISIBLE,
+  CONSTRAINT <code>student_ibfk_1</code>
+    FOREIGN KEY (<code>dept_name</code>)
+    REFERENCES <code>university</code>.<code>department</code> (<code>dept_name</code>)
+    ON DELETE SET NULL)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;</p><p>
+-- -----------------------------------------------------
+-- Table <code>university</code>.<code>advisor</code>
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS <code>university</code>.<code>advisor</code> (
+  <code>s_ID</code> VARCHAR(5) NOT NULL,
+  <code>i_ID</code> VARCHAR(5) NULL DEFAULT NULL,
+  PRIMARY KEY (<code>s_ID</code>),
+  INDEX <code>i_ID</code> (<code>i_ID</code> ASC) VISIBLE,
+  CONSTRAINT <code>advisor_ibfk_1</code>
+    FOREIGN KEY (<code>i_ID</code>)
+    REFERENCES <code>university</code>.<code>instructor</code> (<code>ID</code>)
+    ON DELETE SET NULL,
+  CONSTRAINT <code>advisor_ibfk_2</code>
+    FOREIGN KEY (<code>s_ID</code>)
+    REFERENCES <code>university</code>.<code>student</code> (<code>ID</code>)
+    ON DELETE CASCADE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;</p><p>
+-- -----------------------------------------------------
+-- Table <code>university</code>.<code>classroom</code>
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS <code>university</code>.<code>classroom</code> (
+  <code>building</code> VARCHAR(15) NOT NULL,
+  <code>room_number</code> VARCHAR(7) NOT NULL,
+  <code>capacity</code> DECIMAL(4,0) NULL DEFAULT NULL,
+  PRIMARY KEY (<code>building</code>, <code>room_number</code>))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;</p><p>
+-- -----------------------------------------------------
+-- Table <code>university</code>.<code>course</code>
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS <code>university</code>.<code>course</code> (
+  <code>course_id</code> VARCHAR(8) NOT NULL,
+  <code>title</code> VARCHAR(50) NULL DEFAULT NULL,
+  <code>dept_name</code> VARCHAR(20) NULL DEFAULT NULL,
+  <code>credits</code> DECIMAL(2,0) NULL DEFAULT NULL,
+  PRIMARY KEY (<code>course_id</code>),
+  INDEX <code>dept_name</code> (<code>dept_name</code> ASC) VISIBLE,
+  CONSTRAINT <code>course_ibfk_1</code>
+    FOREIGN KEY (<code>dept_name</code>)
+    REFERENCES <code>university</code>.<code>department</code> (<code>dept_name</code>)
+    ON DELETE SET NULL)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;</p><p>
+-- -----------------------------------------------------
+-- Table <code>university</code>.<code>grade_points</code>
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS <code>university</code>.<code>grade_points</code> (
+  <code>grade</code> VARCHAR(2) NOT NULL,
+  <code>points</code> DECIMAL(2,1) NULL DEFAULT NULL,
+  PRIMARY KEY (<code>grade</code>))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;</p><p>
+-- -----------------------------------------------------
+-- Table <code>university</code>.<code>prereq</code>
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS <code>university</code>.<code>prereq</code> (
+  <code>course_id</code> VARCHAR(8) NOT NULL,
+  <code>prereq_id</code> VARCHAR(8) NOT NULL,
+  PRIMARY KEY (<code>course_id</code>, <code>prereq_id</code>),
+  INDEX <code>prereq_id</code> (<code>prereq_id</code> ASC) VISIBLE,
+  CONSTRAINT <code>prereq_ibfk_1</code>
+    FOREIGN KEY (<code>course_id</code>)
+    REFERENCES <code>university</code>.<code>course</code> (<code>course_id</code>)
+    ON DELETE CASCADE,
+  CONSTRAINT <code>prereq_ibfk_2</code>
+    FOREIGN KEY (<code>prereq_id</code>)
+    REFERENCES <code>university</code>.<code>course</code> (<code>course_id</code>))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;</p><p>
+-- -----------------------------------------------------
+-- Table <code>university</code>.<code>query</code>
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS <code>university</code>.<code>query</code> (
+  <code>query_id</code> INT NOT NULL AUTO_INCREMENT,
+  <code>query_text</code> VARCHAR(9999) NOT NULL,
+  <code>query_desc</code> VARCHAR(999) NOT NULL,
+  <code>query_db</code> VARCHAR(30) NOT NULL,
+  <code>query_rows</code> INT NOT NULL DEFAULT '0',
+  <code>query_user</code> VARCHAR(30) NOT NULL,
+  <code>query_assn</code> VARCHAR(30) NOT NULL,
+  <code>query_dur</code> DECIMAL(8,4) NOT NULL,
+  <code>query_ended</code> DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (<code>query_id</code>))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;</p><p>
+-- -----------------------------------------------------
+-- Table <code>university</code>.<code>section</code>
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS <code>university</code>.<code>section</code> (
+  <code>course_id</code> VARCHAR(8) NOT NULL,
+  <code>sec_id</code> VARCHAR(8) NOT NULL,
+  <code>semester</code> VARCHAR(6) NOT NULL,
+  <code>year</code> DECIMAL(4,0) NOT NULL,
+  <code>building</code> VARCHAR(15) NULL DEFAULT NULL,
+  <code>room_number</code> VARCHAR(7) NULL DEFAULT NULL,
+  <code>time_slot_id</code> VARCHAR(4) NULL DEFAULT NULL,
+  PRIMARY KEY (<code>course_id</code>, <code>sec_id</code>, <code>semester</code>, <code>year</code>),
+  INDEX <code>building</code> (<code>building</code> ASC, <code>room_number</code> ASC) VISIBLE,
+  CONSTRAINT <code>section_ibfk_1</code>
+    FOREIGN KEY (<code>course_id</code>)
+    REFERENCES <code>university</code>.<code>course</code> (<code>course_id</code>)
+    ON DELETE CASCADE,
+  CONSTRAINT <code>section_ibfk_2</code>
+    FOREIGN KEY (<code>building</code> , <code>room_number</code>)
+    REFERENCES <code>university</code>.<code>classroom</code> (<code>building</code> , <code>room_number</code>)
+    ON DELETE SET NULL)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;</p><p>
+-- -----------------------------------------------------
+-- Table <code>university</code>.<code>takes</code>
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS <code>university</code>.<code>takes</code> (
+  <code>ID</code> VARCHAR(5) NOT NULL,
+  <code>course_id</code> VARCHAR(8) NOT NULL,
+  <code>sec_id</code> VARCHAR(8) NOT NULL,
+  <code>semester</code> VARCHAR(6) NOT NULL,
+  <code>year</code> DECIMAL(4,0) NOT NULL,
+  <code>grade</code> VARCHAR(2) NULL DEFAULT NULL,
+  PRIMARY KEY (<code>ID</code>, <code>course_id</code>, <code>sec_id</code>, <code>semester</code>, <code>year</code>),
+  INDEX <code>course_id</code> (<code>course_id</code> ASC, <code>sec_id</code> ASC, <code>semester</code> ASC, <code>year</code> ASC) VISIBLE,
+  CONSTRAINT <code>takes_ibfk_1</code>
+    FOREIGN KEY (<code>course_id</code> , <code>sec_id</code> , <code>semester</code> , <code>year</code>)
+    REFERENCES <code>university</code>.<code>section</code> (<code>course_id</code> , <code>sec_id</code> , <code>semester</code> , <code>year</code>)
+    ON DELETE CASCADE,
+  CONSTRAINT <code>takes_ibfk_2</code>
+    FOREIGN KEY (<code>ID</code>)
+    REFERENCES <code>university</code>.<code>student</code> (<code>ID</code>)
+    ON DELETE CASCADE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;</p><p>
+-- -----------------------------------------------------
+-- Table <code>university</code>.<code>teaches</code>
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS <code>university</code>.<code>teaches</code> (
+  <code>ID</code> VARCHAR(5) NOT NULL,
+  <code>course_id</code> VARCHAR(8) NOT NULL,
+  <code>sec_id</code> VARCHAR(8) NOT NULL,
+  <code>semester</code> VARCHAR(6) NOT NULL,
+  <code>year</code> DECIMAL(4,0) NOT NULL,
+  PRIMARY KEY (<code>ID</code>, <code>course_id</code>, <code>sec_id</code>, <code>semester</code>, <code>year</code>),
+  INDEX <code>course_id</code> (<code>course_id</code> ASC, <code>sec_id</code> ASC, <code>semester</code> ASC, <code>year</code> ASC) VISIBLE,
+  CONSTRAINT <code>teaches_ibfk_1</code>
+    FOREIGN KEY (<code>course_id</code> , <code>sec_id</code> , <code>semester</code> , <code>year</code>)
+    REFERENCES <code>university</code>.<code>section</code> (<code>course_id</code> , <code>sec_id</code> , <code>semester</code> , <code>year</code>)
+    ON DELETE CASCADE,
+  CONSTRAINT <code>teaches_ibfk_2</code>
+    FOREIGN KEY (<code>ID</code>)
+    REFERENCES <code>university</code>.<code>instructor</code> (<code>ID</code>)
+    ON DELETE CASCADE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;</p><p>
+-- -----------------------------------------------------
+-- Table <code>university</code>.<code>time_slot</code>
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS <code>university</code>.<code>time_slot</code> (
+  <code>time_slot_id</code> VARCHAR(4) NOT NULL,
+  <code>day</code> VARCHAR(1) NOT NULL,
+  <code>start_hr</code> DECIMAL(2,0) NOT NULL,
+  <code>start_min</code> DECIMAL(2,0) NOT NULL,
+  <code>end_hr</code> DECIMAL(2,0) NULL DEFAULT NULL,
+  <code>end_min</code> DECIMAL(2,0) NULL DEFAULT NULL,
+  PRIMARY KEY (<code>time_slot_id</code>, <code>day</code>, <code>start_hr</code>, <code>start_min</code>))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;</p><p>
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+</code></pre></p><p>---</p><p><h3>Original Day-1 DDL Script</h3></p><p><pre><code class="sql">create table classroom
+	(building		varchar(15),
+	 room_number		varchar(7),
+	 capacity		numeric(4,0),
+	 primary key (building, room_number)
+	);</p><p>create table department
+	(dept_name		varchar(20), 
+	 building		varchar(15), 
+	 budget		        numeric(12,2) check (budget > 0),
+	 primary key (dept_name)
+	);</p><p>create table course
+	(course_id		varchar(8), 
+	 title			varchar(50), 
+	 dept_name		varchar(20),
+	 credits		numeric(2,0) check (credits > 0),
+	 primary key (course_id),
+	 foreign key (dept_name) references department (dept_name)
+		on delete set null
+	);</p><p>create table instructor
+	(ID			varchar(5), 
+	 name			varchar(20) not null, 
+	 dept_name		varchar(20), 
+	 salary			numeric(8,2) check (salary > 29000),
+	 primary key (ID),
+	 foreign key (dept_name) references department (dept_name)
+		on delete set null
+	);</p><p>create table section
+	(course_id		varchar(8), 
+         sec_id			varchar(8),
+	 semester		varchar(6)
+		check (semester in ('Fall', 'Winter', 'Spring', 'Summer')), 
+	 year			numeric(4,0) check (year > 1701 and year < 2100), 
+	 building		varchar(15),
+	 room_number		varchar(7),
+	 time_slot_id		varchar(4),
+	 primary key (course_id, sec_id, semester, year),
+	 foreign key (course_id) references course (course_id)
+		on delete cascade,
+	 foreign key (building, room_number) references classroom (building, room_number)
+		on delete set null
+	);</p><p>create table teaches
+	(ID			varchar(5), 
+	 course_id		varchar(8),
+	 sec_id			varchar(8), 
+	 semester		varchar(6),
+	 year			numeric(4,0),
+	 primary key (ID, course_id, sec_id, semester, year),
+	 foreign key (course_id, sec_id, semester, year) references section (course_id, sec_id, semester, year)
+		on delete cascade,
+	 foreign key (ID) references instructor (ID)
+		on delete cascade
+	);</p><p>create table student
+	(ID			varchar(5), 
+	 name			varchar(20) not null, 
+	 dept_name		varchar(20), 
+	 tot_cred		numeric(3,0) check (tot_cred >= 0),
+	 primary key (ID),
+	 foreign key (dept_name) references department (dept_name)
+		on delete set null
+	);</p><p>create table takes
+	(ID			varchar(5), 
+	 course_id		varchar(8),
+	 sec_id			varchar(8), 
+	 semester		varchar(6),
+	 year			numeric(4,0),
+	 grade		        varchar(2),
+	 primary key (ID, course_id, sec_id, semester, year),
+	 foreign key (course_id, sec_id, semester, year) references section (course_id, sec_id, semester, year)
+		on delete cascade,
+	 foreign key (ID) references student (ID)
+		on delete cascade
+	);</p><p>create table advisor
+	(s_ID			varchar(5),
+	 i_ID			varchar(5),
+	 primary key (s_ID),
+	 foreign key (i_ID) references instructor (ID)
+		on delete set null,
+	 foreign key (s_ID) references student (ID)
+		on delete cascade
+	);</p><p>create table time_slot
+	(time_slot_id		varchar(4),
+	 day			varchar(1),
+	 start_hr		numeric(2) check (start_hr >= 0 and start_hr < 24),
+	 start_min		numeric(2) check (start_min >= 0 and start_min < 60),
+	 end_hr			numeric(2) check (end_hr >= 0 and end_hr < 24),
+	 end_min		numeric(2) check (end_min >= 0 and end_min < 60),
+	 primary key (time_slot_id, day, start_hr, start_min)
+	);</p><p>create table prereq
+	(course_id		varchar(8), 
+	 prereq_id		varchar(8),
+	 primary key (course_id, prereq_id),
+	 foreign key (course_id) references course (course_id)
+		on delete cascade,
+	 foreign key (prereq_id) references course (course_id)
+	);
+</code></pre></p><p>---</p><p><h3>Comparison Analysis: Forward-Engineered SQL vs Original Day-1 DDL</h3></p><p><strong>System Variables:</strong>
+<li><strong>Original DDL:</strong> Doesn't have any SET statements at the beginning.</li>
+<li><strong>Forward-Engineered:</strong> Workbench adds SET statements at the start like <code>SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;</code> and similar ones for foreign keys and SQL mode. These turn off checks temporarily so tables can be created faster, then it restores them at the end.</li>
+<li><strong>Difference:</strong> The forward-engineered SQL manages system variables explicitly, while the original DDL just uses MySQL's default settings.</p><p><strong>Character Set and Collation:</strong></li>
+<li><strong>Original DDL:</strong> Doesn't specify character set or collation - just uses whatever MySQL's default is.</li>
+<li><strong>Forward-Engineered:</strong> Specifically sets <code>utf8mb4</code> character set and <code>utf8mb4_0900_ai_ci</code> collation at both the schema level and table level.</li>
+<li><strong>Difference:</strong> Forward-engineered SQL is more specific about character encoding. The original DDL just uses whatever the server default was.</p><p><strong>Storage Engine:</strong></li>
+<li><strong>Original DDL:</strong> Doesn't specify the engine - uses whatever MySQL's default was.</li>
+<li><strong>Forward-Engineered:</strong> Explicitly says <code>ENGINE = InnoDB</code> for every table.</li>
+<li><strong>Difference:</strong> Forward-engineered SQL is more specific about which storage engine to use.</p><p><strong>Data Types:</strong></li>
+<li><strong>Original DDL:</strong> Uses <code>numeric</code> for numbers like <code>numeric(4,0)</code>, <code>numeric(12,2)</code>, etc.</li>
+<li><strong>Forward-Engineered:</strong> Changes all the <code>numeric</code> types to <code>DECIMAL</code> instead, like <code>DECIMAL(12,2)</code>, <code>DECIMAL(8,2)</code>, etc. Also uses <code>INT</code> for query.query_id and <code>DATETIME</code> for query.query_ended.</li>
+<li><strong>Difference:</strong> Forward-engineered SQL uses <code>DECIMAL</code> instead of <code>NUMERIC</code>, but they're basically the same thing in MySQL. The original uses the SQL standard <code>NUMERIC</code> type.</p><p><strong>Indexes:</strong></li>
+<li><strong>Original DDL:</strong> No explicit index statements - MySQL just creates them automatically for primary keys and foreign keys.</li>
+<li><strong>Forward-Engineered:</strong> Has explicit INDEX statements using the column name, like <code>INDEX </code>dept_name`<code>. Also includes the </code>VISIBLE<code> keyword which is a MySQL 8.0+ feature.</li>
+<li><strong>Difference:</strong> Forward-engineered SQL explicitly states which indexes to create, while original DDL lets MySQL handle it automatically.</p><p><strong>Foreign Key Constraints and ON DELETE Behaviors:</strong></li>
+<li><strong>Original DDL:</strong> Uses </code>ON DELETE SET NULL<code> for department references and </code>ON DELETE CASCADE<code> for section references. No ON DELETE clause for prereq.prereq_id. No ON UPDATE clauses.</li>
+<li><strong>Forward-Engineered:</strong> Keeps the same ON DELETE behaviors as the original - SET NULL for departments and CASCADE for sections. No ON UPDATE clauses either.</li>
+<li><strong>Difference:</strong> They're basically the same. Both use the same ON DELETE behaviors.</p><p><strong>CHECK Constraints:</strong></li>
+<li><strong>Original DDL:</strong> Has lots of CHECK constraints like </code>check (budget > 0)<code>, </code>check (credits > 0)<code>, </code>check (salary > 29000)<code>, etc. for validation.</li>
+<li><strong>Forward-Engineered:</strong> Doesn't have any CHECK constraints at all. They're all missing.</li>
+<li><strong>Difference:</strong> Big difference here. The original has all these validation checks, but the forward-engineered SQL doesn't include them. I think Workbench doesn't capture CHECK constraints when it reverse engineers the database.</p><p><strong>Naming Conventions:</strong></li>
+<li><strong>Original DDL:</strong> No explicit constraint names - MySQL generates them automatically. Uses lowercase names and no backticks.</li>
+<li><strong>Forward-Engineered:</strong> Uses MySQL's standard naming like </code>instructor_ibfk_1<code>, </code>student_ibfk_1<code>, etc. for foreign keys. Uses backticks around all identifiers.</li>
+<li><strong>Difference:</strong> Forward-engineered SQL explicitly shows the constraint names (which MySQL would generate anyway), and uses backticks everywhere. Original DDL doesn't specify constraint names.</p><p><strong>Composite Primary Keys:</strong></li>
+<li><strong>Original DDL:</strong> Composite PKs written as </code>primary key (col1, col2, col3, col4)<code> with lowercase and spread across multiple lines.</li>
+<li><strong>Forward-Engineered:</strong> Same idea but formatted as </code>PRIMARY KEY (<code>col1</code>, <code>col2</code>, <code>col3</code>, <code>col4</code>)<code> with uppercase and backticks, usually on one line.</li>
+<li><strong>Difference:</strong> Same concept, just different formatting - forward-engineered uses uppercase and backticks.</p><p><strong>CREATE SCHEMA/DATABASE:</strong></li>
+<li><strong>Original DDL:</strong> Doesn't create the database - assumes it already exists.</li>
+<li><strong>Forward-Engineered:</strong> Includes </code>CREATE SCHEMA IF NOT EXISTS<code> with character set and collation, plus a </code>USE<code> statement.</li>
+<li><strong>Difference:</strong> Forward-engineered SQL creates the database if it doesn't exist, original DDL assumes it's already there.</p><p><strong>IF NOT EXISTS Clause:</strong></li>
+<li><strong>Original DDL:</strong> Just says </code>CREATE TABLE<code> - no </code>IF NOT EXISTS<code>. You'd need to drop tables first before running it again.</li>
+<li><strong>Forward-Engineered:</strong> Uses </code>CREATE TABLE IF NOT EXISTS<code> everywhere, so you can run it multiple times safely.</li>
+<li><strong>Difference:</strong> Forward-engineered SQL is safer to re-run, original would fail if tables already exist.</p><p><strong>Transaction/COMMIT Behavior:</strong></li>
+<li><strong>Original DDL:</strong> No transaction statements - each CREATE TABLE commits separately.</li>
+<li><strong>Forward-Engineered:</strong> May wrap everything in a transaction so all tables get created together, or it might commit separately.</li>
+<li><strong>Difference:</strong> Forward-engineered might group things in a transaction, original doesn't.</p><p><strong>Quoting and Backticks:</strong></li>
+<li><strong>Original DDL:</strong> No backticks, all lowercase keywords like </code>create table student<code>.</li>
+<li><strong>Forward-Engineered:</strong> Uses backticks around everything like </code><code> </code>university<code>.</code>student<code> </code><code> and uppercase keywords like </code>CREATE TABLE<code>.</li>
+<li><strong>Difference:</strong> Forward-engineered is more defensive with backticks and uses uppercase, original is simpler with lowercase and no backticks.</p><p><strong>NULL/NOT NULL Constraints:</strong></li>
+<li><strong>Original DDL:</strong> Only says </code>NOT NULL<code> for instructor.name and student.name. Everything else defaults to allowing NULL.</li>
+<li><strong>Forward-Engineered:</strong> Explicitly says </code>NOT NULL<code> or </code>NULL DEFAULT NULL` for every column based on how the database actually is right now.</li>
+<li><strong>Difference:</strong> Forward-engineered is more explicit about what can be NULL, original mostly relies on defaults.</p><p>---</p><p></p></li>
+</body>
+</html>
