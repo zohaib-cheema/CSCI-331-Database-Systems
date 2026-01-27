@@ -1,0 +1,679 @@
+<html><head><meta name="description" content="OutputUtil developed by LT. Executed by /Users/zohaibcheema/Desktop/CSCI 331L">
+<style>body {
+    background-color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}
+h1 {
+    color: blue;
+    text-align: center;
+}
+h3 {
+    color: blue;
+}
+.vericaltext {
+ writing-mode: vertical-lr;
+ text-orientation: upright;
+}
+
+table, th, td {
+    border: 1px solid;
+    text-align: center;
+    vertical-align: top
+}
+th > a {
+    color: lightblue;
+}
+th {
+    background-color: blue;
+    color: lightblue;
+}
+tr:nth-child(even) {
+    background-color: lightblue;
+}
+tr:nth-child(odd) {
+    background-color: #ffed00;
+}</style>
+<script>
+function sortTable(tableId, colNum, colType) {
+  var table, rows, switching, i, x, y, shouldSwitch, dir, switchCount = 0;
+  table = document.getElementById(tableId);
+  switching = true;
+  dir = "asc";
+  while (switching) {
+    switching = false;
+    rows = table.rows;
+    for (i = 1; i < (rows.length - 1); i++) {
+      shouldSwitch = false;
+      x = rows[i].getElementsByTagName("td")[colNum];
+      y = rows[i + 1].getElementsByTagName("td")[colNum];
+      if (colType == 'N') { 
+        if (((dir == "asc") && (Number(x.innerHTML) > Number(y.innerHTML))) ||
+            ((dir == "desc") && (Number(x.innerHTML) < Number(y.innerHTML)))) {
+          shouldSwitch = true;
+          break;
+        }
+      } else {
+        if (((dir == "asc") && (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase())) ||
+            ((dir == "desc") && (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()))) {
+          shouldSwitch = true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+      switchCount ++;
+    } else {
+     if (switchCount == 0 && dir == "asc") {
+        dir = "desc";
+        switching = true;
+      }
+    }
+  }
+}
+</script>
+</head>
+<body><h1>Output for Assignment 02</h1>
+<h3>Table of Contents</h3>
+<ol><li><a href="#table-table1">table1</a>
+</li>
+<li><a href="#table-table2">table2</a>
+</li>
+<li><a href="#table-table3">table3</a>
+</li>
+<li><a href="#table-table4">table4</a>
+</li>
+<li><a href="#table-table5">table5</a>
+</li>
+<li><a href="#table-table6">table6</a>
+</li>
+<li><a href="#table-table7">table7</a>
+</li>
+<li><a href="#table-table8">table8</a>
+</li>
+<li><a href="#table-table9">table9</a>
+</li>
+<li><a href="#table-table10">table10</a>
+</li>
+</ol>
+<h3>table1</h3>
+<table id="table-table1" style="width:100%"><th><a href="javascript:sortTable('table-table1', 0, 'S')"">instructor_id</a>
+</th>
+<th><a href="javascript:sortTable('table-table1', 1, 'S')"">name</a>
+</th>
+<th><a href="javascript:sortTable('table-table1', 2, 'S')"">dept_name</a>
+</th>
+<th><a href="javascript:sortTable('table-table1', 3, 'S')"">salary</a>
+</th>
+<tr><td style="text-align:left;">10101</td>
+<td style="text-align:left;">Srinivasan</td>
+<td style="text-align:left;">Comp. Sci.</td>
+<td style="text-align:left;">65000</td>
+</tr>
+<tr><td style="text-align:left;">12121</td>
+<td style="text-align:left;">Wu</td>
+<td style="text-align:left;">Finance</td>
+<td style="text-align:left;">90000</td>
+</tr>
+<tr><td style="text-align:left;">15151</td>
+<td style="text-align:left;">Mozart</td>
+<td style="text-align:left;">Music</td>
+<td style="text-align:left;">40000</td>
+</tr>
+<tr><td style="text-align:left;">22222</td>
+<td style="text-align:left;">Einstein</td>
+<td style="text-align:left;">Physics</td>
+<td style="text-align:left;">95000</td>
+</tr>
+<tr><td style="text-align:left;">32343</td>
+<td style="text-align:left;">El Said</td>
+<td style="text-align:left;">History</td>
+<td style="text-align:left;">60000</td>
+</tr>
+<tr><td style="text-align:left;">33456</td>
+<td style="text-align:left;">Gold</td>
+<td style="text-align:left;">Physics</td>
+<td style="text-align:left;">87000</td>
+</tr>
+<tr><td style="text-align:left;">45565</td>
+<td style="text-align:left;">Katz</td>
+<td style="text-align:left;">Comp. Sci.</td>
+<td style="text-align:left;">75000</td>
+</tr>
+<tr><td style="text-align:left;">58583</td>
+<td style="text-align:left;">Califieri</td>
+<td style="text-align:left;">History</td>
+<td style="text-align:left;">62000</td>
+</tr>
+<tr><td style="text-align:left;">76543</td>
+<td style="text-align:left;">Singh</td>
+<td style="text-align:left;">Finance</td>
+<td style="text-align:left;">80000</td>
+</tr>
+<tr><td style="text-align:left;">76766</td>
+<td style="text-align:left;">Crick</td>
+<td style="text-align:left;">Biology</td>
+<td style="text-align:left;">72000</td>
+</tr>
+<tr><td style="text-align:left;">83821</td>
+<td style="text-align:left;">Brandt</td>
+<td style="text-align:left;">Comp. Sci.</td>
+<td style="text-align:left;">92000</td>
+</tr>
+<tr><td style="text-align:left;">98345</td>
+<td style="text-align:left;">Kim</td>
+<td style="text-align:left;">Elec. Eng.</td>
+<td style="text-align:left;">80000</td>
+</tr>
+</table>
+<h3>table2</h3>
+<table id="table-table2" style="width:100%"><th><a href="javascript:sortTable('table-table2', 0, 'S')"">name</a>
+</th>
+<th><a href="javascript:sortTable('table-table2', 1, 'S')"">dept_name</a>
+</th>
+<tr><td style="text-align:left;">Srinivasan</td>
+<td style="text-align:left;">Comp. Sci.</td>
+</tr>
+<tr><td style="text-align:left;">Wu</td>
+<td style="text-align:left;">Finance</td>
+</tr>
+<tr><td style="text-align:left;">Mozart</td>
+<td style="text-align:left;">Music</td>
+</tr>
+<tr><td style="text-align:left;">Einstein</td>
+<td style="text-align:left;">Physics</td>
+</tr>
+<tr><td style="text-align:left;">El Said</td>
+<td style="text-align:left;">History</td>
+</tr>
+<tr><td style="text-align:left;">Gold</td>
+<td style="text-align:left;">Physics</td>
+</tr>
+<tr><td style="text-align:left;">Katz</td>
+<td style="text-align:left;">Comp. Sci.</td>
+</tr>
+<tr><td style="text-align:left;">Califieri</td>
+<td style="text-align:left;">History</td>
+</tr>
+<tr><td style="text-align:left;">Singh</td>
+<td style="text-align:left;">Finance</td>
+</tr>
+<tr><td style="text-align:left;">Crick</td>
+<td style="text-align:left;">Biology</td>
+</tr>
+<tr><td style="text-align:left;">Brandt</td>
+<td style="text-align:left;">Comp. Sci.</td>
+</tr>
+<tr><td style="text-align:left;">Kim</td>
+<td style="text-align:left;">Elec. Eng.</td>
+</tr>
+</table>
+<h3>table3</h3>
+<table id="table-table3" style="width:100%"><th><a href="javascript:sortTable('table-table3', 0, 'S')"">course_id</a>
+</th>
+<th><a href="javascript:sortTable('table-table3', 1, 'S')"">title</a>
+</th>
+<th><a href="javascript:sortTable('table-table3', 2, 'S')"">dept_name</a>
+</th>
+<th><a href="javascript:sortTable('table-table3', 3, 'S')"">credits</a>
+</th>
+<tr><td style="text-align:left;">BIO-101</td>
+<td style="text-align:left;">Intro. to Biology</td>
+<td style="text-align:left;">Biology</td>
+<td style="text-align:left;">4</td>
+</tr>
+<tr><td style="text-align:left;">BIO-301</td>
+<td style="text-align:left;">Genetics</td>
+<td style="text-align:left;">Biology</td>
+<td style="text-align:left;">4</td>
+</tr>
+<tr><td style="text-align:left;">BIO-399</td>
+<td style="text-align:left;">Computational Biology</td>
+<td style="text-align:left;">Biology</td>
+<td style="text-align:left;">3</td>
+</tr>
+</table>
+<h3>table4</h3>
+<table id="table-table4" style="width:100%"><th><a href="javascript:sortTable('table-table4', 0, 'S')"">course_id</a>
+</th>
+<th><a href="javascript:sortTable('table-table4', 1, 'S')"">title</a>
+</th>
+<th><a href="javascript:sortTable('table-table4', 2, 'S')"">dept_name</a>
+</th>
+<th><a href="javascript:sortTable('table-table4', 3, 'S')"">credits</a>
+</th>
+<tr><td style="text-align:left;">CS-101</td>
+<td style="text-align:left;">Intro. to Computer Science</td>
+<td style="text-align:left;">Comp. Sci.</td>
+<td style="text-align:left;">4</td>
+</tr>
+<tr><td style="text-align:left;">CS-190</td>
+<td style="text-align:left;">Game Design</td>
+<td style="text-align:left;">Comp. Sci.</td>
+<td style="text-align:left;">4</td>
+</tr>
+<tr><td style="text-align:left;">CS-315</td>
+<td style="text-align:left;">Robotics</td>
+<td style="text-align:left;">Comp. Sci.</td>
+<td style="text-align:left;">3</td>
+</tr>
+<tr><td style="text-align:left;">CS-319</td>
+<td style="text-align:left;">Image Processing</td>
+<td style="text-align:left;">Comp. Sci.</td>
+<td style="text-align:left;">3</td>
+</tr>
+<tr><td style="text-align:left;">CS-347</td>
+<td style="text-align:left;">Database System Concepts</td>
+<td style="text-align:left;">Comp. Sci.</td>
+<td style="text-align:left;">3</td>
+</tr>
+</table>
+<h3>table5</h3>
+<table id="table-table5" style="width:100%"><th><a href="javascript:sortTable('table-table5', 0, 'S')"">course_id</a>
+</th>
+<th><a href="javascript:sortTable('table-table5', 1, 'S')"">title</a>
+</th>
+<th><a href="javascript:sortTable('table-table5', 2, 'S')"">dept_name</a>
+</th>
+<tr><td style="text-align:left;">BIO-101</td>
+<td style="text-align:left;">Intro. to Biology</td>
+<td style="text-align:left;">Biology</td>
+</tr>
+<tr><td style="text-align:left;">BIO-301</td>
+<td style="text-align:left;">Genetics</td>
+<td style="text-align:left;">Biology</td>
+</tr>
+<tr><td style="text-align:left;">BIO-399</td>
+<td style="text-align:left;">Computational Biology</td>
+<td style="text-align:left;">Biology</td>
+</tr>
+<tr><td style="text-align:left;">CS-101</td>
+<td style="text-align:left;">Intro. to Computer Science</td>
+<td style="text-align:left;">Comp. Sci.</td>
+</tr>
+<tr><td style="text-align:left;">CS-190</td>
+<td style="text-align:left;">Game Design</td>
+<td style="text-align:left;">Comp. Sci.</td>
+</tr>
+<tr><td style="text-align:left;">CS-315</td>
+<td style="text-align:left;">Robotics</td>
+<td style="text-align:left;">Comp. Sci.</td>
+</tr>
+<tr><td style="text-align:left;">CS-319</td>
+<td style="text-align:left;">Image Processing</td>
+<td style="text-align:left;">Comp. Sci.</td>
+</tr>
+<tr><td style="text-align:left;">CS-347</td>
+<td style="text-align:left;">Database System Concepts</td>
+<td style="text-align:left;">Comp. Sci.</td>
+</tr>
+</table>
+<h3>table6</h3>
+<table id="table-table6" style="width:100%"><th><a href="javascript:sortTable('table-table6', 0, 'S')"">ID</a>
+</th>
+<th><a href="javascript:sortTable('table-table6', 1, 'S')"">name</a>
+</th>
+<th><a href="javascript:sortTable('table-table6', 2, 'S')"">dept_name</a>
+</th>
+<th><a href="javascript:sortTable('table-table6', 3, 'S')"">salary</a>
+</th>
+<th><a href="javascript:sortTable('table-table6', 4, 'S')"">ID</a>
+</th>
+<th><a href="javascript:sortTable('table-table6', 5, 'S')"">course_id</a>
+</th>
+<th><a href="javascript:sortTable('table-table6', 6, 'S')"">sec_id</a>
+</th>
+<th><a href="javascript:sortTable('table-table6', 7, 'S')"">semester</a>
+</th>
+<th><a href="javascript:sortTable('table-table6', 8, 'S')"">year</a>
+</th>
+<tr><td style="text-align:left;">10101</td>
+<td style="text-align:left;">Srinivasan</td>
+<td style="text-align:left;">Comp. Sci.</td>
+<td style="text-align:left;">65000</td>
+<td style="text-align:left;">10101</td>
+<td style="text-align:left;">CS-101</td>
+<td style="text-align:left;">1</td>
+<td style="text-align:left;">Fall</td>
+<td style="text-align:left;">2017</td>
+</tr>
+<tr><td style="text-align:left;">10101</td>
+<td style="text-align:left;">Srinivasan</td>
+<td style="text-align:left;">Comp. Sci.</td>
+<td style="text-align:left;">65000</td>
+<td style="text-align:left;">10101</td>
+<td style="text-align:left;">CS-315</td>
+<td style="text-align:left;">1</td>
+<td style="text-align:left;">Spring</td>
+<td style="text-align:left;">2018</td>
+</tr>
+<tr><td style="text-align:left;">10101</td>
+<td style="text-align:left;">Srinivasan</td>
+<td style="text-align:left;">Comp. Sci.</td>
+<td style="text-align:left;">65000</td>
+<td style="text-align:left;">10101</td>
+<td style="text-align:left;">CS-347</td>
+<td style="text-align:left;">1</td>
+<td style="text-align:left;">Fall</td>
+<td style="text-align:left;">2017</td>
+</tr>
+<tr><td style="text-align:left;">12121</td>
+<td style="text-align:left;">Wu</td>
+<td style="text-align:left;">Finance</td>
+<td style="text-align:left;">90000</td>
+<td style="text-align:left;">12121</td>
+<td style="text-align:left;">FIN-201</td>
+<td style="text-align:left;">1</td>
+<td style="text-align:left;">Spring</td>
+<td style="text-align:left;">2018</td>
+</tr>
+<tr><td style="text-align:left;">15151</td>
+<td style="text-align:left;">Mozart</td>
+<td style="text-align:left;">Music</td>
+<td style="text-align:left;">40000</td>
+<td style="text-align:left;">15151</td>
+<td style="text-align:left;">MU-199</td>
+<td style="text-align:left;">1</td>
+<td style="text-align:left;">Spring</td>
+<td style="text-align:left;">2018</td>
+</tr>
+<tr><td style="text-align:left;">22222</td>
+<td style="text-align:left;">Einstein</td>
+<td style="text-align:left;">Physics</td>
+<td style="text-align:left;">95000</td>
+<td style="text-align:left;">22222</td>
+<td style="text-align:left;">PHY-101</td>
+<td style="text-align:left;">1</td>
+<td style="text-align:left;">Fall</td>
+<td style="text-align:left;">2017</td>
+</tr>
+<tr><td style="text-align:left;">32343</td>
+<td style="text-align:left;">El Said</td>
+<td style="text-align:left;">History</td>
+<td style="text-align:left;">60000</td>
+<td style="text-align:left;">32343</td>
+<td style="text-align:left;">HIS-351</td>
+<td style="text-align:left;">1</td>
+<td style="text-align:left;">Spring</td>
+<td style="text-align:left;">2018</td>
+</tr>
+<tr><td style="text-align:left;">45565</td>
+<td style="text-align:left;">Katz</td>
+<td style="text-align:left;">Comp. Sci.</td>
+<td style="text-align:left;">75000</td>
+<td style="text-align:left;">45565</td>
+<td style="text-align:left;">CS-101</td>
+<td style="text-align:left;">1</td>
+<td style="text-align:left;">Spring</td>
+<td style="text-align:left;">2018</td>
+</tr>
+<tr><td style="text-align:left;">45565</td>
+<td style="text-align:left;">Katz</td>
+<td style="text-align:left;">Comp. Sci.</td>
+<td style="text-align:left;">75000</td>
+<td style="text-align:left;">45565</td>
+<td style="text-align:left;">CS-319</td>
+<td style="text-align:left;">1</td>
+<td style="text-align:left;">Spring</td>
+<td style="text-align:left;">2018</td>
+</tr>
+<tr><td style="text-align:left;">76766</td>
+<td style="text-align:left;">Crick</td>
+<td style="text-align:left;">Biology</td>
+<td style="text-align:left;">72000</td>
+<td style="text-align:left;">76766</td>
+<td style="text-align:left;">BIO-101</td>
+<td style="text-align:left;">1</td>
+<td style="text-align:left;">Summer</td>
+<td style="text-align:left;">2017</td>
+</tr>
+<tr><td style="text-align:left;">76766</td>
+<td style="text-align:left;">Crick</td>
+<td style="text-align:left;">Biology</td>
+<td style="text-align:left;">72000</td>
+<td style="text-align:left;">76766</td>
+<td style="text-align:left;">BIO-301</td>
+<td style="text-align:left;">1</td>
+<td style="text-align:left;">Summer</td>
+<td style="text-align:left;">2018</td>
+</tr>
+<tr><td style="text-align:left;">83821</td>
+<td style="text-align:left;">Brandt</td>
+<td style="text-align:left;">Comp. Sci.</td>
+<td style="text-align:left;">92000</td>
+<td style="text-align:left;">83821</td>
+<td style="text-align:left;">CS-190</td>
+<td style="text-align:left;">1</td>
+<td style="text-align:left;">Spring</td>
+<td style="text-align:left;">2017</td>
+</tr>
+<tr><td style="text-align:left;">83821</td>
+<td style="text-align:left;">Brandt</td>
+<td style="text-align:left;">Comp. Sci.</td>
+<td style="text-align:left;">92000</td>
+<td style="text-align:left;">83821</td>
+<td style="text-align:left;">CS-190</td>
+<td style="text-align:left;">2</td>
+<td style="text-align:left;">Spring</td>
+<td style="text-align:left;">2017</td>
+</tr>
+<tr><td style="text-align:left;">83821</td>
+<td style="text-align:left;">Brandt</td>
+<td style="text-align:left;">Comp. Sci.</td>
+<td style="text-align:left;">92000</td>
+<td style="text-align:left;">83821</td>
+<td style="text-align:left;">CS-319</td>
+<td style="text-align:left;">2</td>
+<td style="text-align:left;">Spring</td>
+<td style="text-align:left;">2018</td>
+</tr>
+<tr><td style="text-align:left;">98345</td>
+<td style="text-align:left;">Kim</td>
+<td style="text-align:left;">Elec. Eng.</td>
+<td style="text-align:left;">80000</td>
+<td style="text-align:left;">98345</td>
+<td style="text-align:left;">EE-181</td>
+<td style="text-align:left;">1</td>
+<td style="text-align:left;">Spring</td>
+<td style="text-align:left;">2017</td>
+</tr>
+</table>
+<h3>table7</h3>
+<table id="table-table7" style="width:100%"><th><a href="javascript:sortTable('table-table7', 0, 'S')"">name</a>
+</th>
+<th><a href="javascript:sortTable('table-table7', 1, 'S')"">title</a>
+</th>
+<th><a href="javascript:sortTable('table-table7', 2, 'S')"">semester</a>
+</th>
+<th><a href="javascript:sortTable('table-table7', 3, 'S')"">year</a>
+</th>
+<tr><td style="text-align:left;">Srinivasan</td>
+<td style="text-align:left;">Intro. to Computer Science</td>
+<td style="text-align:left;">Fall</td>
+<td style="text-align:left;">2017</td>
+</tr>
+<tr><td style="text-align:left;">Srinivasan</td>
+<td style="text-align:left;">Robotics</td>
+<td style="text-align:left;">Spring</td>
+<td style="text-align:left;">2018</td>
+</tr>
+<tr><td style="text-align:left;">Srinivasan</td>
+<td style="text-align:left;">Database System Concepts</td>
+<td style="text-align:left;">Fall</td>
+<td style="text-align:left;">2017</td>
+</tr>
+<tr><td style="text-align:left;">Wu</td>
+<td style="text-align:left;">Investment Banking</td>
+<td style="text-align:left;">Spring</td>
+<td style="text-align:left;">2018</td>
+</tr>
+<tr><td style="text-align:left;">Mozart</td>
+<td style="text-align:left;">Music Video Production</td>
+<td style="text-align:left;">Spring</td>
+<td style="text-align:left;">2018</td>
+</tr>
+<tr><td style="text-align:left;">Einstein</td>
+<td style="text-align:left;">Physical Principles</td>
+<td style="text-align:left;">Fall</td>
+<td style="text-align:left;">2017</td>
+</tr>
+<tr><td style="text-align:left;">El Said</td>
+<td style="text-align:left;">World History</td>
+<td style="text-align:left;">Spring</td>
+<td style="text-align:left;">2018</td>
+</tr>
+<tr><td style="text-align:left;">Katz</td>
+<td style="text-align:left;">Intro. to Computer Science</td>
+<td style="text-align:left;">Spring</td>
+<td style="text-align:left;">2018</td>
+</tr>
+<tr><td style="text-align:left;">Katz</td>
+<td style="text-align:left;">Image Processing</td>
+<td style="text-align:left;">Spring</td>
+<td style="text-align:left;">2018</td>
+</tr>
+<tr><td style="text-align:left;">Crick</td>
+<td style="text-align:left;">Intro. to Biology</td>
+<td style="text-align:left;">Summer</td>
+<td style="text-align:left;">2017</td>
+</tr>
+<tr><td style="text-align:left;">Crick</td>
+<td style="text-align:left;">Genetics</td>
+<td style="text-align:left;">Summer</td>
+<td style="text-align:left;">2018</td>
+</tr>
+<tr><td style="text-align:left;">Brandt</td>
+<td style="text-align:left;">Game Design</td>
+<td style="text-align:left;">Spring</td>
+<td style="text-align:left;">2017</td>
+</tr>
+<tr><td style="text-align:left;">Brandt</td>
+<td style="text-align:left;">Game Design</td>
+<td style="text-align:left;">Spring</td>
+<td style="text-align:left;">2017</td>
+</tr>
+<tr><td style="text-align:left;">Brandt</td>
+<td style="text-align:left;">Image Processing</td>
+<td style="text-align:left;">Spring</td>
+<td style="text-align:left;">2018</td>
+</tr>
+<tr><td style="text-align:left;">Kim</td>
+<td style="text-align:left;">Intro. to Digital Systems</td>
+<td style="text-align:left;">Spring</td>
+<td style="text-align:left;">2017</td>
+</tr>
+</table>
+<h3>table8</h3>
+<table id="table-table8" style="width:100%"><th><a href="javascript:sortTable('table-table8', 0, 'S')"">ID</a>
+</th>
+<th><a href="javascript:sortTable('table-table8', 1, 'S')"">course_id</a>
+</th>
+<th><a href="javascript:sortTable('table-table8', 2, 'S')"">sec_id</a>
+</th>
+<th><a href="javascript:sortTable('table-table8', 3, 'S')"">semester</a>
+</th>
+<th><a href="javascript:sortTable('table-table8', 4, 'S')"">year</a>
+</th>
+<th><a href="javascript:sortTable('table-table8', 5, 'S')"">grade</a>
+</th>
+<tr><td style="text-align:left;">45678</td>
+<td style="text-align:left;">CS-101</td>
+<td style="text-align:left;">1</td>
+<td style="text-align:left;">Fall</td>
+<td style="text-align:left;">2017</td>
+<td style="text-align:left;">F</td>
+</tr>
+</table>
+<h3>table9</h3>
+<table id="table-table9" style="width:100%"><th><a href="javascript:sortTable('table-table9', 0, 'S')"">name</a>
+</th>
+<th><a href="javascript:sortTable('table-table9', 1, 'S')"">course_id</a>
+</th>
+<th><a href="javascript:sortTable('table-table9', 2, 'S')"">title</a>
+</th>
+<th><a href="javascript:sortTable('table-table9', 3, 'S')"">grade</a>
+</th>
+<tr><td style="text-align:left;">Levy</td>
+<td style="text-align:left;">CS-101</td>
+<td style="text-align:left;">Intro. to Computer Science</td>
+<td style="text-align:left;">F</td>
+</tr>
+</table>
+<h3>table10</h3>
+<table id="table-table10" style="width:100%"><th><a href="javascript:sortTable('table-table10', 0, 'S')"">ID</a>
+</th>
+<th><a href="javascript:sortTable('table-table10', 1, 'S')"">name</a>
+</th>
+<th><a href="javascript:sortTable('table-table10', 2, 'S')"">dept_name</a>
+</th>
+<th><a href="javascript:sortTable('table-table10', 3, 'S')"">tot_cred</a>
+</th>
+<tr><td style="text-align:left;">76653</td>
+<td style="text-align:left;">Aoi</td>
+<td style="text-align:left;">Elec. Eng.</td>
+<td style="text-align:left;">60</td>
+</tr>
+<tr><td style="text-align:left;">98765</td>
+<td style="text-align:left;">Bourikas</td>
+<td style="text-align:left;">Elec. Eng.</td>
+<td style="text-align:left;">98</td>
+</tr>
+<tr><td style="text-align:left;">19991</td>
+<td style="text-align:left;">Brandt</td>
+<td style="text-align:left;">History</td>
+<td style="text-align:left;">80</td>
+</tr>
+<tr><td style="text-align:left;">76543</td>
+<td style="text-align:left;">Brown</td>
+<td style="text-align:left;">Comp. Sci.</td>
+<td style="text-align:left;">58</td>
+</tr>
+<tr><td style="text-align:left;">23121</td>
+<td style="text-align:left;">Chavez</td>
+<td style="text-align:left;">Finance</td>
+<td style="text-align:left;">110</td>
+</tr>
+<tr><td style="text-align:left;">45678</td>
+<td style="text-align:left;">Levy</td>
+<td style="text-align:left;">Physics</td>
+<td style="text-align:left;">46</td>
+</tr>
+<tr><td style="text-align:left;">44553</td>
+<td style="text-align:left;">Peltier</td>
+<td style="text-align:left;">Physics</td>
+<td style="text-align:left;">56</td>
+</tr>
+<tr><td style="text-align:left;">55739</td>
+<td style="text-align:left;">Sanchez</td>
+<td style="text-align:left;">Music</td>
+<td style="text-align:left;">38</td>
+</tr>
+<tr><td style="text-align:left;">12345</td>
+<td style="text-align:left;">Shankar</td>
+<td style="text-align:left;">Comp. Sci.</td>
+<td style="text-align:left;">32</td>
+</tr>
+<tr><td style="text-align:left;">70557</td>
+<td style="text-align:left;">Snow</td>
+<td style="text-align:left;">Physics</td>
+<td style="text-align:left;">0</td>
+</tr>
+<tr><td style="text-align:left;">98988</td>
+<td style="text-align:left;">Tanaka</td>
+<td style="text-align:left;">Biology</td>
+<td style="text-align:left;">120</td>
+</tr>
+<tr><td style="text-align:left;">54321</td>
+<td style="text-align:left;">Williams</td>
+<td style="text-align:left;">Comp. Sci.</td>
+<td style="text-align:left;">54</td>
+</tr>
+<tr><td style="text-align:left;">00128</td>
+<td style="text-align:left;">Zhang</td>
+<td style="text-align:left;">Comp. Sci.</td>
+<td style="text-align:left;">102</td>
+</tr>
+</table>
+</body>
+</html>
