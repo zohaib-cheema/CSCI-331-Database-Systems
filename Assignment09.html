@@ -1,0 +1,4325 @@
+<html><head><meta name="description" content="OutputUtil developed by LT. Executed by /Users/zohaibcheema/Desktop/CSCI 331L">
+<style>body {
+    background-color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}
+h1 {
+    color: blue;
+    text-align: center;
+}
+h3 {
+    color: blue;
+}
+.vericaltext {
+ writing-mode: vertical-lr;
+ text-orientation: upright;
+}
+
+table, th, td {
+    border: 1px solid;
+    text-align: center;
+    vertical-align: top
+}
+th > a {
+    color: lightblue;
+}
+th {
+    background-color: blue;
+    color: lightblue;
+}
+tr:nth-child(even) {
+    background-color: lightblue;
+}
+tr:nth-child(odd) {
+    background-color: #ffed00;
+}</style>
+<script>
+function sortTable(tableId, colNum, colType) {
+  var table, rows, switching, i, x, y, shouldSwitch, dir, switchCount = 0;
+  table = document.getElementById(tableId);
+  switching = true;
+  dir = "asc";
+  while (switching) {
+    switching = false;
+    rows = table.rows;
+    for (i = 1; i < (rows.length - 1); i++) {
+      shouldSwitch = false;
+      x = rows[i].getElementsByTagName("td")[colNum];
+      y = rows[i + 1].getElementsByTagName("td")[colNum];
+      if (colType == 'N') { 
+        if (((dir == "asc") && (Number(x.innerHTML) > Number(y.innerHTML))) ||
+            ((dir == "desc") && (Number(x.innerHTML) < Number(y.innerHTML)))) {
+          shouldSwitch = true;
+          break;
+        }
+      } else {
+        if (((dir == "asc") && (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase())) ||
+            ((dir == "desc") && (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()))) {
+          shouldSwitch = true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+      switchCount ++;
+    } else {
+     if (switchCount == 0 && dir == "asc") {
+        dir = "desc";
+        switching = true;
+      }
+    }
+  }
+}
+</script>
+</head>
+<body><h1>Assignment09</h1>
+<h3>Table of Contents</h3>
+<ol><li><a href="#table-Drop-schema-books">Drop schema books</a>
+</li>
+<li><a href="#table-Drop-schema-books">Drop schema books</a>
+</li>
+<li><a href="#table-Create-schema-books">Create schema books</a>
+</li>
+<li><a href="#table-Create-schema-books">Create schema books</a>
+</li>
+<li><a href="#table-Make-it-the-default">Make it the default</a>
+</li>
+<li><a href="#table-Make-it-the-default">Make it the default</a>
+</li>
+<li><a href="#table-Drop-any-tables">Drop any tables</a>
+</li>
+<li><a href="#table-Drop-any-tables">Drop any tables</a>
+</li>
+<li><a href="#table-Creating-a-0NF-Table">Creating a 0NF Table</a>
+</li>
+<li><a href="#table-Creating-a-0NF-Table">Creating a 0NF Table</a>
+</li>
+<li><a href="#table-Insert-into-0NF-table">Insert into 0NF table</a>
+</li>
+<li><a href="#table-Insert-into-0NF-table">Insert into 0NF table</a>
+</li>
+<li><a href="#table-Select-from-the-tables-----SELECT-*-FROM-ONF_book">Select from the tables-----SELECT * FROM ONF_book</a>
+</li>
+<li><a href="#table-Drop-any-tables">Drop any tables</a>
+</li>
+<li><a href="#table-Drop-any-tables">Drop any tables</a>
+</li>
+<li><a href="#table-n/a">n/a</a>
+</li>
+<li><a href="#table-n/a">n/a</a>
+</li>
+<li><a href="#table-Creating-a-1NF-Book-table">Creating a 1NF Book table</a>
+</li>
+<li><a href="#table-Creating-a-1NF-Book-table">Creating a 1NF Book table</a>
+</li>
+<li><a href="#table-Creating-a-1NF-Book-Subject-table">Creating a 1NF Book-Subject table</a>
+</li>
+<li><a href="#table-Creating-a-1NF-Book-Subject-table">Creating a 1NF Book-Subject table</a>
+</li>
+<li><a href="#table-Insert-into-1NF-book-table">Insert into 1NF book table</a>
+</li>
+<li><a href="#table-Insert-into-1NF-book-table">Insert into 1NF book table</a>
+</li>
+<li><a href="#table-Insert-subjects-as-atomic-rows">Insert subjects as atomic rows</a>
+</li>
+<li><a href="#table-Insert-subjects-as-atomic-rows">Insert subjects as atomic rows</a>
+</li>
+<li><a href="#table-Select-from-the-tables-----SELECT-*-FROM-NF1_book">Select from the tables-----SELECT * FROM NF1_book</a>
+</li>
+<li><a href="#table-n/a-----SELECT-*-FROM-NF1_book_subject">n/a-----SELECT * FROM NF1_book_subject</a>
+</li>
+<li><a href="#table-Drop-any-tables">Drop any tables</a>
+</li>
+<li><a href="#table-Drop-any-tables">Drop any tables</a>
+</li>
+<li><a href="#table-n/a">n/a</a>
+</li>
+<li><a href="#table-n/a">n/a</a>
+</li>
+<li><a href="#table-Creating-a-2NF-Book-table">Creating a 2NF Book table</a>
+</li>
+<li><a href="#table-Creating-a-2NF-Book-table">Creating a 2NF Book table</a>
+</li>
+<li><a href="#table-Creating-a-2NF-Price-table">Creating a 2NF Price table</a>
+</li>
+<li><a href="#table-Creating-a-2NF-Price-table">Creating a 2NF Price table</a>
+</li>
+<li><a href="#table-Insert-into-2NF-book-table">Insert into 2NF book table</a>
+</li>
+<li><a href="#table-Insert-into-2NF-book-table">Insert into 2NF book table</a>
+</li>
+<li><a href="#table-Insert-into-2NF-price-table">Insert into 2NF price table</a>
+</li>
+<li><a href="#table-Insert-into-2NF-price-table">Insert into 2NF price table</a>
+</li>
+<li><a href="#table-Select-from-the-tables-----SELECT-*-FROM-NF2_book">Select from the tables-----SELECT * FROM NF2_book</a>
+</li>
+<li><a href="#table-n/a-----SELECT-*-FROM-NF2_price">n/a-----SELECT * FROM NF2_price</a>
+</li>
+<li><a href="#table-Drop-any-tables-(children-first)">Drop any tables (children first)</a>
+</li>
+<li><a href="#table-Drop-any-tables-(children-first)">Drop any tables (children first)</a>
+</li>
+<li><a href="#table-n/a">n/a</a>
+</li>
+<li><a href="#table-n/a">n/a</a>
+</li>
+<li><a href="#table-n/a">n/a</a>
+</li>
+<li><a href="#table-n/a">n/a</a>
+</li>
+<li><a href="#table-n/a">n/a</a>
+</li>
+<li><a href="#table-n/a">n/a</a>
+</li>
+<li><a href="#table-n/a">n/a</a>
+</li>
+<li><a href="#table-n/a">n/a</a>
+</li>
+<li><a href="#table-Creating-3NF-Author-table">Creating 3NF Author table</a>
+</li>
+<li><a href="#table-Creating-3NF-Author-table">Creating 3NF Author table</a>
+</li>
+<li><a href="#table-Creating-3NF-Publisher-table">Creating 3NF Publisher table</a>
+</li>
+<li><a href="#table-Creating-3NF-Publisher-table">Creating 3NF Publisher table</a>
+</li>
+<li><a href="#table-Creating-3NF-Genre-table">Creating 3NF Genre table</a>
+</li>
+<li><a href="#table-Creating-3NF-Genre-table">Creating 3NF Genre table</a>
+</li>
+<li><a href="#table-Creating-3NF-Book-table">Creating 3NF Book table</a>
+</li>
+<li><a href="#table-Creating-3NF-Book-table">Creating 3NF Book table</a>
+</li>
+<li><a href="#table-Creating-3NF-Price-table">Creating 3NF Price table</a>
+</li>
+<li><a href="#table-Creating-3NF-Price-table">Creating 3NF Price table</a>
+</li>
+<li><a href="#table-Insert-into-3NF-tables">Insert into 3NF tables</a>
+</li>
+<li><a href="#table-Insert-into-3NF-tables">Insert into 3NF tables</a>
+</li>
+<li><a href="#table-n/a">n/a</a>
+</li>
+<li><a href="#table-n/a">n/a</a>
+</li>
+<li><a href="#table-n/a">n/a</a>
+</li>
+<li><a href="#table-n/a">n/a</a>
+</li>
+<li><a href="#table-n/a">n/a</a>
+</li>
+<li><a href="#table-n/a">n/a</a>
+</li>
+<li><a href="#table-n/a">n/a</a>
+</li>
+<li><a href="#table-n/a">n/a</a>
+</li>
+<li><a href="#table-Select-from-the-tables-----SELECT-*-FROM-NF3_author">Select from the tables-----SELECT * FROM NF3_author</a>
+</li>
+<li><a href="#table-n/a-----SELECT-*-FROM-NF3_publisher">n/a-----SELECT * FROM NF3_publisher</a>
+</li>
+<li><a href="#table-n/a-----SELECT-*-FROM-NF3_genre">n/a-----SELECT * FROM NF3_genre</a>
+</li>
+<li><a href="#table-n/a-----SELECT-*-FROM-NF3_book">n/a-----SELECT * FROM NF3_book</a>
+</li>
+<li><a href="#table-n/a-----SELECT-*-FROM-NF3_price">n/a-----SELECT * FROM NF3_price</a>
+</li>
+<li><a href="#table-Create-a-view-of-everything">Create a view of everything</a>
+</li>
+<li><a href="#table-Create-a-view-of-everything">Create a view of everything</a>
+</li>
+<li><a href="#table-n/a-----SELECT-*-FROM-v_everything">n/a-----SELECT * FROM v_everything</a>
+</li>
+<li><a href="#table-get-a-summary-table-for-all-assignments-----SELECT-query_assn-AS-assignment,-COUNT(*)-AS-queries,-MIN(query_dur)-AS-fastest,-MAX(query_dur)-AS-slowest,-ROUND(AVG(query_dur),4)-AS-average,-MIN(query_ended)-AS-first,-MAX(query_ended)-AS-last-FROM-meta.`query`-GROUP-BY-query_assn">get a summary table for all assignments-----SELECT query_assn AS assignment, COUNT(*) AS queries, MIN(query_dur) AS fastest, MAX(query_dur) AS slowest, ROUND(AVG(query_dur),4) AS average, MIN(query_ended) AS first, MAX(query_ended) AS last FROM meta.`query` GROUP BY query_assn</a>
+</li>
+<li><a href="#table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'09'">Retrieve a query log for the current assignment-----SELECT * FROM meta.`query` WHERE query_assn = '09'</a>
+</li>
+<li><a href="#table-Retreive-a-list-of-all-tables-and-columns-across-my-database-----SELECT-*-FROM-university.v_table_columns">Retreive a list of all tables and columns across my database-----SELECT * FROM university.v_table_columns</a>
+</li>
+</ol>
+<h3>Drop schema books</h3>
+<table id="table-Drop-schema-books" style="width:100%"><th><a href="javascript:sortTable('table-Drop-schema-books', 0, 'S')"">DROP</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Drop schema books</h3>
+<table id="table-Drop-schema-books" style="width:100%"><th><a href="javascript:sortTable('table-Drop-schema-books', 0, 'S')"">DROP</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Create schema books</h3>
+<table id="table-Create-schema-books" style="width:100%"><th><a href="javascript:sortTable('table-Create-schema-books', 0, 'S')"">CREATE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Create schema books</h3>
+<table id="table-Create-schema-books" style="width:100%"><th><a href="javascript:sortTable('table-Create-schema-books', 0, 'S')"">CREATE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Make it the default</h3>
+<table id="table-Make-it-the-default" style="width:100%"><th><a href="javascript:sortTable('table-Make-it-the-default', 0, 'S')"">USE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Make it the default</h3>
+<table id="table-Make-it-the-default" style="width:100%"><th><a href="javascript:sortTable('table-Make-it-the-default', 0, 'S')"">USE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Drop any tables</h3>
+<table id="table-Drop-any-tables" style="width:100%"><th><a href="javascript:sortTable('table-Drop-any-tables', 0, 'S')"">DROP</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Drop any tables</h3>
+<table id="table-Drop-any-tables" style="width:100%"><th><a href="javascript:sortTable('table-Drop-any-tables', 0, 'S')"">DROP</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Creating a 0NF Table</h3>
+<table id="table-Creating-a-0NF-Table" style="width:100%"><th><a href="javascript:sortTable('table-Creating-a-0NF-Table', 0, 'S')"">CREATE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Creating a 0NF Table</h3>
+<table id="table-Creating-a-0NF-Table" style="width:100%"><th><a href="javascript:sortTable('table-Creating-a-0NF-Table', 0, 'S')"">CREATE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Insert into 0NF table</h3>
+<table id="table-Insert-into-0NF-table" style="width:100%"><th><a href="javascript:sortTable('table-Insert-into-0NF-table', 0, 'S')"">INSERT</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Insert into 0NF table</h3>
+<table id="table-Insert-into-0NF-table" style="width:100%"><th><a href="javascript:sortTable('table-Insert-into-0NF-table', 0, 'S')"">INSERT</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Select from the tables-----SELECT * FROM ONF_book</h3>
+<table id="table-Select-from-the-tables-----SELECT-*-FROM-ONF_book" style="width:100%"><th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-ONF_book', 0, 'S')"">book_title</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-ONF_book', 1, 'S')"">author</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-ONF_book', 2, 'S')"">author_nationality</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-ONF_book', 3, 'S')"">book_format</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-ONF_book', 4, 'N')"">price</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-ONF_book', 5, 'S')"">book_subject</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-ONF_book', 6, 'N')"">pages</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-ONF_book', 7, 'S')"">thickness</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-ONF_book', 8, 'S')"">publisher</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-ONF_book', 9, 'S')"">publisher_country</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-ONF_book', 10, 'N')"">genre_id</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-ONF_book', 11, 'S')"">genre_name</a>
+</th>
+<tr><td style="text-align:left;">Beginning MySQL Database Design and Optimization</td>
+<td style="text-align:left;">Chad Russell</td>
+<td style="text-align:left;">American</td>
+<td style="text-align:left;">E-book</td>
+<td style="text-align:right;">22.34</td>
+<td style="text-align:left;">MySQL, Database, Design</td>
+<td style="text-align:right;">520</td>
+<td style="text-align:left;">Thick</td>
+<td style="text-align:left;">Apress</td>
+<td style="text-align:left;">USA</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Tutorial</td>
+</tr>
+<tr><td style="text-align:left;">Beginning MySQL Database Design and Optimization</td>
+<td style="text-align:left;">Chad Russell</td>
+<td style="text-align:left;">American</td>
+<td style="text-align:left;">Hardcover</td>
+<td style="text-align:right;">49.99</td>
+<td style="text-align:left;">MySQL, Database, Design</td>
+<td style="text-align:right;">520</td>
+<td style="text-align:left;">Thick</td>
+<td style="text-align:left;">Apress</td>
+<td style="text-align:left;">USA</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Tutorial</td>
+</tr>
+<tr><td style="text-align:left;">The Relational Model for Database Management: Version 2</td>
+<td style="text-align:left;">E.F.Codd</td>
+<td style="text-align:left;">British</td>
+<td style="text-align:left;">E-book</td>
+<td style="text-align:right;">13.88</td>
+<td style="text-align:left;">None</td>
+<td style="text-align:right;">538</td>
+<td style="text-align:left;">Thick</td>
+<td style="text-align:left;">Addison-Wesley</td>
+<td style="text-align:left;">USA</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">Popular science</td>
+</tr>
+<tr><td style="text-align:left;">The Relational Model for Database Management: Version 2</td>
+<td style="text-align:left;">E.F.Codd</td>
+<td style="text-align:left;">British</td>
+<td style="text-align:left;">Paperback</td>
+<td style="text-align:right;">39.99</td>
+<td style="text-align:left;">None</td>
+<td style="text-align:right;">538</td>
+<td style="text-align:left;">Thick</td>
+<td style="text-align:left;">Addison-Wesley</td>
+<td style="text-align:left;">USA</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">Popular science</td>
+</tr>
+</table>
+<h3>Drop any tables</h3>
+<table id="table-Drop-any-tables" style="width:100%"><th><a href="javascript:sortTable('table-Drop-any-tables', 0, 'S')"">DROP</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Drop any tables</h3>
+<table id="table-Drop-any-tables" style="width:100%"><th><a href="javascript:sortTable('table-Drop-any-tables', 0, 'S')"">DROP</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>n/a</h3>
+<table id="table-n/a" style="width:100%"><th><a href="javascript:sortTable('table-n/a', 0, 'S')"">DROP</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>n/a</h3>
+<table id="table-n/a" style="width:100%"><th><a href="javascript:sortTable('table-n/a', 0, 'S')"">DROP</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Creating a 1NF Book table</h3>
+<table id="table-Creating-a-1NF-Book-table" style="width:100%"><th><a href="javascript:sortTable('table-Creating-a-1NF-Book-table', 0, 'S')"">CREATE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Creating a 1NF Book table</h3>
+<table id="table-Creating-a-1NF-Book-table" style="width:100%"><th><a href="javascript:sortTable('table-Creating-a-1NF-Book-table', 0, 'S')"">CREATE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Creating a 1NF Book-Subject table</h3>
+<table id="table-Creating-a-1NF-Book-Subject-table" style="width:100%"><th><a href="javascript:sortTable('table-Creating-a-1NF-Book-Subject-table', 0, 'S')"">CREATE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Creating a 1NF Book-Subject table</h3>
+<table id="table-Creating-a-1NF-Book-Subject-table" style="width:100%"><th><a href="javascript:sortTable('table-Creating-a-1NF-Book-Subject-table', 0, 'S')"">CREATE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Insert into 1NF book table</h3>
+<table id="table-Insert-into-1NF-book-table" style="width:100%"><th><a href="javascript:sortTable('table-Insert-into-1NF-book-table', 0, 'S')"">INSERT</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Insert into 1NF book table</h3>
+<table id="table-Insert-into-1NF-book-table" style="width:100%"><th><a href="javascript:sortTable('table-Insert-into-1NF-book-table', 0, 'S')"">INSERT</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Insert subjects as atomic rows</h3>
+<table id="table-Insert-subjects-as-atomic-rows" style="width:100%"><th><a href="javascript:sortTable('table-Insert-subjects-as-atomic-rows', 0, 'S')"">INSERT</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Insert subjects as atomic rows</h3>
+<table id="table-Insert-subjects-as-atomic-rows" style="width:100%"><th><a href="javascript:sortTable('table-Insert-subjects-as-atomic-rows', 0, 'S')"">INSERT</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Select from the tables-----SELECT * FROM NF1_book</h3>
+<table id="table-Select-from-the-tables-----SELECT-*-FROM-NF1_book" style="width:100%"><th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-NF1_book', 0, 'S')"">book_title</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-NF1_book', 1, 'S')"">author</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-NF1_book', 2, 'S')"">author_nationality</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-NF1_book', 3, 'S')"">book_format</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-NF1_book', 4, 'N')"">price</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-NF1_book', 5, 'N')"">pages</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-NF1_book', 6, 'S')"">thickness</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-NF1_book', 7, 'S')"">publisher</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-NF1_book', 8, 'S')"">publisher_country</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-NF1_book', 9, 'N')"">genre_id</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-NF1_book', 10, 'S')"">genre_name</a>
+</th>
+<tr><td style="text-align:left;">Beginning MySQL Database Design and Optimization</td>
+<td style="text-align:left;">Chad Russell</td>
+<td style="text-align:left;">American</td>
+<td style="text-align:left;">E-book</td>
+<td style="text-align:right;">22.34</td>
+<td style="text-align:right;">520</td>
+<td style="text-align:left;">Thick</td>
+<td style="text-align:left;">Apress</td>
+<td style="text-align:left;">USA</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Tutorial</td>
+</tr>
+<tr><td style="text-align:left;">Beginning MySQL Database Design and Optimization</td>
+<td style="text-align:left;">Chad Russell</td>
+<td style="text-align:left;">American</td>
+<td style="text-align:left;">Hardcover</td>
+<td style="text-align:right;">49.99</td>
+<td style="text-align:right;">520</td>
+<td style="text-align:left;">Thick</td>
+<td style="text-align:left;">Apress</td>
+<td style="text-align:left;">USA</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Tutorial</td>
+</tr>
+<tr><td style="text-align:left;">The Relational Model for Database Management: Version 2</td>
+<td style="text-align:left;">E.F.Codd</td>
+<td style="text-align:left;">British</td>
+<td style="text-align:left;">E-book</td>
+<td style="text-align:right;">13.88</td>
+<td style="text-align:right;">538</td>
+<td style="text-align:left;">Thick</td>
+<td style="text-align:left;">Addison-Wesley</td>
+<td style="text-align:left;">USA</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">Popular science</td>
+</tr>
+<tr><td style="text-align:left;">The Relational Model for Database Management: Version 2</td>
+<td style="text-align:left;">E.F.Codd</td>
+<td style="text-align:left;">British</td>
+<td style="text-align:left;">Paperback</td>
+<td style="text-align:right;">39.99</td>
+<td style="text-align:right;">538</td>
+<td style="text-align:left;">Thick</td>
+<td style="text-align:left;">Addison-Wesley</td>
+<td style="text-align:left;">USA</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">Popular science</td>
+</tr>
+</table>
+<h3>n/a-----SELECT * FROM NF1_book_subject</h3>
+<table id="table-n/a-----SELECT-*-FROM-NF1_book_subject" style="width:100%"><th><a href="javascript:sortTable('table-n/a-----SELECT-*-FROM-NF1_book_subject', 0, 'S')"">book_title</a>
+</th>
+<th><a href="javascript:sortTable('table-n/a-----SELECT-*-FROM-NF1_book_subject', 1, 'S')"">subject_name</a>
+</th>
+<tr><td style="text-align:left;">Beginning MySQL Database Design and Optimization</td>
+<td style="text-align:left;">Database</td>
+</tr>
+<tr><td style="text-align:left;">Beginning MySQL Database Design and Optimization</td>
+<td style="text-align:left;">Design</td>
+</tr>
+<tr><td style="text-align:left;">Beginning MySQL Database Design and Optimization</td>
+<td style="text-align:left;">MySQL</td>
+</tr>
+</table>
+<h3>Drop any tables</h3>
+<table id="table-Drop-any-tables" style="width:100%"><th><a href="javascript:sortTable('table-Drop-any-tables', 0, 'S')"">DROP</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Drop any tables</h3>
+<table id="table-Drop-any-tables" style="width:100%"><th><a href="javascript:sortTable('table-Drop-any-tables', 0, 'S')"">DROP</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>n/a</h3>
+<table id="table-n/a" style="width:100%"><th><a href="javascript:sortTable('table-n/a', 0, 'S')"">DROP</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>n/a</h3>
+<table id="table-n/a" style="width:100%"><th><a href="javascript:sortTable('table-n/a', 0, 'S')"">DROP</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Creating a 2NF Book table</h3>
+<table id="table-Creating-a-2NF-Book-table" style="width:100%"><th><a href="javascript:sortTable('table-Creating-a-2NF-Book-table', 0, 'S')"">CREATE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Creating a 2NF Book table</h3>
+<table id="table-Creating-a-2NF-Book-table" style="width:100%"><th><a href="javascript:sortTable('table-Creating-a-2NF-Book-table', 0, 'S')"">CREATE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Creating a 2NF Price table</h3>
+<table id="table-Creating-a-2NF-Price-table" style="width:100%"><th><a href="javascript:sortTable('table-Creating-a-2NF-Price-table', 0, 'S')"">CREATE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Creating a 2NF Price table</h3>
+<table id="table-Creating-a-2NF-Price-table" style="width:100%"><th><a href="javascript:sortTable('table-Creating-a-2NF-Price-table', 0, 'S')"">CREATE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Insert into 2NF book table</h3>
+<table id="table-Insert-into-2NF-book-table" style="width:100%"><th><a href="javascript:sortTable('table-Insert-into-2NF-book-table', 0, 'S')"">INSERT</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Insert into 2NF book table</h3>
+<table id="table-Insert-into-2NF-book-table" style="width:100%"><th><a href="javascript:sortTable('table-Insert-into-2NF-book-table', 0, 'S')"">INSERT</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Insert into 2NF price table</h3>
+<table id="table-Insert-into-2NF-price-table" style="width:100%"><th><a href="javascript:sortTable('table-Insert-into-2NF-price-table', 0, 'S')"">INSERT</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Insert into 2NF price table</h3>
+<table id="table-Insert-into-2NF-price-table" style="width:100%"><th><a href="javascript:sortTable('table-Insert-into-2NF-price-table', 0, 'S')"">INSERT</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Select from the tables-----SELECT * FROM NF2_book</h3>
+<table id="table-Select-from-the-tables-----SELECT-*-FROM-NF2_book" style="width:100%"><th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-NF2_book', 0, 'S')"">book_title</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-NF2_book', 1, 'S')"">author</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-NF2_book', 2, 'S')"">author_nationality</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-NF2_book', 3, 'N')"">pages</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-NF2_book', 4, 'S')"">thickness</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-NF2_book', 5, 'S')"">publisher</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-NF2_book', 6, 'S')"">publisher_country</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-NF2_book', 7, 'N')"">genre_id</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-NF2_book', 8, 'S')"">genre_name</a>
+</th>
+<tr><td style="text-align:left;">Beginning MySQL Database Design and Optimization</td>
+<td style="text-align:left;">Chad Russell</td>
+<td style="text-align:left;">American</td>
+<td style="text-align:right;">520</td>
+<td style="text-align:left;">Thick</td>
+<td style="text-align:left;">Apress</td>
+<td style="text-align:left;">USA</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Tutorial</td>
+</tr>
+<tr><td style="text-align:left;">The Relational Model for Database Management: Version 2</td>
+<td style="text-align:left;">E.F.Codd</td>
+<td style="text-align:left;">British</td>
+<td style="text-align:right;">538</td>
+<td style="text-align:left;">Thick</td>
+<td style="text-align:left;">Addison-Wesley</td>
+<td style="text-align:left;">USA</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">Popular science</td>
+</tr>
+</table>
+<h3>n/a-----SELECT * FROM NF2_price</h3>
+<table id="table-n/a-----SELECT-*-FROM-NF2_price" style="width:100%"><th><a href="javascript:sortTable('table-n/a-----SELECT-*-FROM-NF2_price', 0, 'S')"">book_title</a>
+</th>
+<th><a href="javascript:sortTable('table-n/a-----SELECT-*-FROM-NF2_price', 1, 'S')"">book_format</a>
+</th>
+<th><a href="javascript:sortTable('table-n/a-----SELECT-*-FROM-NF2_price', 2, 'N')"">price</a>
+</th>
+<tr><td style="text-align:left;">Beginning MySQL Database Design and Optimization</td>
+<td style="text-align:left;">E-book</td>
+<td style="text-align:right;">22.34</td>
+</tr>
+<tr><td style="text-align:left;">Beginning MySQL Database Design and Optimization</td>
+<td style="text-align:left;">Hardcover</td>
+<td style="text-align:right;">49.99</td>
+</tr>
+<tr><td style="text-align:left;">The Relational Model for Database Management: Version 2</td>
+<td style="text-align:left;">E-book</td>
+<td style="text-align:right;">13.88</td>
+</tr>
+<tr><td style="text-align:left;">The Relational Model for Database Management: Version 2</td>
+<td style="text-align:left;">Paperback</td>
+<td style="text-align:right;">39.99</td>
+</tr>
+</table>
+<h3>Drop any tables (children first)</h3>
+<table id="table-Drop-any-tables-(children-first)" style="width:100%"><th><a href="javascript:sortTable('table-Drop-any-tables-(children-first)', 0, 'S')"">DROP</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Drop any tables (children first)</h3>
+<table id="table-Drop-any-tables-(children-first)" style="width:100%"><th><a href="javascript:sortTable('table-Drop-any-tables-(children-first)', 0, 'S')"">DROP</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>n/a</h3>
+<table id="table-n/a" style="width:100%"><th><a href="javascript:sortTable('table-n/a', 0, 'S')"">DROP</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>n/a</h3>
+<table id="table-n/a" style="width:100%"><th><a href="javascript:sortTable('table-n/a', 0, 'S')"">DROP</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>n/a</h3>
+<table id="table-n/a" style="width:100%"><th><a href="javascript:sortTable('table-n/a', 0, 'S')"">DROP</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>n/a</h3>
+<table id="table-n/a" style="width:100%"><th><a href="javascript:sortTable('table-n/a', 0, 'S')"">DROP</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>n/a</h3>
+<table id="table-n/a" style="width:100%"><th><a href="javascript:sortTable('table-n/a', 0, 'S')"">DROP</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>n/a</h3>
+<table id="table-n/a" style="width:100%"><th><a href="javascript:sortTable('table-n/a', 0, 'S')"">DROP</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>n/a</h3>
+<table id="table-n/a" style="width:100%"><th><a href="javascript:sortTable('table-n/a', 0, 'S')"">DROP</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>n/a</h3>
+<table id="table-n/a" style="width:100%"><th><a href="javascript:sortTable('table-n/a', 0, 'S')"">DROP</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Creating 3NF Author table</h3>
+<table id="table-Creating-3NF-Author-table" style="width:100%"><th><a href="javascript:sortTable('table-Creating-3NF-Author-table', 0, 'S')"">CREATE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Creating 3NF Author table</h3>
+<table id="table-Creating-3NF-Author-table" style="width:100%"><th><a href="javascript:sortTable('table-Creating-3NF-Author-table', 0, 'S')"">CREATE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Creating 3NF Publisher table</h3>
+<table id="table-Creating-3NF-Publisher-table" style="width:100%"><th><a href="javascript:sortTable('table-Creating-3NF-Publisher-table', 0, 'S')"">CREATE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Creating 3NF Publisher table</h3>
+<table id="table-Creating-3NF-Publisher-table" style="width:100%"><th><a href="javascript:sortTable('table-Creating-3NF-Publisher-table', 0, 'S')"">CREATE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Creating 3NF Genre table</h3>
+<table id="table-Creating-3NF-Genre-table" style="width:100%"><th><a href="javascript:sortTable('table-Creating-3NF-Genre-table', 0, 'S')"">CREATE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Creating 3NF Genre table</h3>
+<table id="table-Creating-3NF-Genre-table" style="width:100%"><th><a href="javascript:sortTable('table-Creating-3NF-Genre-table', 0, 'S')"">CREATE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Creating 3NF Book table</h3>
+<table id="table-Creating-3NF-Book-table" style="width:100%"><th><a href="javascript:sortTable('table-Creating-3NF-Book-table', 0, 'S')"">CREATE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Creating 3NF Book table</h3>
+<table id="table-Creating-3NF-Book-table" style="width:100%"><th><a href="javascript:sortTable('table-Creating-3NF-Book-table', 0, 'S')"">CREATE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Creating 3NF Price table</h3>
+<table id="table-Creating-3NF-Price-table" style="width:100%"><th><a href="javascript:sortTable('table-Creating-3NF-Price-table', 0, 'S')"">CREATE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Creating 3NF Price table</h3>
+<table id="table-Creating-3NF-Price-table" style="width:100%"><th><a href="javascript:sortTable('table-Creating-3NF-Price-table', 0, 'S')"">CREATE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Insert into 3NF tables</h3>
+<table id="table-Insert-into-3NF-tables" style="width:100%"><th><a href="javascript:sortTable('table-Insert-into-3NF-tables', 0, 'S')"">INSERT</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Insert into 3NF tables</h3>
+<table id="table-Insert-into-3NF-tables" style="width:100%"><th><a href="javascript:sortTable('table-Insert-into-3NF-tables', 0, 'S')"">INSERT</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>n/a</h3>
+<table id="table-n/a" style="width:100%"><th><a href="javascript:sortTable('table-n/a', 0, 'S')"">INSERT</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>n/a</h3>
+<table id="table-n/a" style="width:100%"><th><a href="javascript:sortTable('table-n/a', 0, 'S')"">INSERT</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>n/a</h3>
+<table id="table-n/a" style="width:100%"><th><a href="javascript:sortTable('table-n/a', 0, 'S')"">INSERT</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>n/a</h3>
+<table id="table-n/a" style="width:100%"><th><a href="javascript:sortTable('table-n/a', 0, 'S')"">INSERT</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>n/a</h3>
+<table id="table-n/a" style="width:100%"><th><a href="javascript:sortTable('table-n/a', 0, 'S')"">INSERT</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>n/a</h3>
+<table id="table-n/a" style="width:100%"><th><a href="javascript:sortTable('table-n/a', 0, 'S')"">INSERT</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>n/a</h3>
+<table id="table-n/a" style="width:100%"><th><a href="javascript:sortTable('table-n/a', 0, 'S')"">INSERT</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>n/a</h3>
+<table id="table-n/a" style="width:100%"><th><a href="javascript:sortTable('table-n/a', 0, 'S')"">INSERT</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Select from the tables-----SELECT * FROM NF3_author</h3>
+<table id="table-Select-from-the-tables-----SELECT-*-FROM-NF3_author" style="width:100%"><th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-NF3_author', 0, 'S')"">author</a>
+</th>
+<th><a href="javascript:sortTable('table-Select-from-the-tables-----SELECT-*-FROM-NF3_author', 1, 'S')"">nationality</a>
+</th>
+<tr><td style="text-align:left;">Chad Russell</td>
+<td style="text-align:left;">American</td>
+</tr>
+<tr><td style="text-align:left;">E.F.Codd</td>
+<td style="text-align:left;">British</td>
+</tr>
+</table>
+<h3>n/a-----SELECT * FROM NF3_publisher</h3>
+<table id="table-n/a-----SELECT-*-FROM-NF3_publisher" style="width:100%"><th><a href="javascript:sortTable('table-n/a-----SELECT-*-FROM-NF3_publisher', 0, 'S')"">publisher</a>
+</th>
+<th><a href="javascript:sortTable('table-n/a-----SELECT-*-FROM-NF3_publisher', 1, 'S')"">country</a>
+</th>
+<tr><td style="text-align:left;">Addison-Wesley</td>
+<td style="text-align:left;">USA</td>
+</tr>
+<tr><td style="text-align:left;">Apress</td>
+<td style="text-align:left;">USA</td>
+</tr>
+</table>
+<h3>n/a-----SELECT * FROM NF3_genre</h3>
+<table id="table-n/a-----SELECT-*-FROM-NF3_genre" style="width:100%"><th><a href="javascript:sortTable('table-n/a-----SELECT-*-FROM-NF3_genre', 0, 'N')"">genre_id</a>
+</th>
+<th><a href="javascript:sortTable('table-n/a-----SELECT-*-FROM-NF3_genre', 1, 'S')"">name</a>
+</th>
+<tr><td style="text-align:right;">1</td>
+<td style="text-align:left;">Tutorial</td>
+</tr>
+<tr><td style="text-align:right;">2</td>
+<td style="text-align:left;">Popular science</td>
+</tr>
+</table>
+<h3>n/a-----SELECT * FROM NF3_book</h3>
+<table id="table-n/a-----SELECT-*-FROM-NF3_book" style="width:100%"><th><a href="javascript:sortTable('table-n/a-----SELECT-*-FROM-NF3_book', 0, 'S')"">book_title</a>
+</th>
+<th><a href="javascript:sortTable('table-n/a-----SELECT-*-FROM-NF3_book', 1, 'S')"">author</a>
+</th>
+<th><a href="javascript:sortTable('table-n/a-----SELECT-*-FROM-NF3_book', 2, 'N')"">pages</a>
+</th>
+<th><a href="javascript:sortTable('table-n/a-----SELECT-*-FROM-NF3_book', 3, 'S')"">thickness</a>
+</th>
+<th><a href="javascript:sortTable('table-n/a-----SELECT-*-FROM-NF3_book', 4, 'S')"">publisher</a>
+</th>
+<th><a href="javascript:sortTable('table-n/a-----SELECT-*-FROM-NF3_book', 5, 'N')"">genre_id</a>
+</th>
+<tr><td style="text-align:left;">Beginning MySQL Database Design and Optimization</td>
+<td style="text-align:left;">Chad Russell</td>
+<td style="text-align:right;">520</td>
+<td style="text-align:left;">Thick</td>
+<td style="text-align:left;">Apress</td>
+<td style="text-align:right;">1</td>
+</tr>
+<tr><td style="text-align:left;">The Relational Model for Database Management: Version 2</td>
+<td style="text-align:left;">E.F.Codd</td>
+<td style="text-align:right;">538</td>
+<td style="text-align:left;">Thick</td>
+<td style="text-align:left;">Addison-Wesley</td>
+<td style="text-align:right;">2</td>
+</tr>
+</table>
+<h3>n/a-----SELECT * FROM NF3_price</h3>
+<table id="table-n/a-----SELECT-*-FROM-NF3_price" style="width:100%"><th><a href="javascript:sortTable('table-n/a-----SELECT-*-FROM-NF3_price', 0, 'S')"">book_title</a>
+</th>
+<th><a href="javascript:sortTable('table-n/a-----SELECT-*-FROM-NF3_price', 1, 'S')"">book_format</a>
+</th>
+<th><a href="javascript:sortTable('table-n/a-----SELECT-*-FROM-NF3_price', 2, 'N')"">price</a>
+</th>
+<tr><td style="text-align:left;">Beginning MySQL Database Design and Optimization</td>
+<td style="text-align:left;">E-book</td>
+<td style="text-align:right;">22.34</td>
+</tr>
+<tr><td style="text-align:left;">Beginning MySQL Database Design and Optimization</td>
+<td style="text-align:left;">Hardcover</td>
+<td style="text-align:right;">49.99</td>
+</tr>
+<tr><td style="text-align:left;">The Relational Model for Database Management: Version 2</td>
+<td style="text-align:left;">E-book</td>
+<td style="text-align:right;">13.88</td>
+</tr>
+<tr><td style="text-align:left;">The Relational Model for Database Management: Version 2</td>
+<td style="text-align:left;">Paperback</td>
+<td style="text-align:right;">39.99</td>
+</tr>
+</table>
+<h3>Create a view of everything</h3>
+<table id="table-Create-a-view-of-everything" style="width:100%"><th><a href="javascript:sortTable('table-Create-a-view-of-everything', 0, 'S')"">CREATE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Create a view of everything</h3>
+<table id="table-Create-a-view-of-everything" style="width:100%"><th><a href="javascript:sortTable('table-Create-a-view-of-everything', 0, 'S')"">CREATE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>n/a-----SELECT * FROM v_everything</h3>
+<table id="table-n/a-----SELECT-*-FROM-v_everything" style="width:100%"><th><a href="javascript:sortTable('table-n/a-----SELECT-*-FROM-v_everything', 0, 'S')"">book_title</a>
+</th>
+<th><a href="javascript:sortTable('table-n/a-----SELECT-*-FROM-v_everything', 1, 'S')"">author</a>
+</th>
+<th><a href="javascript:sortTable('table-n/a-----SELECT-*-FROM-v_everything', 2, 'S')"">author_nationality</a>
+</th>
+<th><a href="javascript:sortTable('table-n/a-----SELECT-*-FROM-v_everything', 3, 'N')"">pages</a>
+</th>
+<th><a href="javascript:sortTable('table-n/a-----SELECT-*-FROM-v_everything', 4, 'S')"">thickness</a>
+</th>
+<th><a href="javascript:sortTable('table-n/a-----SELECT-*-FROM-v_everything', 5, 'S')"">publisher</a>
+</th>
+<th><a href="javascript:sortTable('table-n/a-----SELECT-*-FROM-v_everything', 6, 'S')"">publisher_country</a>
+</th>
+<th><a href="javascript:sortTable('table-n/a-----SELECT-*-FROM-v_everything', 7, 'N')"">genre_id</a>
+</th>
+<th><a href="javascript:sortTable('table-n/a-----SELECT-*-FROM-v_everything', 8, 'S')"">genre_name</a>
+</th>
+<th><a href="javascript:sortTable('table-n/a-----SELECT-*-FROM-v_everything', 9, 'S')"">book_format</a>
+</th>
+<th><a href="javascript:sortTable('table-n/a-----SELECT-*-FROM-v_everything', 10, 'N')"">price</a>
+</th>
+<tr><td style="text-align:left;">The Relational Model for Database Management: Version 2</td>
+<td style="text-align:left;">E.F.Codd</td>
+<td style="text-align:left;">British</td>
+<td style="text-align:right;">538</td>
+<td style="text-align:left;">Thick</td>
+<td style="text-align:left;">Addison-Wesley</td>
+<td style="text-align:left;">USA</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">Popular science</td>
+<td style="text-align:left;">E-book</td>
+<td style="text-align:right;">13.88</td>
+</tr>
+<tr><td style="text-align:left;">The Relational Model for Database Management: Version 2</td>
+<td style="text-align:left;">E.F.Codd</td>
+<td style="text-align:left;">British</td>
+<td style="text-align:right;">538</td>
+<td style="text-align:left;">Thick</td>
+<td style="text-align:left;">Addison-Wesley</td>
+<td style="text-align:left;">USA</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">Popular science</td>
+<td style="text-align:left;">Paperback</td>
+<td style="text-align:right;">39.99</td>
+</tr>
+<tr><td style="text-align:left;">Beginning MySQL Database Design and Optimization</td>
+<td style="text-align:left;">Chad Russell</td>
+<td style="text-align:left;">American</td>
+<td style="text-align:right;">520</td>
+<td style="text-align:left;">Thick</td>
+<td style="text-align:left;">Apress</td>
+<td style="text-align:left;">USA</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Tutorial</td>
+<td style="text-align:left;">E-book</td>
+<td style="text-align:right;">22.34</td>
+</tr>
+<tr><td style="text-align:left;">Beginning MySQL Database Design and Optimization</td>
+<td style="text-align:left;">Chad Russell</td>
+<td style="text-align:left;">American</td>
+<td style="text-align:right;">520</td>
+<td style="text-align:left;">Thick</td>
+<td style="text-align:left;">Apress</td>
+<td style="text-align:left;">USA</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Tutorial</td>
+<td style="text-align:left;">Hardcover</td>
+<td style="text-align:right;">49.99</td>
+</tr>
+</table>
+<h3>get a summary table for all assignments-----SELECT query_assn AS assignment, COUNT(*) AS queries, MIN(query_dur) AS fastest, MAX(query_dur) AS slowest, ROUND(AVG(query_dur),4) AS average, MIN(query_ended) AS first, MAX(query_ended) AS last FROM meta.`query` GROUP BY query_assn</h3>
+<table id="table-get-a-summary-table-for-all-assignments-----SELECT-query_assn-AS-assignment,-COUNT(*)-AS-queries,-MIN(query_dur)-AS-fastest,-MAX(query_dur)-AS-slowest,-ROUND(AVG(query_dur),4)-AS-average,-MIN(query_ended)-AS-first,-MAX(query_ended)-AS-last-FROM-meta.`query`-GROUP-BY-query_assn" style="width:100%"><th><a href="javascript:sortTable('table-get-a-summary-table-for-all-assignments-----SELECT-query_assn-AS-assignment,-COUNT(*)-AS-queries,-MIN(query_dur)-AS-fastest,-MAX(query_dur)-AS-slowest,-ROUND(AVG(query_dur),4)-AS-average,-MIN(query_ended)-AS-first,-MAX(query_ended)-AS-last-FROM-meta.`query`-GROUP-BY-query_assn', 0, 'N')"">assignment</a>
+</th>
+<th><a href="javascript:sortTable('table-get-a-summary-table-for-all-assignments-----SELECT-query_assn-AS-assignment,-COUNT(*)-AS-queries,-MIN(query_dur)-AS-fastest,-MAX(query_dur)-AS-slowest,-ROUND(AVG(query_dur),4)-AS-average,-MIN(query_ended)-AS-first,-MAX(query_ended)-AS-last-FROM-meta.`query`-GROUP-BY-query_assn', 1, 'N')"">queries</a>
+</th>
+<th><a href="javascript:sortTable('table-get-a-summary-table-for-all-assignments-----SELECT-query_assn-AS-assignment,-COUNT(*)-AS-queries,-MIN(query_dur)-AS-fastest,-MAX(query_dur)-AS-slowest,-ROUND(AVG(query_dur),4)-AS-average,-MIN(query_ended)-AS-first,-MAX(query_ended)-AS-last-FROM-meta.`query`-GROUP-BY-query_assn', 2, 'N')"">fastest</a>
+</th>
+<th><a href="javascript:sortTable('table-get-a-summary-table-for-all-assignments-----SELECT-query_assn-AS-assignment,-COUNT(*)-AS-queries,-MIN(query_dur)-AS-fastest,-MAX(query_dur)-AS-slowest,-ROUND(AVG(query_dur),4)-AS-average,-MIN(query_ended)-AS-first,-MAX(query_ended)-AS-last-FROM-meta.`query`-GROUP-BY-query_assn', 3, 'N')"">slowest</a>
+</th>
+<th><a href="javascript:sortTable('table-get-a-summary-table-for-all-assignments-----SELECT-query_assn-AS-assignment,-COUNT(*)-AS-queries,-MIN(query_dur)-AS-fastest,-MAX(query_dur)-AS-slowest,-ROUND(AVG(query_dur),4)-AS-average,-MIN(query_ended)-AS-first,-MAX(query_ended)-AS-last-FROM-meta.`query`-GROUP-BY-query_assn', 4, 'N')"">average</a>
+</th>
+<th><a href="javascript:sortTable('table-get-a-summary-table-for-all-assignments-----SELECT-query_assn-AS-assignment,-COUNT(*)-AS-queries,-MIN(query_dur)-AS-fastest,-MAX(query_dur)-AS-slowest,-ROUND(AVG(query_dur),4)-AS-average,-MIN(query_ended)-AS-first,-MAX(query_ended)-AS-last-FROM-meta.`query`-GROUP-BY-query_assn', 5, 'S')"">first</a>
+</th>
+<th><a href="javascript:sortTable('table-get-a-summary-table-for-all-assignments-----SELECT-query_assn-AS-assignment,-COUNT(*)-AS-queries,-MIN(query_dur)-AS-fastest,-MAX(query_dur)-AS-slowest,-ROUND(AVG(query_dur),4)-AS-average,-MIN(query_ended)-AS-first,-MAX(query_ended)-AS-last-FROM-meta.`query`-GROUP-BY-query_assn', 6, 'S')"">last</a>
+</th>
+<tr><td style="text-align:right;">03</td>
+<td style="text-align:right;">228</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:right;">0.1573</td>
+<td style="text-align:right;">0.0049</td>
+<td style="text-align:left;">2026-01-07 20:23:49</td>
+<td style="text-align:left;">2026-01-07 22:09:22</td>
+</tr>
+<tr><td style="text-align:right;">04</td>
+<td style="text-align:right;">127</td>
+<td style="text-align:right;">0.0000</td>
+<td style="text-align:right;">0.0319</td>
+<td style="text-align:right;">0.0049</td>
+<td style="text-align:left;">2026-01-07 21:11:34</td>
+<td style="text-align:left;">2026-01-10 21:33:04</td>
+</tr>
+<tr><td style="text-align:right;">05</td>
+<td style="text-align:right;">36</td>
+<td style="text-align:right;">0.0005</td>
+<td style="text-align:right;">0.0145</td>
+<td style="text-align:right;">0.0041</td>
+<td style="text-align:left;">2026-01-10 21:53:11</td>
+<td style="text-align:left;">2026-01-10 22:12:19</td>
+</tr>
+<tr><td style="text-align:right;">06</td>
+<td style="text-align:right;">101</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:right;">0.3740</td>
+<td style="text-align:right;">0.0297</td>
+<td style="text-align:left;">2026-01-10 22:22:35</td>
+<td style="text-align:left;">2026-01-10 22:41:30</td>
+</tr>
+<tr><td style="text-align:right;">07</td>
+<td style="text-align:right;">264</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:right;">0.1353</td>
+<td style="text-align:right;">0.0066</td>
+<td style="text-align:left;">2026-01-13 23:54:24</td>
+<td style="text-align:left;">2026-01-14 00:27:54</td>
+</tr>
+<tr><td style="text-align:right;">09</td>
+<td style="text-align:right;">141</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:right;">0.0427</td>
+<td style="text-align:right;">0.0023</td>
+<td style="text-align:left;">2026-01-14 09:27:12</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+</table>
+<h3>Retrieve a query log for the current assignment-----SELECT * FROM meta.`query` WHERE query_assn = '09'</h3>
+<table id="table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'09'" style="width:100%"><th><a href="javascript:sortTable('table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'09'', 0, 'N')"">query_id</a>
+</th>
+<th><a href="javascript:sortTable('table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'09'', 1, 'S')"">query_text</a>
+</th>
+<th><a href="javascript:sortTable('table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'09'', 2, 'S')"">query_desc</a>
+</th>
+<th><a href="javascript:sortTable('table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'09'', 3, 'S')"">query_db</a>
+</th>
+<th><a href="javascript:sortTable('table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'09'', 4, 'N')"">query_rows</a>
+</th>
+<th><a href="javascript:sortTable('table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'09'', 5, 'S')"">query_user</a>
+</th>
+<th><a href="javascript:sortTable('table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'09'', 6, 'N')"">query_assn</a>
+</th>
+<th><a href="javascript:sortTable('table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'09'', 7, 'N')"">query_dur</a>
+</th>
+<th><a href="javascript:sortTable('table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'09'', 8, 'S')"">query_ended</a>
+</th>
+<tr><td style="text-align:right;">960</td>
+<td style="text-align:left;">/*[3] In the SQL file, implement the table/column structure and data at the aforementioned link for 1NF following the same four-step process as in 0NF*/
+
+
+
+
+
+/*[4] In the SQL file, implement the table/column structure and data at the aforementioned link for 2NF following the same four-step process as in 0NF*/
+
+
+
+
+
+/*[5] In the SQL file, implement the table/column structure and data at the aforementioned link for 3NF following the same four-step process as in 0NF*/
+
+
+
+
+/*[6] Use the DB client to reverse engineer the database into an ER Model diagram*/</td>
+<td style="text-align:left;">[2] In the SQL file, implement the table/column structure and data at the aforementioned link for 0NF.</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:left;">2026-01-14 09:27:12</td>
+</tr>
+<tr><td style="text-align:right;">961</td>
+<td style="text-align:left;">SELECT query_assn AS assignment, COUNT(*) AS queries, MIN(query_dur) AS fastest, MAX(query_dur) AS slowest, ROUND(AVG(query_dur),4) AS average, MIN(query_ended) AS first, MAX(query_ended) AS last FROM meta.`query` GROUP BY query_assn</td>
+<td style="text-align:left;">get a summary table for all assignments</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0075</td>
+<td style="text-align:left;">2026-01-14 09:27:12</td>
+</tr>
+<tr><td style="text-align:right;">962</td>
+<td style="text-align:left;">SELECT * FROM meta.`query` WHERE query_assn = '09'</td>
+<td style="text-align:left;">Retrieve a query log for the current assignment</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0008</td>
+<td style="text-align:left;">2026-01-14 09:27:12</td>
+</tr>
+<tr><td style="text-align:right;">963</td>
+<td style="text-align:left;">SELECT * FROM university.v_table_columns</td>
+<td style="text-align:left;">Retreive a list of all tables and columns across my database</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">155</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0140</td>
+<td style="text-align:left;">2026-01-14 09:27:12</td>
+</tr>
+<tr><td style="text-align:right;">964</td>
+<td style="text-align:left;">DROP SCHEMA IF EXISTS books</td>
+<td style="text-align:left;">Drop schema books</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0375</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">965</td>
+<td style="text-align:left;">CREATE SCHEMA books</td>
+<td style="text-align:left;">Create schema books</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0020</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">966</td>
+<td style="text-align:left;">USE books</td>
+<td style="text-align:left;">Make it the default</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">967</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS ONF_book</td>
+<td style="text-align:left;">Drop any tables</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0005</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">968</td>
+<td style="text-align:left;">CREATE TABLE ONF_book(
+  book_title VARCHAR(255),
+  author VARCHAR(255),
+  author_nationality VARCHAR(100),
+  book_format VARCHAR(50),
+  price DECIMAL(10,2),
+  book_subject VARCHAR(255),          /* multi-valued list */
+  pages INT,
+  thickness VARCHAR(50),
+  publisher VARCHAR(255),
+  publisher_country VARCHAR(100),
+  genre_id INT,
+  genre_name VARCHAR(255),
+  PRIMARY KEY (book_title, book_format)
+)</td>
+<td style="text-align:left;">Creating a 0NF Table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0049</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">969</td>
+<td style="text-align:left;">INSERT INTO ONF_book
+(book_title, author, author_nationality, book_format, price, book_subject, pages, thickness, publisher, publisher_country, genre_id, genre_name)
+VALUES
+('Beginning MySQL Database Design and Optimization', 'Chad Russell', 'American', 'Hardcover', 49.99, 'MySQL, Database, Design', 520, 'Thick', 'Apress', 'USA', 1, 'Tutorial'),
+('Beginning MySQL Database Design and Optimization', 'Chad Russell', 'American', 'E-book', 22.34, 'MySQL, Database, Design', 520, 'Thick', 'Apress', 'USA', 1, 'Tutorial'),
+('The Relational Model for Database Management: Version 2', 'E.F.Codd', 'British', 'E-book', 13.88, NULL, 538, 'Thick', 'Addison-Wesley', 'USA', 2, 'Popular science'),
+('The Relational Model for Database Management: Version 2', 'E.F.Codd', 'British', 'Paperback', 39.99, NULL, 538, 'Thick', 'Addison-Wesley', 'USA', 2, 'Popular science')</td>
+<td style="text-align:left;">Insert into 0NF table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0004</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">970</td>
+<td style="text-align:left;">SELECT * FROM ONF_book</td>
+<td style="text-align:left;">Select from the tables</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0014</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">971</td>
+<td style="text-align:left;">/* Drop any tables */
+DROP TABLE IF EXISTS NF1_book_subject</td>
+<td style="text-align:left;">=========================================================
+   1NF
+   only change: split subjects into their own table
+   (keep all redundancy in book table)
+   =========================================================</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0071</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">972</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS NF1_book</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0003</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">973</td>
+<td style="text-align:left;">CREATE TABLE NF1_book(
+  book_title VARCHAR(255),
+  author VARCHAR(255),
+  author_nationality VARCHAR(100),
+  book_format VARCHAR(50),
+  price DECIMAL(10,2),
+  pages INT,
+  thickness VARCHAR(50),
+  publisher VARCHAR(255),
+  publisher_country VARCHAR(100),
+  genre_id INT,
+  genre_name VARCHAR(255),
+  PRIMARY KEY (book_title, book_format)
+)</td>
+<td style="text-align:left;">Creating a 1NF Book table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0033</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">974</td>
+<td style="text-align:left;">CREATE TABLE NF1_book_subject(
+  book_title VARCHAR(255),
+  subject_name VARCHAR(255),
+  PRIMARY KEY (book_title, subject_name)
+)</td>
+<td style="text-align:left;">Creating a 1NF Book-Subject table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0029</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">975</td>
+<td style="text-align:left;">INSERT INTO NF1_book
+(book_title, author, author_nationality, book_format, price, pages, thickness, publisher, publisher_country, genre_id, genre_name)
+VALUES
+('Beginning MySQL Database Design and Optimization', 'Chad Russell', 'American', 'Hardcover', 49.99, 520, 'Thick', 'Apress', 'USA', 1, 'Tutorial'),
+('Beginning MySQL Database Design and Optimization', 'Chad Russell', 'American', 'E-book', 22.34, 520, 'Thick', 'Apress', 'USA', 1, 'Tutorial'),
+('The Relational Model for Database Management: Version 2', 'E.F.Codd', 'British', 'E-book', 13.88, 538, 'Thick', 'Addison-Wesley', 'USA', 2, 'Popular science'),
+('The Relational Model for Database Management: Version 2', 'E.F.Codd', 'British', 'Paperback', 39.99, 538, 'Thick', 'Addison-Wesley', 'USA', 2, 'Popular science')</td>
+<td style="text-align:left;">Insert into 1NF book table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0004</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">976</td>
+<td style="text-align:left;">INSERT INTO NF1_book_subject (book_title, subject_name)
+VALUES
+('Beginning MySQL Database Design and Optimization', 'MySQL'),
+('Beginning MySQL Database Design and Optimization', 'Database'),
+('Beginning MySQL Database Design and Optimization', 'Design')</td>
+<td style="text-align:left;">Insert subjects as atomic rows</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0006</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">977</td>
+<td style="text-align:left;">SELECT * FROM NF1_book</td>
+<td style="text-align:left;">Select from the tables</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0002</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">978</td>
+<td style="text-align:left;">SELECT * FROM NF1_book_subject</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">979</td>
+<td style="text-align:left;">/* Drop any tables */
+DROP TABLE IF EXISTS NF2_price</td>
+<td style="text-align:left;">=========================================================
+   2NF
+   only change: move price into a separate table
+   and make book_title the key for book table
+   (still keep author_nationality, publisher_country, genre_name here)
+   =========================================================</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0003</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">980</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS NF2_book</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0003</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">981</td>
+<td style="text-align:left;">CREATE TABLE NF2_book(
+  book_title VARCHAR(255) PRIMARY KEY,
+  author VARCHAR(255),
+  author_nationality VARCHAR(100),
+  pages INT,
+  thickness VARCHAR(50),
+  publisher VARCHAR(255),
+  publisher_country VARCHAR(100),
+  genre_id INT,
+  genre_name VARCHAR(255)
+)</td>
+<td style="text-align:left;">Creating a 2NF Book table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0023</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">982</td>
+<td style="text-align:left;">CREATE TABLE NF2_price(
+  book_title VARCHAR(255),
+  book_format VARCHAR(50),
+  price DECIMAL(10,2),
+  PRIMARY KEY (book_title, book_format)
+)</td>
+<td style="text-align:left;">Creating a 2NF Price table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0023</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">983</td>
+<td style="text-align:left;">INSERT INTO NF2_book
+(book_title, author, author_nationality, pages, thickness, publisher, publisher_country, genre_id, genre_name)
+VALUES
+('Beginning MySQL Database Design and Optimization', 'Chad Russell', 'American', 520, 'Thick', 'Apress', 'USA', 1, 'Tutorial'),
+('The Relational Model for Database Management: Version 2', 'E.F.Codd', 'British', 538, 'Thick', 'Addison-Wesley', 'USA', 2, 'Popular science')</td>
+<td style="text-align:left;">Insert into 2NF book table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0003</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">984</td>
+<td style="text-align:left;">INSERT INTO NF2_price
+(book_title, book_format, price)
+VALUES
+('Beginning MySQL Database Design and Optimization', 'Hardcover', 49.99),
+('Beginning MySQL Database Design and Optimization', 'E-book', 22.34),
+('The Relational Model for Database Management: Version 2', 'E-book', 13.88),
+('The Relational Model for Database Management: Version 2', 'Paperback', 39.99)</td>
+<td style="text-align:left;">Insert into 2NF price table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0002</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">985</td>
+<td style="text-align:left;">SELECT * FROM NF2_book</td>
+<td style="text-align:left;">Select from the tables</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0002</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">986</td>
+<td style="text-align:left;">SELECT * FROM NF2_price</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">987</td>
+<td style="text-align:left;">/* Drop any tables (children first) */
+DROP TABLE IF EXISTS NF3_price</td>
+<td style="text-align:left;">=========================================================
+   3NF
+   implement the final 3NF table structure at the link
+   =========================================================</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0004</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">988</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS NF3_book</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0003</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">989</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS NF3_genre</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0003</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">990</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS NF3_publisher</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0005</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">991</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS NF3_author</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0003</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">992</td>
+<td style="text-align:left;">CREATE TABLE NF3_author(
+  author VARCHAR(255) PRIMARY KEY,
+  nationality VARCHAR(100)
+)</td>
+<td style="text-align:left;">Creating 3NF Author table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0023</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">993</td>
+<td style="text-align:left;">CREATE TABLE NF3_publisher(
+  publisher VARCHAR(255) PRIMARY KEY,
+  country VARCHAR(100)
+)</td>
+<td style="text-align:left;">Creating 3NF Publisher table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0044</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">994</td>
+<td style="text-align:left;">CREATE TABLE NF3_genre(
+  genre_id INT PRIMARY KEY,
+  name VARCHAR(255)
+)</td>
+<td style="text-align:left;">Creating 3NF Genre table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0022</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">995</td>
+<td style="text-align:left;">CREATE TABLE NF3_book(
+  book_title VARCHAR(255) PRIMARY KEY,
+  author VARCHAR(255),
+  pages INT,
+  thickness VARCHAR(50),
+  publisher VARCHAR(255),
+  genre_id INT,
+  FOREIGN KEY (author) REFERENCES NF3_author(author),
+  FOREIGN KEY (publisher) REFERENCES NF3_publisher(publisher),
+  FOREIGN KEY (genre_id) REFERENCES NF3_genre(genre_id)
+)</td>
+<td style="text-align:left;">Creating 3NF Book table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0049</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">996</td>
+<td style="text-align:left;">CREATE TABLE NF3_price(
+  book_title VARCHAR(255),
+  book_format VARCHAR(50),
+  price DECIMAL(10,2),
+  PRIMARY KEY (book_title, book_format),
+  FOREIGN KEY (book_title) REFERENCES NF3_book(book_title)
+)</td>
+<td style="text-align:left;">Creating 3NF Price table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0034</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">997</td>
+<td style="text-align:left;">INSERT INTO NF3_author (author, nationality) VALUES
+('Chad Russell', 'American'),
+('E.F.Codd', 'British')</td>
+<td style="text-align:left;">Insert into 3NF tables</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0002</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">998</td>
+<td style="text-align:left;">INSERT INTO NF3_publisher (publisher, country) VALUES
+('Apress', 'USA'),
+('Addison-Wesley', 'USA')</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0003</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">999</td>
+<td style="text-align:left;">INSERT INTO NF3_genre (genre_id, name) VALUES
+(1, 'Tutorial'),
+(2, 'Popular science')</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0002</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">1000</td>
+<td style="text-align:left;">INSERT INTO NF3_book (book_title, author, pages, thickness, publisher, genre_id) VALUES
+('Beginning MySQL Database Design and Optimization', 'Chad Russell', 520, 'Thick', 'Apress', 1),
+('The Relational Model for Database Management: Version 2', 'E.F.Codd', 538, 'Thick', 'Addison-Wesley', 2)</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0003</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">1001</td>
+<td style="text-align:left;">INSERT INTO NF3_price (book_title, book_format, price) VALUES
+('Beginning MySQL Database Design and Optimization', 'Hardcover', 49.99),
+('Beginning MySQL Database Design and Optimization', 'E-book', 22.34),
+('The Relational Model for Database Management: Version 2', 'E-book', 13.88),
+('The Relational Model for Database Management: Version 2', 'Paperback', 39.99)</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0002</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">1002</td>
+<td style="text-align:left;">SELECT * FROM NF3_author</td>
+<td style="text-align:left;">Select from the tables</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">1003</td>
+<td style="text-align:left;">SELECT * FROM NF3_publisher</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">1004</td>
+<td style="text-align:left;">SELECT * FROM NF3_genre</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">1005</td>
+<td style="text-align:left;">SELECT * FROM NF3_book</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">1006</td>
+<td style="text-align:left;">SELECT * FROM NF3_price</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:left;">2026-01-14 09:53:31</td>
+</tr>
+<tr><td style="text-align:right;">1007</td>
+<td style="text-align:left;">DROP SCHEMA IF EXISTS books</td>
+<td style="text-align:left;">Drop schema books</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0427</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1008</td>
+<td style="text-align:left;">CREATE SCHEMA books</td>
+<td style="text-align:left;">Create schema books</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0004</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1009</td>
+<td style="text-align:left;">USE books</td>
+<td style="text-align:left;">Make it the default</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1010</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS ONF_book</td>
+<td style="text-align:left;">Drop any tables</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0004</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1011</td>
+<td style="text-align:left;">CREATE TABLE ONF_book(
+  book_title VARCHAR(255),
+  author VARCHAR(255),
+  author_nationality VARCHAR(100),
+  book_format VARCHAR(50),
+  price DECIMAL(10,2),
+  book_subject VARCHAR(255),          /* multi-valued list */
+  pages INT,
+  thickness VARCHAR(50),
+  publisher VARCHAR(255),
+  publisher_country VARCHAR(100),
+  genre_id INT,
+  genre_name VARCHAR(255),
+  PRIMARY KEY (book_title, book_format)
+)</td>
+<td style="text-align:left;">Creating a 0NF Table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0045</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1012</td>
+<td style="text-align:left;">INSERT INTO ONF_book
+(book_title, author, author_nationality, book_format, price, book_subject, pages, thickness, publisher, publisher_country, genre_id, genre_name)
+VALUES
+('Beginning MySQL Database Design and Optimization', 'Chad Russell', 'American', 'Hardcover', 49.99, 'MySQL, Database, Design', 520, 'Thick', 'Apress', 'USA', 1, 'Tutorial'),
+('Beginning MySQL Database Design and Optimization', 'Chad Russell', 'American', 'E-book', 22.34, 'MySQL, Database, Design', 520, 'Thick', 'Apress', 'USA', 1, 'Tutorial'),
+('The Relational Model for Database Management: Version 2', 'E.F.Codd', 'British', 'E-book', 13.88, NULL, 538, 'Thick', 'Addison-Wesley', 'USA', 2, 'Popular science'),
+('The Relational Model for Database Management: Version 2', 'E.F.Codd', 'British', 'Paperback', 39.99, NULL, 538, 'Thick', 'Addison-Wesley', 'USA', 2, 'Popular science')</td>
+<td style="text-align:left;">Insert into 0NF table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0010</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1013</td>
+<td style="text-align:left;">SELECT * FROM ONF_book</td>
+<td style="text-align:left;">Select from the tables</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0005</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1014</td>
+<td style="text-align:left;">/* Drop any tables */
+DROP TABLE IF EXISTS NF1_book_subject</td>
+<td style="text-align:left;">=========================================================
+   1NF
+   only change: split subjects into their own table
+   (keep all redundancy in book table)
+   =========================================================</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0004</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1015</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS NF1_book</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0004</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1016</td>
+<td style="text-align:left;">CREATE TABLE NF1_book(
+  book_title VARCHAR(255),
+  author VARCHAR(255),
+  author_nationality VARCHAR(100),
+  book_format VARCHAR(50),
+  price DECIMAL(10,2),
+  pages INT,
+  thickness VARCHAR(50),
+  publisher VARCHAR(255),
+  publisher_country VARCHAR(100),
+  genre_id INT,
+  genre_name VARCHAR(255),
+  PRIMARY KEY (book_title, book_format)
+)</td>
+<td style="text-align:left;">Creating a 1NF Book table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0027</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1017</td>
+<td style="text-align:left;">CREATE TABLE NF1_book_subject(
+  book_title VARCHAR(255),
+  subject_name VARCHAR(255),
+  PRIMARY KEY (book_title, subject_name)
+)</td>
+<td style="text-align:left;">Creating a 1NF Book-Subject table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0025</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1018</td>
+<td style="text-align:left;">INSERT INTO NF1_book
+(book_title, author, author_nationality, book_format, price, pages, thickness, publisher, publisher_country, genre_id, genre_name)
+VALUES
+('Beginning MySQL Database Design and Optimization', 'Chad Russell', 'American', 'Hardcover', 49.99, 520, 'Thick', 'Apress', 'USA', 1, 'Tutorial'),
+('Beginning MySQL Database Design and Optimization', 'Chad Russell', 'American', 'E-book', 22.34, 520, 'Thick', 'Apress', 'USA', 1, 'Tutorial'),
+('The Relational Model for Database Management: Version 2', 'E.F.Codd', 'British', 'E-book', 13.88, 538, 'Thick', 'Addison-Wesley', 'USA', 2, 'Popular science'),
+('The Relational Model for Database Management: Version 2', 'E.F.Codd', 'British', 'Paperback', 39.99, 538, 'Thick', 'Addison-Wesley', 'USA', 2, 'Popular science')</td>
+<td style="text-align:left;">Insert into 1NF book table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0004</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1019</td>
+<td style="text-align:left;">INSERT INTO NF1_book_subject (book_title, subject_name)
+VALUES
+('Beginning MySQL Database Design and Optimization', 'MySQL'),
+('Beginning MySQL Database Design and Optimization', 'Database'),
+('Beginning MySQL Database Design and Optimization', 'Design')</td>
+<td style="text-align:left;">Insert subjects as atomic rows</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0003</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1020</td>
+<td style="text-align:left;">SELECT * FROM NF1_book</td>
+<td style="text-align:left;">Select from the tables</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0002</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1021</td>
+<td style="text-align:left;">SELECT * FROM NF1_book_subject</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1022</td>
+<td style="text-align:left;">/* Drop any tables */
+DROP TABLE IF EXISTS NF2_price</td>
+<td style="text-align:left;">=========================================================
+   2NF
+   only change: move price into a separate table
+   and make book_title the key for book table
+   (still keep author_nationality, publisher_country, genre_name here)
+   =========================================================</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0005</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1023</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS NF2_book</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0004</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1024</td>
+<td style="text-align:left;">CREATE TABLE NF2_book(
+  book_title VARCHAR(255) PRIMARY KEY,
+  author VARCHAR(255),
+  author_nationality VARCHAR(100),
+  pages INT,
+  thickness VARCHAR(50),
+  publisher VARCHAR(255),
+  publisher_country VARCHAR(100),
+  genre_id INT,
+  genre_name VARCHAR(255)
+)</td>
+<td style="text-align:left;">Creating a 2NF Book table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0026</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1025</td>
+<td style="text-align:left;">CREATE TABLE NF2_price(
+  book_title VARCHAR(255),
+  book_format VARCHAR(50),
+  price DECIMAL(10,2),
+  PRIMARY KEY (book_title, book_format)
+)</td>
+<td style="text-align:left;">Creating a 2NF Price table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0024</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1026</td>
+<td style="text-align:left;">INSERT INTO NF2_book
+(book_title, author, author_nationality, pages, thickness, publisher, publisher_country, genre_id, genre_name)
+VALUES
+('Beginning MySQL Database Design and Optimization', 'Chad Russell', 'American', 520, 'Thick', 'Apress', 'USA', 1, 'Tutorial'),
+('The Relational Model for Database Management: Version 2', 'E.F.Codd', 'British', 538, 'Thick', 'Addison-Wesley', 'USA', 2, 'Popular science')</td>
+<td style="text-align:left;">Insert into 2NF book table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0003</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1027</td>
+<td style="text-align:left;">INSERT INTO NF2_price
+(book_title, book_format, price)
+VALUES
+('Beginning MySQL Database Design and Optimization', 'Hardcover', 49.99),
+('Beginning MySQL Database Design and Optimization', 'E-book', 22.34),
+('The Relational Model for Database Management: Version 2', 'E-book', 13.88),
+('The Relational Model for Database Management: Version 2', 'Paperback', 39.99)</td>
+<td style="text-align:left;">Insert into 2NF price table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0003</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1028</td>
+<td style="text-align:left;">SELECT * FROM NF2_book</td>
+<td style="text-align:left;">Select from the tables</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0002</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1029</td>
+<td style="text-align:left;">SELECT * FROM NF2_price</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1030</td>
+<td style="text-align:left;">/* Drop any tables (children first) */
+DROP TABLE IF EXISTS NF3_price</td>
+<td style="text-align:left;">=========================================================
+   3NF
+   implement the final 3NF table structure at the link
+   =========================================================</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0005</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1031</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS NF3_book</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0004</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1032</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS NF3_genre</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0004</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1033</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS NF3_publisher</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0004</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1034</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS NF3_author</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0004</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1035</td>
+<td style="text-align:left;">CREATE TABLE NF3_author(
+  author VARCHAR(255) PRIMARY KEY,
+  nationality VARCHAR(100)
+)</td>
+<td style="text-align:left;">Creating 3NF Author table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0025</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1036</td>
+<td style="text-align:left;">CREATE TABLE NF3_publisher(
+  publisher VARCHAR(255) PRIMARY KEY,
+  country VARCHAR(100)
+)</td>
+<td style="text-align:left;">Creating 3NF Publisher table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0044</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1037</td>
+<td style="text-align:left;">CREATE TABLE NF3_genre(
+  genre_id INT PRIMARY KEY,
+  name VARCHAR(255)
+)</td>
+<td style="text-align:left;">Creating 3NF Genre table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0105</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1038</td>
+<td style="text-align:left;">CREATE TABLE NF3_book(
+  book_title VARCHAR(255) PRIMARY KEY,
+  author VARCHAR(255),
+  pages INT,
+  thickness VARCHAR(50),
+  publisher VARCHAR(255),
+  genre_id INT,
+  FOREIGN KEY (author) REFERENCES NF3_author(author),
+  FOREIGN KEY (publisher) REFERENCES NF3_publisher(publisher),
+  FOREIGN KEY (genre_id) REFERENCES NF3_genre(genre_id)
+)</td>
+<td style="text-align:left;">Creating 3NF Book table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0052</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1039</td>
+<td style="text-align:left;">CREATE TABLE NF3_price(
+  book_title VARCHAR(255),
+  book_format VARCHAR(50),
+  price DECIMAL(10,2),
+  PRIMARY KEY (book_title, book_format),
+  FOREIGN KEY (book_title) REFERENCES NF3_book(book_title)
+)</td>
+<td style="text-align:left;">Creating 3NF Price table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0047</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1040</td>
+<td style="text-align:left;">INSERT INTO NF3_author (author, nationality) VALUES
+('Chad Russell', 'American'),
+('E.F.Codd', 'British')</td>
+<td style="text-align:left;">Insert into 3NF tables</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0003</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1041</td>
+<td style="text-align:left;">INSERT INTO NF3_publisher (publisher, country) VALUES
+('Apress', 'USA'),
+('Addison-Wesley', 'USA')</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0002</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1042</td>
+<td style="text-align:left;">INSERT INTO NF3_genre (genre_id, name) VALUES
+(1, 'Tutorial'),
+(2, 'Popular science')</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0002</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1043</td>
+<td style="text-align:left;">INSERT INTO NF3_book (book_title, author, pages, thickness, publisher, genre_id) VALUES
+('Beginning MySQL Database Design and Optimization', 'Chad Russell', 520, 'Thick', 'Apress', 1),
+('The Relational Model for Database Management: Version 2', 'E.F.Codd', 538, 'Thick', 'Addison-Wesley', 2)</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0003</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1044</td>
+<td style="text-align:left;">INSERT INTO NF3_price (book_title, book_format, price) VALUES
+('Beginning MySQL Database Design and Optimization', 'Hardcover', 49.99),
+('Beginning MySQL Database Design and Optimization', 'E-book', 22.34),
+('The Relational Model for Database Management: Version 2', 'E-book', 13.88),
+('The Relational Model for Database Management: Version 2', 'Paperback', 39.99)</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0005</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1045</td>
+<td style="text-align:left;">SELECT * FROM NF3_author</td>
+<td style="text-align:left;">Select from the tables</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1046</td>
+<td style="text-align:left;">SELECT * FROM NF3_publisher</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0002</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1047</td>
+<td style="text-align:left;">SELECT * FROM NF3_genre</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1048</td>
+<td style="text-align:left;">SELECT * FROM NF3_book</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1049</td>
+<td style="text-align:left;">SELECT * FROM NF3_price</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1050</td>
+<td style="text-align:left;">CREATE OR REPLACE VIEW v_everything AS
+SELECT
+  b.book_title,
+  b.author,
+  a.nationality AS author_nationality,
+  b.pages,
+  b.thickness,
+  b.publisher,
+  p.country AS publisher_country,
+  b.genre_id,
+  g.name AS genre_name,
+  pr.book_format,
+  pr.price
+FROM NF3_book b
+JOIN NF3_author a
+  ON b.author = a.author
+JOIN NF3_publisher p
+  ON b.publisher = p.publisher
+JOIN NF3_genre g
+  ON b.genre_id = g.genre_id
+JOIN NF3_price pr
+  ON b.book_title = pr.book_title</td>
+<td style="text-align:left;">Create a view of everything</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0028</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1051</td>
+<td style="text-align:left;">SELECT * FROM v_everything</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0043</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1052</td>
+<td style="text-align:left;">/*[3] In the SQL file, implement the table/column structure and data at the aforementioned link for 1NF following the same four-step process as in 0NF*/
+
+
+
+
+
+/*[4] In the SQL file, implement the table/column structure and data at the aforementioned link for 2NF following the same four-step process as in 0NF*/
+
+
+
+
+
+/*[5] In the SQL file, implement the table/column structure and data at the aforementioned link for 3NF following the same four-step process as in 0NF*/
+
+
+
+
+/*[6] Use the DB client to reverse engineer the database into an ER Model diagram*/</td>
+<td style="text-align:left;">[2] In the SQL file, implement the table/column structure and data at the aforementioned link for 0NF.</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1053</td>
+<td style="text-align:left;">SELECT query_assn AS assignment, COUNT(*) AS queries, MIN(query_dur) AS fastest, MAX(query_dur) AS slowest, ROUND(AVG(query_dur),4) AS average, MIN(query_ended) AS first, MAX(query_ended) AS last FROM meta.`query` GROUP BY query_assn</td>
+<td style="text-align:left;">get a summary table for all assignments</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0037</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1054</td>
+<td style="text-align:left;">SELECT * FROM meta.`query` WHERE query_assn = '09'</td>
+<td style="text-align:left;">Retrieve a query log for the current assignment</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">94</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0014</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1055</td>
+<td style="text-align:left;">SELECT * FROM university.v_table_columns</td>
+<td style="text-align:left;">Retreive a list of all tables and columns across my database</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">166</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0167</td>
+<td style="text-align:left;">2026-01-14 09:57:21</td>
+</tr>
+<tr><td style="text-align:right;">1056</td>
+<td style="text-align:left;">DROP SCHEMA IF EXISTS books</td>
+<td style="text-align:left;">Drop schema books</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0410</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1057</td>
+<td style="text-align:left;">CREATE SCHEMA books</td>
+<td style="text-align:left;">Create schema books</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0004</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1058</td>
+<td style="text-align:left;">USE books</td>
+<td style="text-align:left;">Make it the default</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1059</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS ONF_book</td>
+<td style="text-align:left;">Drop any tables</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0004</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1060</td>
+<td style="text-align:left;">CREATE TABLE ONF_book(
+  book_title VARCHAR(255),
+  author VARCHAR(255),
+  author_nationality VARCHAR(100),
+  book_format VARCHAR(50),
+  price DECIMAL(10,2),
+  book_subject VARCHAR(255),          /* multi-valued list */
+  pages INT,
+  thickness VARCHAR(50),
+  publisher VARCHAR(255),
+  publisher_country VARCHAR(100),
+  genre_id INT,
+  genre_name VARCHAR(255),
+  PRIMARY KEY (book_title, book_format)
+)</td>
+<td style="text-align:left;">Creating a 0NF Table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0047</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1061</td>
+<td style="text-align:left;">INSERT INTO ONF_book
+(book_title, author, author_nationality, book_format, price, book_subject, pages, thickness, publisher, publisher_country, genre_id, genre_name)
+VALUES
+('Beginning MySQL Database Design and Optimization', 'Chad Russell', 'American', 'Hardcover', 49.99, 'MySQL, Database, Design', 520, 'Thick', 'Apress', 'USA', 1, 'Tutorial'),
+('Beginning MySQL Database Design and Optimization', 'Chad Russell', 'American', 'E-book', 22.34, 'MySQL, Database, Design', 520, 'Thick', 'Apress', 'USA', 1, 'Tutorial'),
+('The Relational Model for Database Management: Version 2', 'E.F.Codd', 'British', 'E-book', 13.88, NULL, 538, 'Thick', 'Addison-Wesley', 'USA', 2, 'Popular science'),
+('The Relational Model for Database Management: Version 2', 'E.F.Codd', 'British', 'Paperback', 39.99, NULL, 538, 'Thick', 'Addison-Wesley', 'USA', 2, 'Popular science')</td>
+<td style="text-align:left;">Insert into 0NF table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0005</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1062</td>
+<td style="text-align:left;">SELECT * FROM ONF_book</td>
+<td style="text-align:left;">Select from the tables</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0006</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1063</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS NF1_book_subject</td>
+<td style="text-align:left;">Drop any tables</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0004</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1064</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS NF1_book</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0004</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1065</td>
+<td style="text-align:left;">CREATE TABLE NF1_book(
+  book_title VARCHAR(255),
+  author VARCHAR(255),
+  author_nationality VARCHAR(100),
+  book_format VARCHAR(50),
+  price DECIMAL(10,2),
+  pages INT,
+  thickness VARCHAR(50),
+  publisher VARCHAR(255),
+  publisher_country VARCHAR(100),
+  genre_id INT,
+  genre_name VARCHAR(255),
+  PRIMARY KEY (book_title, book_format)
+)</td>
+<td style="text-align:left;">Creating a 1NF Book table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0036</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1066</td>
+<td style="text-align:left;">CREATE TABLE NF1_book_subject(
+  book_title VARCHAR(255),
+  subject_name VARCHAR(255),
+  PRIMARY KEY (book_title, subject_name)
+)</td>
+<td style="text-align:left;">Creating a 1NF Book-Subject table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0035</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1067</td>
+<td style="text-align:left;">INSERT INTO NF1_book
+(book_title, author, author_nationality, book_format, price, pages, thickness, publisher, publisher_country, genre_id, genre_name)
+VALUES
+('Beginning MySQL Database Design and Optimization', 'Chad Russell', 'American', 'Hardcover', 49.99, 520, 'Thick', 'Apress', 'USA', 1, 'Tutorial'),
+('Beginning MySQL Database Design and Optimization', 'Chad Russell', 'American', 'E-book', 22.34, 520, 'Thick', 'Apress', 'USA', 1, 'Tutorial'),
+('The Relational Model for Database Management: Version 2', 'E.F.Codd', 'British', 'E-book', 13.88, 538, 'Thick', 'Addison-Wesley', 'USA', 2, 'Popular science'),
+('The Relational Model for Database Management: Version 2', 'E.F.Codd', 'British', 'Paperback', 39.99, 538, 'Thick', 'Addison-Wesley', 'USA', 2, 'Popular science')</td>
+<td style="text-align:left;">Insert into 1NF book table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0004</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1068</td>
+<td style="text-align:left;">INSERT INTO NF1_book_subject (book_title, subject_name)
+VALUES
+('Beginning MySQL Database Design and Optimization', 'MySQL'),
+('Beginning MySQL Database Design and Optimization', 'Database'),
+('Beginning MySQL Database Design and Optimization', 'Design')</td>
+<td style="text-align:left;">Insert subjects as atomic rows</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0003</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1069</td>
+<td style="text-align:left;">SELECT * FROM NF1_book</td>
+<td style="text-align:left;">Select from the tables</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0003</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1070</td>
+<td style="text-align:left;">SELECT * FROM NF1_book_subject</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0002</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1071</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS NF2_price</td>
+<td style="text-align:left;">Drop any tables</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0004</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1072</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS NF2_book</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0004</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1073</td>
+<td style="text-align:left;">CREATE TABLE NF2_book(
+  book_title VARCHAR(255) PRIMARY KEY,
+  author VARCHAR(255),
+  author_nationality VARCHAR(100),
+  pages INT,
+  thickness VARCHAR(50),
+  publisher VARCHAR(255),
+  publisher_country VARCHAR(100),
+  genre_id INT,
+  genre_name VARCHAR(255)
+)</td>
+<td style="text-align:left;">Creating a 2NF Book table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0037</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1074</td>
+<td style="text-align:left;">CREATE TABLE NF2_price(
+  book_title VARCHAR(255),
+  book_format VARCHAR(50),
+  price DECIMAL(10,2),
+  PRIMARY KEY (book_title, book_format)
+)</td>
+<td style="text-align:left;">Creating a 2NF Price table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0024</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1075</td>
+<td style="text-align:left;">INSERT INTO NF2_book
+(book_title, author, author_nationality, pages, thickness, publisher, publisher_country, genre_id, genre_name)
+VALUES
+('Beginning MySQL Database Design and Optimization', 'Chad Russell', 'American', 520, 'Thick', 'Apress', 'USA', 1, 'Tutorial'),
+('The Relational Model for Database Management: Version 2', 'E.F.Codd', 'British', 538, 'Thick', 'Addison-Wesley', 'USA', 2, 'Popular science')</td>
+<td style="text-align:left;">Insert into 2NF book table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0004</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1076</td>
+<td style="text-align:left;">INSERT INTO NF2_price
+(book_title, book_format, price)
+VALUES
+('Beginning MySQL Database Design and Optimization', 'Hardcover', 49.99),
+('Beginning MySQL Database Design and Optimization', 'E-book', 22.34),
+('The Relational Model for Database Management: Version 2', 'E-book', 13.88),
+('The Relational Model for Database Management: Version 2', 'Paperback', 39.99)</td>
+<td style="text-align:left;">Insert into 2NF price table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0003</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1077</td>
+<td style="text-align:left;">SELECT * FROM NF2_book</td>
+<td style="text-align:left;">Select from the tables</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0002</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1078</td>
+<td style="text-align:left;">SELECT * FROM NF2_price</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1079</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS NF3_price</td>
+<td style="text-align:left;">Drop any tables (children first)</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0004</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1080</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS NF3_book</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0004</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1081</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS NF3_genre</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0004</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1082</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS NF3_publisher</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0005</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1083</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS NF3_author</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0004</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1084</td>
+<td style="text-align:left;">CREATE TABLE NF3_author(
+  author VARCHAR(255) PRIMARY KEY,
+  nationality VARCHAR(100)
+)</td>
+<td style="text-align:left;">Creating 3NF Author table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0038</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1085</td>
+<td style="text-align:left;">CREATE TABLE NF3_publisher(
+  publisher VARCHAR(255) PRIMARY KEY,
+  country VARCHAR(100)
+)</td>
+<td style="text-align:left;">Creating 3NF Publisher table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0041</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1086</td>
+<td style="text-align:left;">CREATE TABLE NF3_genre(
+  genre_id INT PRIMARY KEY,
+  name VARCHAR(255)
+)</td>
+<td style="text-align:left;">Creating 3NF Genre table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0017</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1087</td>
+<td style="text-align:left;">CREATE TABLE NF3_book(
+  book_title VARCHAR(255) PRIMARY KEY,
+  author VARCHAR(255),
+  pages INT,
+  thickness VARCHAR(50),
+  publisher VARCHAR(255),
+  genre_id INT,
+  FOREIGN KEY (author) REFERENCES NF3_author(author),
+  FOREIGN KEY (publisher) REFERENCES NF3_publisher(publisher),
+  FOREIGN KEY (genre_id) REFERENCES NF3_genre(genre_id)
+)</td>
+<td style="text-align:left;">Creating 3NF Book table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0066</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1088</td>
+<td style="text-align:left;">CREATE TABLE NF3_price(
+  book_title VARCHAR(255),
+  book_format VARCHAR(50),
+  price DECIMAL(10,2),
+  PRIMARY KEY (book_title, book_format),
+  FOREIGN KEY (book_title) REFERENCES NF3_book(book_title)
+)</td>
+<td style="text-align:left;">Creating 3NF Price table</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0030</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1089</td>
+<td style="text-align:left;">INSERT INTO NF3_author (author, nationality) VALUES
+('Chad Russell', 'American'),
+('E.F.Codd', 'British')</td>
+<td style="text-align:left;">Insert into 3NF tables</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0002</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1090</td>
+<td style="text-align:left;">INSERT INTO NF3_publisher (publisher, country) VALUES
+('Apress', 'USA'),
+('Addison-Wesley', 'USA')</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0002</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1091</td>
+<td style="text-align:left;">INSERT INTO NF3_genre (genre_id, name) VALUES
+(1, 'Tutorial'),
+(2, 'Popular science')</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0002</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1092</td>
+<td style="text-align:left;">INSERT INTO NF3_book (book_title, author, pages, thickness, publisher, genre_id) VALUES
+('Beginning MySQL Database Design and Optimization', 'Chad Russell', 520, 'Thick', 'Apress', 1),
+('The Relational Model for Database Management: Version 2', 'E.F.Codd', 538, 'Thick', 'Addison-Wesley', 2)</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0003</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1093</td>
+<td style="text-align:left;">INSERT INTO NF3_price (book_title, book_format, price) VALUES
+('Beginning MySQL Database Design and Optimization', 'Hardcover', 49.99),
+('Beginning MySQL Database Design and Optimization', 'E-book', 22.34),
+('The Relational Model for Database Management: Version 2', 'E-book', 13.88),
+('The Relational Model for Database Management: Version 2', 'Paperback', 39.99)</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0002</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1094</td>
+<td style="text-align:left;">SELECT * FROM NF3_author</td>
+<td style="text-align:left;">Select from the tables</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1095</td>
+<td style="text-align:left;">SELECT * FROM NF3_publisher</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1096</td>
+<td style="text-align:left;">SELECT * FROM NF3_genre</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1097</td>
+<td style="text-align:left;">SELECT * FROM NF3_book</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1098</td>
+<td style="text-align:left;">SELECT * FROM NF3_price</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1099</td>
+<td style="text-align:left;">CREATE OR REPLACE VIEW v_everything AS
+SELECT
+  b.book_title,
+  b.author,
+  a.nationality AS author_nationality,
+  b.pages,
+  b.thickness,
+  b.publisher,
+  p.country AS publisher_country,
+  b.genre_id,
+  g.name AS genre_name,
+  pr.book_format,
+  pr.price
+FROM NF3_book b
+JOIN NF3_author a
+  ON b.author = a.author
+JOIN NF3_publisher p
+  ON b.publisher = p.publisher
+JOIN NF3_genre g
+  ON b.genre_id = g.genre_id
+JOIN NF3_price pr
+  ON b.book_title = pr.book_title</td>
+<td style="text-align:left;">Create a view of everything</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0017</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1100</td>
+<td style="text-align:left;">SELECT * FROM v_everything</td>
+<td style="text-align:left;">n/a</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0036</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">1101</td>
+<td style="text-align:left;">SELECT query_assn AS assignment, COUNT(*) AS queries, MIN(query_dur) AS fastest, MAX(query_dur) AS slowest, ROUND(AVG(query_dur),4) AS average, MIN(query_ended) AS first, MAX(query_ended) AS last FROM meta.`query` GROUP BY query_assn</td>
+<td style="text-align:left;">get a summary table for all assignments</td>
+<td style="text-align:left;">books</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">09</td>
+<td style="text-align:right;">0.0038</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+</table>
+<h3>Retreive a list of all tables and columns across my database-----SELECT * FROM university.v_table_columns</h3>
+<table id="table-Retreive-a-list-of-all-tables-and-columns-across-my-database-----SELECT-*-FROM-university.v_table_columns" style="width:100%"><th><a href="javascript:sortTable('table-Retreive-a-list-of-all-tables-and-columns-across-my-database-----SELECT-*-FROM-university.v_table_columns', 0, 'S')"">data_base</a>
+</th>
+<th><a href="javascript:sortTable('table-Retreive-a-list-of-all-tables-and-columns-across-my-database-----SELECT-*-FROM-university.v_table_columns', 1, 'S')"">table</a>
+</th>
+<th><a href="javascript:sortTable('table-Retreive-a-list-of-all-tables-and-columns-across-my-database-----SELECT-*-FROM-university.v_table_columns', 2, 'S')"">column</a>
+</th>
+<th><a href="javascript:sortTable('table-Retreive-a-list-of-all-tables-and-columns-across-my-database-----SELECT-*-FROM-university.v_table_columns', 3, 'N')"">no</a>
+</th>
+<th><a href="javascript:sortTable('table-Retreive-a-list-of-all-tables-and-columns-across-my-database-----SELECT-*-FROM-university.v_table_columns', 4, 'S')"">nullable</a>
+</th>
+<th><a href="javascript:sortTable('table-Retreive-a-list-of-all-tables-and-columns-across-my-database-----SELECT-*-FROM-university.v_table_columns', 5, 'S')"">data_type</a>
+</th>
+<th><a href="javascript:sortTable('table-Retreive-a-list-of-all-tables-and-columns-across-my-database-----SELECT-*-FROM-university.v_table_columns', 6, 'N')"">size</a>
+</th>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">book_title</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">author</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">author_nationality</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">book_format</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">price</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">pages</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">thickness</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">publisher</td>
+<td style="text-align:right;">8</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">publisher_country</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">genre_id</td>
+<td style="text-align:right;">10</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">genre_name</td>
+<td style="text-align:right;">11</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book_subject</td>
+<td style="text-align:left;">book_title</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book_subject</td>
+<td style="text-align:left;">subject_name</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_book</td>
+<td style="text-align:left;">book_title</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_book</td>
+<td style="text-align:left;">author</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_book</td>
+<td style="text-align:left;">author_nationality</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_book</td>
+<td style="text-align:left;">pages</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_book</td>
+<td style="text-align:left;">thickness</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_book</td>
+<td style="text-align:left;">publisher</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_book</td>
+<td style="text-align:left;">publisher_country</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_book</td>
+<td style="text-align:left;">genre_id</td>
+<td style="text-align:right;">8</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_book</td>
+<td style="text-align:left;">genre_name</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_price</td>
+<td style="text-align:left;">book_title</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_price</td>
+<td style="text-align:left;">book_format</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_price</td>
+<td style="text-align:left;">price</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_author</td>
+<td style="text-align:left;">author</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_author</td>
+<td style="text-align:left;">nationality</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_book</td>
+<td style="text-align:left;">book_title</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_book</td>
+<td style="text-align:left;">author</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_book</td>
+<td style="text-align:left;">pages</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_book</td>
+<td style="text-align:left;">thickness</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_book</td>
+<td style="text-align:left;">publisher</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_book</td>
+<td style="text-align:left;">genre_id</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_genre</td>
+<td style="text-align:left;">genre_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_genre</td>
+<td style="text-align:left;">name</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_price</td>
+<td style="text-align:left;">book_title</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_price</td>
+<td style="text-align:left;">book_format</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_price</td>
+<td style="text-align:left;">price</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_publisher</td>
+<td style="text-align:left;">publisher</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_publisher</td>
+<td style="text-align:left;">country</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">book_title</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">author</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">author_nationality</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">book_format</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">price</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">book_subject</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">pages</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">thickness</td>
+<td style="text-align:right;">8</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">publisher</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">publisher_country</td>
+<td style="text-align:right;">10</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">genre_id</td>
+<td style="text-align:right;">11</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">genre_name</td>
+<td style="text-align:right;">12</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">book_title</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">author</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">author_nationality</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">pages</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">thickness</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">publisher</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">publisher_country</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">genre_id</td>
+<td style="text-align:right;">8</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">genre_name</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">book_format</td>
+<td style="text-align:right;">10</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">price</td>
+<td style="text-align:right;">11</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">backup_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">db</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">20</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">relation</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">30</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">rows</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">cols</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">csv_length</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">xml_length</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">json_length</td>
+<td style="text-align:right;">8</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">csv_data</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">mediumtext</td>
+<td style="text-align:right;">16777215</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">xml_data</td>
+<td style="text-align:right;">10</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">mediumtext</td>
+<td style="text-align:right;">16777215</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">json_data</td>
+<td style="text-align:right;">11</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">json</td>
+<td style="text-align:right;">0</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">saved_dtm</td>
+<td style="text-align:right;">12</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">timestamp</td>
+<td style="text-align:right;">0</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_text</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">9999</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_desc</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">999</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_db</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">30</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_rows</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_user</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">30</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_assn</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">30</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_dur</td>
+<td style="text-align:right;">8</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_ended</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">datetime</td>
+<td style="text-align:right;">0</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">v_table_backups</td>
+<td style="text-align:left;">backup_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">v_table_backups</td>
+<td style="text-align:left;">db</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">20</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">v_table_backups</td>
+<td style="text-align:left;">relation</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">30</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">v_table_backups</td>
+<td style="text-align:left;">rows</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">v_table_backups</td>
+<td style="text-align:left;">cols</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">v_table_backups</td>
+<td style="text-align:left;">csv_length</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">v_table_backups</td>
+<td style="text-align:left;">xml_length</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">v_table_backups</td>
+<td style="text-align:left;">json_length</td>
+<td style="text-align:right;">8</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">v_table_backups</td>
+<td style="text-align:left;">saved_dtm</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">timestamp</td>
+<td style="text-align:right;">0</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">advisor</td>
+<td style="text-align:left;">s_ID</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">5</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">advisor</td>
+<td style="text-align:left;">i_ID</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">5</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">classroom</td>
+<td style="text-align:left;">building</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">15</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">classroom</td>
+<td style="text-align:left;">room_number</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">7</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">classroom</td>
+<td style="text-align:left;">capacity</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">4</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">course</td>
+<td style="text-align:left;">course_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">course</td>
+<td style="text-align:left;">title</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">course</td>
+<td style="text-align:left;">dept_name</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">20</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">course</td>
+<td style="text-align:left;">credits</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">department</td>
+<td style="text-align:left;">dept_name</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">20</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">department</td>
+<td style="text-align:left;">building</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">15</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">department</td>
+<td style="text-align:left;">budget</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">12</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">grade_points</td>
+<td style="text-align:left;">grade</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">grade_points</td>
+<td style="text-align:left;">points</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">instructor</td>
+<td style="text-align:left;">ID</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">5</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">instructor</td>
+<td style="text-align:left;">name</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">20</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">instructor</td>
+<td style="text-align:left;">dept_name</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">20</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">instructor</td>
+<td style="text-align:left;">salary</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">prereq</td>
+<td style="text-align:left;">course_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">prereq</td>
+<td style="text-align:left;">prereq_id</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_text</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">9999</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_desc</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">999</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_db</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">30</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_rows</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_user</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">30</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_assn</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">30</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_dur</td>
+<td style="text-align:right;">8</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_ended</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">datetime</td>
+<td style="text-align:right;">0</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">section</td>
+<td style="text-align:left;">course_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">section</td>
+<td style="text-align:left;">sec_id</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">section</td>
+<td style="text-align:left;">semester</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">6</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">section</td>
+<td style="text-align:left;">year</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">4</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">section</td>
+<td style="text-align:left;">building</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">15</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">section</td>
+<td style="text-align:left;">room_number</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">7</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">section</td>
+<td style="text-align:left;">time_slot_id</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">4</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">student</td>
+<td style="text-align:left;">ID</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">5</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">student</td>
+<td style="text-align:left;">name</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">20</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">student</td>
+<td style="text-align:left;">dept_name</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">20</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">student</td>
+<td style="text-align:left;">tot_cred</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">3</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">takes</td>
+<td style="text-align:left;">ID</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">5</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">takes</td>
+<td style="text-align:left;">course_id</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">takes</td>
+<td style="text-align:left;">sec_id</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">takes</td>
+<td style="text-align:left;">semester</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">6</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">takes</td>
+<td style="text-align:left;">year</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">4</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">takes</td>
+<td style="text-align:left;">grade</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">teaches</td>
+<td style="text-align:left;">ID</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">5</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">teaches</td>
+<td style="text-align:left;">course_id</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">teaches</td>
+<td style="text-align:left;">sec_id</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">teaches</td>
+<td style="text-align:left;">semester</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">6</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">teaches</td>
+<td style="text-align:left;">year</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">4</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">time_slot</td>
+<td style="text-align:left;">time_slot_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">4</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">time_slot</td>
+<td style="text-align:left;">day</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">1</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">time_slot</td>
+<td style="text-align:left;">start_hr</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">time_slot</td>
+<td style="text-align:left;">start_min</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">time_slot</td>
+<td style="text-align:left;">end_hr</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">time_slot</td>
+<td style="text-align:left;">end_min</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_student_gpa</td>
+<td style="text-align:left;">id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">5</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_student_gpa</td>
+<td style="text-align:left;">gpa</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">30</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_table_columns</td>
+<td style="text-align:left;">data_base</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">64</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_table_columns</td>
+<td style="text-align:left;">table</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">64</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_table_columns</td>
+<td style="text-align:left;">column</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">64</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_table_columns</td>
+<td style="text-align:left;">no</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_table_columns</td>
+<td style="text-align:left;">nullable</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">3</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_table_columns</td>
+<td style="text-align:left;">data_type</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">longtext</td>
+<td style="text-align:right;">4294967295</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_table_columns</td>
+<td style="text-align:left;">size</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">20</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_takes_points</td>
+<td style="text-align:left;">student_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">5</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_takes_points</td>
+<td style="text-align:left;">course_id</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_takes_points</td>
+<td style="text-align:left;">semester</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">6</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_takes_points</td>
+<td style="text-align:left;">year</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">4</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_takes_points</td>
+<td style="text-align:left;">grade</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_takes_points</td>
+<td style="text-align:left;">points</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_udb_datatypes</td>
+<td style="text-align:left;">DATA_TYPE</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">longtext</td>
+<td style="text-align:right;">4294967295</td>
+</tr>
+</table>
+<center><h6>&copy;2025 • All Rights Reserved • Generated on Jan. 14, 2026 10:02 AM</h6>
+</center>
+</body>
+</html>
