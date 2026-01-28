@@ -1,0 +1,3080 @@
+<html><head><meta name="description" content="OutputUtil developed by LT. Executed by /Users/zohaibcheema/Desktop/CSCI 331L">
+<style>body {
+    background-color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}
+h1 {
+    color: blue;
+    text-align: center;
+}
+h3 {
+    color: blue;
+}
+.vericaltext {
+ writing-mode: vertical-lr;
+ text-orientation: upright;
+}
+
+table, th, td {
+    border: 1px solid;
+    text-align: center;
+    vertical-align: top
+}
+th > a {
+    color: lightblue;
+}
+th {
+    background-color: blue;
+    color: lightblue;
+}
+tr:nth-child(even) {
+    background-color: lightblue;
+}
+tr:nth-child(odd) {
+    background-color: #ffed00;
+}</style>
+<script>
+function sortTable(tableId, colNum, colType) {
+  var table, rows, switching, i, x, y, shouldSwitch, dir, switchCount = 0;
+  table = document.getElementById(tableId);
+  switching = true;
+  dir = "asc";
+  while (switching) {
+    switching = false;
+    rows = table.rows;
+    for (i = 1; i < (rows.length - 1); i++) {
+      shouldSwitch = false;
+      x = rows[i].getElementsByTagName("td")[colNum];
+      y = rows[i + 1].getElementsByTagName("td")[colNum];
+      if (colType == 'N') { 
+        if (((dir == "asc") && (Number(x.innerHTML) > Number(y.innerHTML))) ||
+            ((dir == "desc") && (Number(x.innerHTML) < Number(y.innerHTML)))) {
+          shouldSwitch = true;
+          break;
+        }
+      } else {
+        if (((dir == "asc") && (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase())) ||
+            ((dir == "desc") && (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()))) {
+          shouldSwitch = true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+      switchCount ++;
+    } else {
+     if (switchCount == 0 && dir == "asc") {
+        dir = "desc";
+        switching = true;
+      }
+    }
+  }
+}
+</script>
+</head>
+<body><h1>Assignment14</h1>
+<h3>Table of Contents</h3>
+<ol><li><a href="#table-Use-meta-database">Use meta database</a>
+</li>
+<li><a href="#table-Use-meta-database">Use meta database</a>
+</li>
+<li><a href="#table-Drop-index-if-it-exists-(will-fail-if-doesn't-exist,-but-try/except-handles-it)">Drop index if it exists (will fail if doesn't exist, but try/except handles it)</a>
+</li>
+<li><a href="#table-Drop-index-if-it-exists-(will-fail-if-doesn't-exist,-but-try/except-handles-it)">Drop index if it exists (will fail if doesn't exist, but try/except handles it)</a>
+</li>
+<li><a href="#table-Task-2:-Five-queries-to-retrieve-total-number-of-queries-for-all-assignments-(03-14)">Task 2: Five queries to retrieve total number of queries for all assignments (03-14)</a>
+</li>
+<li><a href="#table-Task-2:-Five-queries-to-retrieve-total-number-of-queries-for-all-assignments-(03-14)">Task 2: Five queries to retrieve total number of queries for all assignments (03-14)</a>
+</li>
+<li><a href="#table-Query-2:-Using-IN-clause---without-index-----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-IN-('03',-'04',-'05',-'06',-'07',-'08',-'09',-'10',-'11',-'12',-'13',-'14')">Query 2: Using IN clause - without index-----SELECT COUNT(*) FROM query WHERE query_assn IN ('03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14')</a>
+</li>
+<li><a href="#table-Query-3:-Using-OR-clause---without-index-----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'03'-OR-query_assn-=-'04'-OR-query_assn-=-'05'-OR-query_assn-=-'06'-OR-query_assn-=-'07'-OR-query_assn-=-'08'-OR-query_assn-=-'09'-OR-query_assn-=-'10'-OR-query_assn-=-'11'-OR-query_assn-=-'12'-OR-query_assn-=-'13'-OR-query_assn-=-'14'">Query 3: Using OR clause - without index-----SELECT COUNT(*) FROM query WHERE query_assn = '03' OR query_assn = '04' OR query_assn = '05' OR query_assn = '06' OR query_assn = '07' OR query_assn = '08' OR query_assn = '09' OR query_assn = '10' OR query_assn = '11' OR query_assn = '12' OR query_assn = '13' OR query_assn = '14'</a>
+</li>
+<li><a href="#table-Query-4:-Using-LIKE---without-index-----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-LIKE-'03'-OR-query_assn-LIKE-'04'-OR-query_assn-LIKE-'05'-OR-query_assn-LIKE-'06'-OR-query_assn-LIKE-'07'-OR-query_assn-LIKE-'08'-OR-query_assn-LIKE-'09'-OR-query_assn-LIKE-'10'-OR-query_assn-LIKE-'11'-OR-query_assn-LIKE-'12'-OR-query_assn-LIKE-'13'-OR-query_assn-LIKE-'14'">Query 4: Using LIKE - without index-----SELECT COUNT(*) FROM query WHERE query_assn LIKE '03' OR query_assn LIKE '04' OR query_assn LIKE '05' OR query_assn LIKE '06' OR query_assn LIKE '07' OR query_assn LIKE '08' OR query_assn LIKE '09' OR query_assn LIKE '10' OR query_assn LIKE '11' OR query_assn LIKE '12' OR query_assn LIKE '13' OR query_assn LIKE '14'</a>
+</li>
+<li><a href="#table-Query-5:-Using-UNION---without-index-----SELECT-SUM(cnt)-as-total-FROM-(
+----SELECT-COUNT(*)-as-cnt-FROM-query-WHERE-query_assn-=-'03'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'04'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'05'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'06'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'07'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'08'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'09'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'10'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'11'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'12'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'13'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'14'
+)-AS-subquery">Query 5: Using UNION - without index-----SELECT SUM(cnt) as total FROM (
+    SELECT COUNT(*) as cnt FROM query WHERE query_assn = '03'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '04'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '05'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '06'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '07'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '08'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '09'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '10'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '11'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '12'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '13'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '14'
+) AS subquery</a>
+</li>
+<li><a href="#table-Task-5:-Create-index-on-query_assn-column">Task 5: Create index on query_assn column</a>
+</li>
+<li><a href="#table-Task-5:-Create-index-on-query_assn-column">Task 5: Create index on query_assn column</a>
+</li>
+<li><a href="#table-Task-7:-Re-execute-the-five-queries-with-index">Task 7: Re-execute the five queries with index</a>
+</li>
+<li><a href="#table-Task-7:-Re-execute-the-five-queries-with-index">Task 7: Re-execute the five queries with index</a>
+</li>
+<li><a href="#table-Query-2:-Using-IN-clause---with-index-----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-IN-('03',-'04',-'05',-'06',-'07',-'08',-'09',-'10',-'11',-'12',-'13',-'14')">Query 2: Using IN clause - with index-----SELECT COUNT(*) FROM query WHERE query_assn IN ('03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14')</a>
+</li>
+<li><a href="#table-Query-3:-Using-OR-clause---with-index-----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'03'-OR-query_assn-=-'04'-OR-query_assn-=-'05'-OR-query_assn-=-'06'-OR-query_assn-=-'07'-OR-query_assn-=-'08'-OR-query_assn-=-'09'-OR-query_assn-=-'10'-OR-query_assn-=-'11'-OR-query_assn-=-'12'-OR-query_assn-=-'13'-OR-query_assn-=-'14'">Query 3: Using OR clause - with index-----SELECT COUNT(*) FROM query WHERE query_assn = '03' OR query_assn = '04' OR query_assn = '05' OR query_assn = '06' OR query_assn = '07' OR query_assn = '08' OR query_assn = '09' OR query_assn = '10' OR query_assn = '11' OR query_assn = '12' OR query_assn = '13' OR query_assn = '14'</a>
+</li>
+<li><a href="#table-Query-4:-Using-LIKE---with-index-----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-LIKE-'03'-OR-query_assn-LIKE-'04'-OR-query_assn-LIKE-'05'-OR-query_assn-LIKE-'06'-OR-query_assn-LIKE-'07'-OR-query_assn-LIKE-'08'-OR-query_assn-LIKE-'09'-OR-query_assn-LIKE-'10'-OR-query_assn-LIKE-'11'-OR-query_assn-LIKE-'12'-OR-query_assn-LIKE-'13'-OR-query_assn-LIKE-'14'">Query 4: Using LIKE - with index-----SELECT COUNT(*) FROM query WHERE query_assn LIKE '03' OR query_assn LIKE '04' OR query_assn LIKE '05' OR query_assn LIKE '06' OR query_assn LIKE '07' OR query_assn LIKE '08' OR query_assn LIKE '09' OR query_assn LIKE '10' OR query_assn LIKE '11' OR query_assn LIKE '12' OR query_assn LIKE '13' OR query_assn LIKE '14'</a>
+</li>
+<li><a href="#table-Query-5:-Using-UNION---with-index-----SELECT-SUM(cnt)-as-total-FROM-(
+----SELECT-COUNT(*)-as-cnt-FROM-query-WHERE-query_assn-=-'03'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'04'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'05'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'06'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'07'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'08'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'09'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'10'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'11'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'12'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'13'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'14'
+)-AS-subquery">Query 5: Using UNION - with index-----SELECT SUM(cnt) as total FROM (
+    SELECT COUNT(*) as cnt FROM query WHERE query_assn = '03'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '04'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '05'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '06'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '07'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '08'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '09'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '10'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '11'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '12'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '13'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '14'
+) AS subquery</a>
+</li>
+<li><a href="#table-Task-8:-Compare-execution-plans---BEFORE-index-(drop-index-first-to-show-before-state)">Task 8: Compare execution plans - BEFORE index (drop index first to show before state)</a>
+</li>
+<li><a href="#table-Task-8:-Compare-execution-plans---BEFORE-index-(drop-index-first-to-show-before-state)">Task 8: Compare execution plans - BEFORE index (drop index first to show before state)</a>
+</li>
+<li><a href="#table-EXPLAIN-Query-1:-COUNT(*)---BEFORE-index">EXPLAIN Query 1: COUNT(*) - BEFORE index</a>
+</li>
+<li><a href="#table-EXPLAIN-Query-1:-COUNT(*)---BEFORE-index">EXPLAIN Query 1: COUNT(*) - BEFORE index</a>
+</li>
+<li><a href="#table-EXPLAIN-Query-2:-IN-clause---BEFORE-index">EXPLAIN Query 2: IN clause - BEFORE index</a>
+</li>
+<li><a href="#table-EXPLAIN-Query-2:-IN-clause---BEFORE-index">EXPLAIN Query 2: IN clause - BEFORE index</a>
+</li>
+<li><a href="#table-EXPLAIN-Query-3:-OR-clause---BEFORE-index">EXPLAIN Query 3: OR clause - BEFORE index</a>
+</li>
+<li><a href="#table-EXPLAIN-Query-3:-OR-clause---BEFORE-index">EXPLAIN Query 3: OR clause - BEFORE index</a>
+</li>
+<li><a href="#table-EXPLAIN-Query-4:-LIKE---BEFORE-index">EXPLAIN Query 4: LIKE - BEFORE index</a>
+</li>
+<li><a href="#table-EXPLAIN-Query-4:-LIKE---BEFORE-index">EXPLAIN Query 4: LIKE - BEFORE index</a>
+</li>
+<li><a href="#table-EXPLAIN-Query-5:-UNION---BEFORE-index">EXPLAIN Query 5: UNION - BEFORE index</a>
+</li>
+<li><a href="#table-EXPLAIN-Query-5:-UNION---BEFORE-index">EXPLAIN Query 5: UNION - BEFORE index</a>
+</li>
+<li><a href="#table-Re-create-index-for-AFTER-comparison">Re-create index for AFTER comparison</a>
+</li>
+<li><a href="#table-Re-create-index-for-AFTER-comparison">Re-create index for AFTER comparison</a>
+</li>
+<li><a href="#table-EXPLAIN-Query-1:-COUNT(*)---AFTER-index">EXPLAIN Query 1: COUNT(*) - AFTER index</a>
+</li>
+<li><a href="#table-EXPLAIN-Query-1:-COUNT(*)---AFTER-index">EXPLAIN Query 1: COUNT(*) - AFTER index</a>
+</li>
+<li><a href="#table-EXPLAIN-Query-2:-IN-clause---AFTER-index">EXPLAIN Query 2: IN clause - AFTER index</a>
+</li>
+<li><a href="#table-EXPLAIN-Query-2:-IN-clause---AFTER-index">EXPLAIN Query 2: IN clause - AFTER index</a>
+</li>
+<li><a href="#table-EXPLAIN-Query-3:-OR-clause---AFTER-index">EXPLAIN Query 3: OR clause - AFTER index</a>
+</li>
+<li><a href="#table-EXPLAIN-Query-3:-OR-clause---AFTER-index">EXPLAIN Query 3: OR clause - AFTER index</a>
+</li>
+<li><a href="#table-EXPLAIN-Query-4:-LIKE---AFTER-index">EXPLAIN Query 4: LIKE - AFTER index</a>
+</li>
+<li><a href="#table-EXPLAIN-Query-4:-LIKE---AFTER-index">EXPLAIN Query 4: LIKE - AFTER index</a>
+</li>
+<li><a href="#table-EXPLAIN-Query-5:-UNION---AFTER-index">EXPLAIN Query 5: UNION - AFTER index</a>
+</li>
+<li><a href="#table-EXPLAIN-Query-5:-UNION---AFTER-index">EXPLAIN Query 5: UNION - AFTER index</a>
+</li>
+<li><a href="#table-get-a-summary-table-for-all-assignments-----SELECT-query_assn-AS-assignment,-COUNT(*)-AS-queries,-MIN(query_dur)-AS-fastest,-MAX(query_dur)-AS-slowest,-ROUND(AVG(query_dur),4)-AS-average,-MIN(query_ended)-AS-first,-MAX(query_ended)-AS-last-FROM-meta.`query`-GROUP-BY-query_assn">get a summary table for all assignments-----SELECT query_assn AS assignment, COUNT(*) AS queries, MIN(query_dur) AS fastest, MAX(query_dur) AS slowest, ROUND(AVG(query_dur),4) AS average, MIN(query_ended) AS first, MAX(query_ended) AS last FROM meta.`query` GROUP BY query_assn</a>
+</li>
+<li><a href="#table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'14'">Retrieve a query log for the current assignment-----SELECT * FROM meta.`query` WHERE query_assn = '14'</a>
+</li>
+<li><a href="#table-Retreive-a-list-of-all-tables-and-columns-across-my-database-----SELECT-*-FROM-university.v_table_columns">Retreive a list of all tables and columns across my database-----SELECT * FROM university.v_table_columns</a>
+</li>
+<li><a href="#table-Make-a-pivot-table-of-the-query-table-by-day-----SELECT-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END)-as-'Monday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END)-as-'Tuesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END)-as-'Wednesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END)-as-'Thursday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END)-as-'Friday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END)-as-'Saturday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END)-as-'Sunday',-COUNT(query_id)-as-'Total_Per_Assignment'-FROM-meta.query-GROUP-BY-query_assn-UNION-ALL-SELECT-'Total_Per_day'-as-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END),-COUNT(query_id)-FROM-meta.query">Make a pivot table of the query table by day-----SELECT query_assn, COUNT(CASE WHEN WEEKDAY(query_ended) = 0 THEN query_id END) as 'Monday', COUNT(CASE WHEN WEEKDAY(query_ended) = 1 THEN query_id END) as 'Tuesday', COUNT(CASE WHEN WEEKDAY(query_ended) = 2 THEN query_id END) as 'Wednesday', COUNT(CASE WHEN WEEKDAY(query_ended) = 3 THEN query_id END) as 'Thursday', COUNT(CASE WHEN WEEKDAY(query_ended) = 4 THEN query_id END) as 'Friday', COUNT(CASE WHEN WEEKDAY(query_ended) = 5 THEN query_id END) as 'Saturday', COUNT(CASE WHEN WEEKDAY(query_ended) = 6 THEN query_id END) as 'Sunday', COUNT(query_id) as 'Total_Per_Assignment' FROM meta.query GROUP BY query_assn UNION ALL SELECT 'Total_Per_day' as query_assn, COUNT(CASE WHEN WEEKDAY(query_ended) = 0 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 1 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 2 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 3 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 4 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 5 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 6 THEN query_id END), COUNT(query_id) FROM meta.query</a>
+</li>
+</ol>
+<h3>Use meta database</h3>
+<table id="table-Use-meta-database" style="width:100%"><th><a href="javascript:sortTable('table-Use-meta-database', 0, 'S')"">USE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Use meta database</h3>
+<table id="table-Use-meta-database" style="width:100%"><th><a href="javascript:sortTable('table-Use-meta-database', 0, 'S')"">USE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Drop index if it exists (will fail if doesn't exist, but try/except handles it)</h3>
+<table id="table-Drop-index-if-it-exists-(will-fail-if-doesn't-exist,-but-try/except-handles-it)" style="width:100%"><th><a href="javascript:sortTable('table-Drop-index-if-it-exists-(will-fail-if-doesn't-exist,-but-try/except-handles-it)', 0, 'S')"">DROP</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Drop index if it exists (will fail if doesn't exist, but try/except handles it)</h3>
+<table id="table-Drop-index-if-it-exists-(will-fail-if-doesn't-exist,-but-try/except-handles-it)" style="width:100%"><th><a href="javascript:sortTable('table-Drop-index-if-it-exists-(will-fail-if-doesn't-exist,-but-try/except-handles-it)', 0, 'S')"">DROP</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Task 2: Five queries to retrieve total number of queries for all assignments (03-14)</h3>
+<table id="table-Task-2:-Five-queries-to-retrieve-total-number-of-queries-for-all-assignments-(03-14)" style="width:100%"><th><a href="javascript:sortTable('table-Task-2:-Five-queries-to-retrieve-total-number-of-queries-for-all-assignments-(03-14)', 0, 'S')"">/*</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Task 2: Five queries to retrieve total number of queries for all assignments (03-14)</h3>
+<table id="table-Task-2:-Five-queries-to-retrieve-total-number-of-queries-for-all-assignments-(03-14)" style="width:100%"><th><a href="javascript:sortTable('table-Task-2:-Five-queries-to-retrieve-total-number-of-queries-for-all-assignments-(03-14)', 0, 'S')"">/*</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Query 2: Using IN clause - without index-----SELECT COUNT(*) FROM query WHERE query_assn IN ('03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14')</h3>
+<table id="table-Query-2:-Using-IN-clause---without-index-----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-IN-('03',-'04',-'05',-'06',-'07',-'08',-'09',-'10',-'11',-'12',-'13',-'14')" style="width:100%"><th><a href="javascript:sortTable('table-Query-2:-Using-IN-clause---without-index-----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-IN-('03',-'04',-'05',-'06',-'07',-'08',-'09',-'10',-'11',-'12',-'13',-'14')', 0, 'N')"">COUNT(*)</a>
+</th>
+<tr><td style="text-align:right;">1153</td>
+</tr>
+</table>
+<h3>Query 3: Using OR clause - without index-----SELECT COUNT(*) FROM query WHERE query_assn = '03' OR query_assn = '04' OR query_assn = '05' OR query_assn = '06' OR query_assn = '07' OR query_assn = '08' OR query_assn = '09' OR query_assn = '10' OR query_assn = '11' OR query_assn = '12' OR query_assn = '13' OR query_assn = '14'</h3>
+<table id="table-Query-3:-Using-OR-clause---without-index-----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'03'-OR-query_assn-=-'04'-OR-query_assn-=-'05'-OR-query_assn-=-'06'-OR-query_assn-=-'07'-OR-query_assn-=-'08'-OR-query_assn-=-'09'-OR-query_assn-=-'10'-OR-query_assn-=-'11'-OR-query_assn-=-'12'-OR-query_assn-=-'13'-OR-query_assn-=-'14'" style="width:100%"><th><a href="javascript:sortTable('table-Query-3:-Using-OR-clause---without-index-----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'03'-OR-query_assn-=-'04'-OR-query_assn-=-'05'-OR-query_assn-=-'06'-OR-query_assn-=-'07'-OR-query_assn-=-'08'-OR-query_assn-=-'09'-OR-query_assn-=-'10'-OR-query_assn-=-'11'-OR-query_assn-=-'12'-OR-query_assn-=-'13'-OR-query_assn-=-'14'', 0, 'N')"">COUNT(*)</a>
+</th>
+<tr><td style="text-align:right;">1154</td>
+</tr>
+</table>
+<h3>Query 4: Using LIKE - without index-----SELECT COUNT(*) FROM query WHERE query_assn LIKE '03' OR query_assn LIKE '04' OR query_assn LIKE '05' OR query_assn LIKE '06' OR query_assn LIKE '07' OR query_assn LIKE '08' OR query_assn LIKE '09' OR query_assn LIKE '10' OR query_assn LIKE '11' OR query_assn LIKE '12' OR query_assn LIKE '13' OR query_assn LIKE '14'</h3>
+<table id="table-Query-4:-Using-LIKE---without-index-----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-LIKE-'03'-OR-query_assn-LIKE-'04'-OR-query_assn-LIKE-'05'-OR-query_assn-LIKE-'06'-OR-query_assn-LIKE-'07'-OR-query_assn-LIKE-'08'-OR-query_assn-LIKE-'09'-OR-query_assn-LIKE-'10'-OR-query_assn-LIKE-'11'-OR-query_assn-LIKE-'12'-OR-query_assn-LIKE-'13'-OR-query_assn-LIKE-'14'" style="width:100%"><th><a href="javascript:sortTable('table-Query-4:-Using-LIKE---without-index-----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-LIKE-'03'-OR-query_assn-LIKE-'04'-OR-query_assn-LIKE-'05'-OR-query_assn-LIKE-'06'-OR-query_assn-LIKE-'07'-OR-query_assn-LIKE-'08'-OR-query_assn-LIKE-'09'-OR-query_assn-LIKE-'10'-OR-query_assn-LIKE-'11'-OR-query_assn-LIKE-'12'-OR-query_assn-LIKE-'13'-OR-query_assn-LIKE-'14'', 0, 'N')"">COUNT(*)</a>
+</th>
+<tr><td style="text-align:right;">1155</td>
+</tr>
+</table>
+<h3>Query 5: Using UNION - without index-----SELECT SUM(cnt) as total FROM (
+    SELECT COUNT(*) as cnt FROM query WHERE query_assn = '03'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '04'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '05'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '06'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '07'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '08'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '09'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '10'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '11'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '12'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '13'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '14'
+) AS subquery</h3>
+<table id="table-Query-5:-Using-UNION---without-index-----SELECT-SUM(cnt)-as-total-FROM-(
+----SELECT-COUNT(*)-as-cnt-FROM-query-WHERE-query_assn-=-'03'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'04'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'05'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'06'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'07'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'08'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'09'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'10'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'11'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'12'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'13'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'14'
+)-AS-subquery" style="width:100%"><th><a href="javascript:sortTable('table-Query-5:-Using-UNION---without-index-----SELECT-SUM(cnt)-as-total-FROM-(
+----SELECT-COUNT(*)-as-cnt-FROM-query-WHERE-query_assn-=-'03'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'04'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'05'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'06'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'07'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'08'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'09'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'10'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'11'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'12'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'13'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'14'
+)-AS-subquery', 0, 'N')"">total</a>
+</th>
+<tr><td style="text-align:right;">1156</td>
+</tr>
+</table>
+<h3>Task 5: Create index on query_assn column</h3>
+<table id="table-Task-5:-Create-index-on-query_assn-column" style="width:100%"><th><a href="javascript:sortTable('table-Task-5:-Create-index-on-query_assn-column', 0, 'S')"">CREATE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Task 5: Create index on query_assn column</h3>
+<table id="table-Task-5:-Create-index-on-query_assn-column" style="width:100%"><th><a href="javascript:sortTable('table-Task-5:-Create-index-on-query_assn-column', 0, 'S')"">CREATE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Task 7: Re-execute the five queries with index</h3>
+<table id="table-Task-7:-Re-execute-the-five-queries-with-index" style="width:100%"><th><a href="javascript:sortTable('table-Task-7:-Re-execute-the-five-queries-with-index', 0, 'S')"">/*</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Task 7: Re-execute the five queries with index</h3>
+<table id="table-Task-7:-Re-execute-the-five-queries-with-index" style="width:100%"><th><a href="javascript:sortTable('table-Task-7:-Re-execute-the-five-queries-with-index', 0, 'S')"">/*</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Query 2: Using IN clause - with index-----SELECT COUNT(*) FROM query WHERE query_assn IN ('03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14')</h3>
+<table id="table-Query-2:-Using-IN-clause---with-index-----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-IN-('03',-'04',-'05',-'06',-'07',-'08',-'09',-'10',-'11',-'12',-'13',-'14')" style="width:100%"><th><a href="javascript:sortTable('table-Query-2:-Using-IN-clause---with-index-----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-IN-('03',-'04',-'05',-'06',-'07',-'08',-'09',-'10',-'11',-'12',-'13',-'14')', 0, 'N')"">COUNT(*)</a>
+</th>
+<tr><td style="text-align:right;">1159</td>
+</tr>
+</table>
+<h3>Query 3: Using OR clause - with index-----SELECT COUNT(*) FROM query WHERE query_assn = '03' OR query_assn = '04' OR query_assn = '05' OR query_assn = '06' OR query_assn = '07' OR query_assn = '08' OR query_assn = '09' OR query_assn = '10' OR query_assn = '11' OR query_assn = '12' OR query_assn = '13' OR query_assn = '14'</h3>
+<table id="table-Query-3:-Using-OR-clause---with-index-----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'03'-OR-query_assn-=-'04'-OR-query_assn-=-'05'-OR-query_assn-=-'06'-OR-query_assn-=-'07'-OR-query_assn-=-'08'-OR-query_assn-=-'09'-OR-query_assn-=-'10'-OR-query_assn-=-'11'-OR-query_assn-=-'12'-OR-query_assn-=-'13'-OR-query_assn-=-'14'" style="width:100%"><th><a href="javascript:sortTable('table-Query-3:-Using-OR-clause---with-index-----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'03'-OR-query_assn-=-'04'-OR-query_assn-=-'05'-OR-query_assn-=-'06'-OR-query_assn-=-'07'-OR-query_assn-=-'08'-OR-query_assn-=-'09'-OR-query_assn-=-'10'-OR-query_assn-=-'11'-OR-query_assn-=-'12'-OR-query_assn-=-'13'-OR-query_assn-=-'14'', 0, 'N')"">COUNT(*)</a>
+</th>
+<tr><td style="text-align:right;">1160</td>
+</tr>
+</table>
+<h3>Query 4: Using LIKE - with index-----SELECT COUNT(*) FROM query WHERE query_assn LIKE '03' OR query_assn LIKE '04' OR query_assn LIKE '05' OR query_assn LIKE '06' OR query_assn LIKE '07' OR query_assn LIKE '08' OR query_assn LIKE '09' OR query_assn LIKE '10' OR query_assn LIKE '11' OR query_assn LIKE '12' OR query_assn LIKE '13' OR query_assn LIKE '14'</h3>
+<table id="table-Query-4:-Using-LIKE---with-index-----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-LIKE-'03'-OR-query_assn-LIKE-'04'-OR-query_assn-LIKE-'05'-OR-query_assn-LIKE-'06'-OR-query_assn-LIKE-'07'-OR-query_assn-LIKE-'08'-OR-query_assn-LIKE-'09'-OR-query_assn-LIKE-'10'-OR-query_assn-LIKE-'11'-OR-query_assn-LIKE-'12'-OR-query_assn-LIKE-'13'-OR-query_assn-LIKE-'14'" style="width:100%"><th><a href="javascript:sortTable('table-Query-4:-Using-LIKE---with-index-----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-LIKE-'03'-OR-query_assn-LIKE-'04'-OR-query_assn-LIKE-'05'-OR-query_assn-LIKE-'06'-OR-query_assn-LIKE-'07'-OR-query_assn-LIKE-'08'-OR-query_assn-LIKE-'09'-OR-query_assn-LIKE-'10'-OR-query_assn-LIKE-'11'-OR-query_assn-LIKE-'12'-OR-query_assn-LIKE-'13'-OR-query_assn-LIKE-'14'', 0, 'N')"">COUNT(*)</a>
+</th>
+<tr><td style="text-align:right;">1161</td>
+</tr>
+</table>
+<h3>Query 5: Using UNION - with index-----SELECT SUM(cnt) as total FROM (
+    SELECT COUNT(*) as cnt FROM query WHERE query_assn = '03'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '04'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '05'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '06'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '07'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '08'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '09'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '10'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '11'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '12'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '13'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '14'
+) AS subquery</h3>
+<table id="table-Query-5:-Using-UNION---with-index-----SELECT-SUM(cnt)-as-total-FROM-(
+----SELECT-COUNT(*)-as-cnt-FROM-query-WHERE-query_assn-=-'03'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'04'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'05'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'06'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'07'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'08'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'09'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'10'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'11'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'12'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'13'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'14'
+)-AS-subquery" style="width:100%"><th><a href="javascript:sortTable('table-Query-5:-Using-UNION---with-index-----SELECT-SUM(cnt)-as-total-FROM-(
+----SELECT-COUNT(*)-as-cnt-FROM-query-WHERE-query_assn-=-'03'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'04'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'05'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'06'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'07'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'08'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'09'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'10'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'11'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'12'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'13'
+----UNION-ALL
+----SELECT-COUNT(*)-FROM-query-WHERE-query_assn-=-'14'
+)-AS-subquery', 0, 'N')"">total</a>
+</th>
+<tr><td style="text-align:right;">1162</td>
+</tr>
+</table>
+<h3>Task 8: Compare execution plans - BEFORE index (drop index first to show before state)</h3>
+<table id="table-Task-8:-Compare-execution-plans---BEFORE-index-(drop-index-first-to-show-before-state)" style="width:100%"><th><a href="javascript:sortTable('table-Task-8:-Compare-execution-plans---BEFORE-index-(drop-index-first-to-show-before-state)', 0, 'S')"">/*</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Task 8: Compare execution plans - BEFORE index (drop index first to show before state)</h3>
+<table id="table-Task-8:-Compare-execution-plans---BEFORE-index-(drop-index-first-to-show-before-state)" style="width:100%"><th><a href="javascript:sortTable('table-Task-8:-Compare-execution-plans---BEFORE-index-(drop-index-first-to-show-before-state)', 0, 'S')"">/*</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>EXPLAIN Query 1: COUNT(*) - BEFORE index</h3>
+<table id="table-EXPLAIN-Query-1:-COUNT(*)---BEFORE-index" style="width:100%"><th><a href="javascript:sortTable('table-EXPLAIN-Query-1:-COUNT(*)---BEFORE-index', 0, 'S')"">EXPLAIN</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>EXPLAIN Query 1: COUNT(*) - BEFORE index</h3>
+<table id="table-EXPLAIN-Query-1:-COUNT(*)---BEFORE-index" style="width:100%"><th><a href="javascript:sortTable('table-EXPLAIN-Query-1:-COUNT(*)---BEFORE-index', 0, 'S')"">EXPLAIN</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>EXPLAIN Query 2: IN clause - BEFORE index</h3>
+<table id="table-EXPLAIN-Query-2:-IN-clause---BEFORE-index" style="width:100%"><th><a href="javascript:sortTable('table-EXPLAIN-Query-2:-IN-clause---BEFORE-index', 0, 'S')"">EXPLAIN</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>EXPLAIN Query 2: IN clause - BEFORE index</h3>
+<table id="table-EXPLAIN-Query-2:-IN-clause---BEFORE-index" style="width:100%"><th><a href="javascript:sortTable('table-EXPLAIN-Query-2:-IN-clause---BEFORE-index', 0, 'S')"">EXPLAIN</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>EXPLAIN Query 3: OR clause - BEFORE index</h3>
+<table id="table-EXPLAIN-Query-3:-OR-clause---BEFORE-index" style="width:100%"><th><a href="javascript:sortTable('table-EXPLAIN-Query-3:-OR-clause---BEFORE-index', 0, 'S')"">EXPLAIN</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>EXPLAIN Query 3: OR clause - BEFORE index</h3>
+<table id="table-EXPLAIN-Query-3:-OR-clause---BEFORE-index" style="width:100%"><th><a href="javascript:sortTable('table-EXPLAIN-Query-3:-OR-clause---BEFORE-index', 0, 'S')"">EXPLAIN</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>EXPLAIN Query 4: LIKE - BEFORE index</h3>
+<table id="table-EXPLAIN-Query-4:-LIKE---BEFORE-index" style="width:100%"><th><a href="javascript:sortTable('table-EXPLAIN-Query-4:-LIKE---BEFORE-index', 0, 'S')"">EXPLAIN</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>EXPLAIN Query 4: LIKE - BEFORE index</h3>
+<table id="table-EXPLAIN-Query-4:-LIKE---BEFORE-index" style="width:100%"><th><a href="javascript:sortTable('table-EXPLAIN-Query-4:-LIKE---BEFORE-index', 0, 'S')"">EXPLAIN</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>EXPLAIN Query 5: UNION - BEFORE index</h3>
+<table id="table-EXPLAIN-Query-5:-UNION---BEFORE-index" style="width:100%"><th><a href="javascript:sortTable('table-EXPLAIN-Query-5:-UNION---BEFORE-index', 0, 'S')"">EXPLAIN</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>EXPLAIN Query 5: UNION - BEFORE index</h3>
+<table id="table-EXPLAIN-Query-5:-UNION---BEFORE-index" style="width:100%"><th><a href="javascript:sortTable('table-EXPLAIN-Query-5:-UNION---BEFORE-index', 0, 'S')"">EXPLAIN</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Re-create index for AFTER comparison</h3>
+<table id="table-Re-create-index-for-AFTER-comparison" style="width:100%"><th><a href="javascript:sortTable('table-Re-create-index-for-AFTER-comparison', 0, 'S')"">CREATE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>Re-create index for AFTER comparison</h3>
+<table id="table-Re-create-index-for-AFTER-comparison" style="width:100%"><th><a href="javascript:sortTable('table-Re-create-index-for-AFTER-comparison', 0, 'S')"">CREATE</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>EXPLAIN Query 1: COUNT(*) - AFTER index</h3>
+<table id="table-EXPLAIN-Query-1:-COUNT(*)---AFTER-index" style="width:100%"><th><a href="javascript:sortTable('table-EXPLAIN-Query-1:-COUNT(*)---AFTER-index', 0, 'S')"">EXPLAIN</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>EXPLAIN Query 1: COUNT(*) - AFTER index</h3>
+<table id="table-EXPLAIN-Query-1:-COUNT(*)---AFTER-index" style="width:100%"><th><a href="javascript:sortTable('table-EXPLAIN-Query-1:-COUNT(*)---AFTER-index', 0, 'S')"">EXPLAIN</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>EXPLAIN Query 2: IN clause - AFTER index</h3>
+<table id="table-EXPLAIN-Query-2:-IN-clause---AFTER-index" style="width:100%"><th><a href="javascript:sortTable('table-EXPLAIN-Query-2:-IN-clause---AFTER-index', 0, 'S')"">EXPLAIN</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>EXPLAIN Query 2: IN clause - AFTER index</h3>
+<table id="table-EXPLAIN-Query-2:-IN-clause---AFTER-index" style="width:100%"><th><a href="javascript:sortTable('table-EXPLAIN-Query-2:-IN-clause---AFTER-index', 0, 'S')"">EXPLAIN</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>EXPLAIN Query 3: OR clause - AFTER index</h3>
+<table id="table-EXPLAIN-Query-3:-OR-clause---AFTER-index" style="width:100%"><th><a href="javascript:sortTable('table-EXPLAIN-Query-3:-OR-clause---AFTER-index', 0, 'S')"">EXPLAIN</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>EXPLAIN Query 3: OR clause - AFTER index</h3>
+<table id="table-EXPLAIN-Query-3:-OR-clause---AFTER-index" style="width:100%"><th><a href="javascript:sortTable('table-EXPLAIN-Query-3:-OR-clause---AFTER-index', 0, 'S')"">EXPLAIN</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>EXPLAIN Query 4: LIKE - AFTER index</h3>
+<table id="table-EXPLAIN-Query-4:-LIKE---AFTER-index" style="width:100%"><th><a href="javascript:sortTable('table-EXPLAIN-Query-4:-LIKE---AFTER-index', 0, 'S')"">EXPLAIN</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>EXPLAIN Query 4: LIKE - AFTER index</h3>
+<table id="table-EXPLAIN-Query-4:-LIKE---AFTER-index" style="width:100%"><th><a href="javascript:sortTable('table-EXPLAIN-Query-4:-LIKE---AFTER-index', 0, 'S')"">EXPLAIN</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>EXPLAIN Query 5: UNION - AFTER index</h3>
+<table id="table-EXPLAIN-Query-5:-UNION---AFTER-index" style="width:100%"><th><a href="javascript:sortTable('table-EXPLAIN-Query-5:-UNION---AFTER-index', 0, 'S')"">EXPLAIN</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>EXPLAIN Query 5: UNION - AFTER index</h3>
+<table id="table-EXPLAIN-Query-5:-UNION---AFTER-index" style="width:100%"><th><a href="javascript:sortTable('table-EXPLAIN-Query-5:-UNION---AFTER-index', 0, 'S')"">EXPLAIN</a>
+</th>
+<tr><td style="text-align:left;">NONE</td>
+</tr>
+</table>
+<h3>get a summary table for all assignments-----SELECT query_assn AS assignment, COUNT(*) AS queries, MIN(query_dur) AS fastest, MAX(query_dur) AS slowest, ROUND(AVG(query_dur),4) AS average, MIN(query_ended) AS first, MAX(query_ended) AS last FROM meta.`query` GROUP BY query_assn</h3>
+<table id="table-get-a-summary-table-for-all-assignments-----SELECT-query_assn-AS-assignment,-COUNT(*)-AS-queries,-MIN(query_dur)-AS-fastest,-MAX(query_dur)-AS-slowest,-ROUND(AVG(query_dur),4)-AS-average,-MIN(query_ended)-AS-first,-MAX(query_ended)-AS-last-FROM-meta.`query`-GROUP-BY-query_assn" style="width:100%"><th><a href="javascript:sortTable('table-get-a-summary-table-for-all-assignments-----SELECT-query_assn-AS-assignment,-COUNT(*)-AS-queries,-MIN(query_dur)-AS-fastest,-MAX(query_dur)-AS-slowest,-ROUND(AVG(query_dur),4)-AS-average,-MIN(query_ended)-AS-first,-MAX(query_ended)-AS-last-FROM-meta.`query`-GROUP-BY-query_assn', 0, 'N')"">assignment</a>
+</th>
+<th><a href="javascript:sortTable('table-get-a-summary-table-for-all-assignments-----SELECT-query_assn-AS-assignment,-COUNT(*)-AS-queries,-MIN(query_dur)-AS-fastest,-MAX(query_dur)-AS-slowest,-ROUND(AVG(query_dur),4)-AS-average,-MIN(query_ended)-AS-first,-MAX(query_ended)-AS-last-FROM-meta.`query`-GROUP-BY-query_assn', 1, 'N')"">queries</a>
+</th>
+<th><a href="javascript:sortTable('table-get-a-summary-table-for-all-assignments-----SELECT-query_assn-AS-assignment,-COUNT(*)-AS-queries,-MIN(query_dur)-AS-fastest,-MAX(query_dur)-AS-slowest,-ROUND(AVG(query_dur),4)-AS-average,-MIN(query_ended)-AS-first,-MAX(query_ended)-AS-last-FROM-meta.`query`-GROUP-BY-query_assn', 2, 'N')"">fastest</a>
+</th>
+<th><a href="javascript:sortTable('table-get-a-summary-table-for-all-assignments-----SELECT-query_assn-AS-assignment,-COUNT(*)-AS-queries,-MIN(query_dur)-AS-fastest,-MAX(query_dur)-AS-slowest,-ROUND(AVG(query_dur),4)-AS-average,-MIN(query_ended)-AS-first,-MAX(query_ended)-AS-last-FROM-meta.`query`-GROUP-BY-query_assn', 3, 'N')"">slowest</a>
+</th>
+<th><a href="javascript:sortTable('table-get-a-summary-table-for-all-assignments-----SELECT-query_assn-AS-assignment,-COUNT(*)-AS-queries,-MIN(query_dur)-AS-fastest,-MAX(query_dur)-AS-slowest,-ROUND(AVG(query_dur),4)-AS-average,-MIN(query_ended)-AS-first,-MAX(query_ended)-AS-last-FROM-meta.`query`-GROUP-BY-query_assn', 4, 'N')"">average</a>
+</th>
+<th><a href="javascript:sortTable('table-get-a-summary-table-for-all-assignments-----SELECT-query_assn-AS-assignment,-COUNT(*)-AS-queries,-MIN(query_dur)-AS-fastest,-MAX(query_dur)-AS-slowest,-ROUND(AVG(query_dur),4)-AS-average,-MIN(query_ended)-AS-first,-MAX(query_ended)-AS-last-FROM-meta.`query`-GROUP-BY-query_assn', 5, 'S')"">first</a>
+</th>
+<th><a href="javascript:sortTable('table-get-a-summary-table-for-all-assignments-----SELECT-query_assn-AS-assignment,-COUNT(*)-AS-queries,-MIN(query_dur)-AS-fastest,-MAX(query_dur)-AS-slowest,-ROUND(AVG(query_dur),4)-AS-average,-MIN(query_ended)-AS-first,-MAX(query_ended)-AS-last-FROM-meta.`query`-GROUP-BY-query_assn', 6, 'S')"">last</a>
+</th>
+<tr><td style="text-align:right;">03</td>
+<td style="text-align:right;">228</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:right;">0.1573</td>
+<td style="text-align:right;">0.0049</td>
+<td style="text-align:left;">2026-01-07 20:23:49</td>
+<td style="text-align:left;">2026-01-07 22:09:22</td>
+</tr>
+<tr><td style="text-align:right;">04</td>
+<td style="text-align:right;">127</td>
+<td style="text-align:right;">0.0000</td>
+<td style="text-align:right;">0.0319</td>
+<td style="text-align:right;">0.0049</td>
+<td style="text-align:left;">2026-01-07 21:11:34</td>
+<td style="text-align:left;">2026-01-10 21:33:04</td>
+</tr>
+<tr><td style="text-align:right;">05</td>
+<td style="text-align:right;">36</td>
+<td style="text-align:right;">0.0005</td>
+<td style="text-align:right;">0.0145</td>
+<td style="text-align:right;">0.0041</td>
+<td style="text-align:left;">2026-01-10 21:53:11</td>
+<td style="text-align:left;">2026-01-10 22:12:19</td>
+</tr>
+<tr><td style="text-align:right;">06</td>
+<td style="text-align:right;">101</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:right;">0.3740</td>
+<td style="text-align:right;">0.0297</td>
+<td style="text-align:left;">2026-01-10 22:22:35</td>
+<td style="text-align:left;">2026-01-10 22:41:30</td>
+</tr>
+<tr><td style="text-align:right;">07</td>
+<td style="text-align:right;">264</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:right;">0.1353</td>
+<td style="text-align:right;">0.0066</td>
+<td style="text-align:left;">2026-01-13 23:54:24</td>
+<td style="text-align:left;">2026-01-14 00:27:54</td>
+</tr>
+<tr><td style="text-align:right;">09</td>
+<td style="text-align:right;">144</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:right;">0.0427</td>
+<td style="text-align:right;">0.0024</td>
+<td style="text-align:left;">2026-01-14 09:27:12</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">10</td>
+<td style="text-align:right;">68</td>
+<td style="text-align:right;">0.0002</td>
+<td style="text-align:right;">0.0320</td>
+<td style="text-align:right;">0.0056</td>
+<td style="text-align:left;">2026-01-14 10:03:41</td>
+<td style="text-align:left;">2026-01-14 10:35:42</td>
+</tr>
+<tr><td style="text-align:right;">12</td>
+<td style="text-align:right;">54</td>
+<td style="text-align:right;">0.0003</td>
+<td style="text-align:right;">0.1626</td>
+<td style="text-align:right;">0.0116</td>
+<td style="text-align:left;">2026-01-17 02:04:08</td>
+<td style="text-align:left;">2026-01-17 02:37:57</td>
+</tr>
+<tr><td style="text-align:right;">13</td>
+<td style="text-align:right;">94</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:right;">0.1074</td>
+<td style="text-align:right;">0.0087</td>
+<td style="text-align:left;">2026-01-23 19:18:51</td>
+<td style="text-align:left;">2026-01-23 19:31:58</td>
+</tr>
+<tr><td style="text-align:right;">14</td>
+<td style="text-align:right;">59</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:right;">0.1557</td>
+<td style="text-align:right;">0.0115</td>
+<td style="text-align:left;">2026-01-23 20:10:08</td>
+<td style="text-align:left;">2026-01-23 20:56:33</td>
+</tr>
+</table>
+<h3>Retrieve a query log for the current assignment-----SELECT * FROM meta.`query` WHERE query_assn = '14'</h3>
+<table id="table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'14'" style="width:100%"><th><a href="javascript:sortTable('table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'14'', 0, 'N')"">query_id</a>
+</th>
+<th><a href="javascript:sortTable('table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'14'', 1, 'S')"">query_text</a>
+</th>
+<th><a href="javascript:sortTable('table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'14'', 2, 'S')"">query_desc</a>
+</th>
+<th><a href="javascript:sortTable('table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'14'', 3, 'S')"">query_db</a>
+</th>
+<th><a href="javascript:sortTable('table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'14'', 4, 'N')"">query_rows</a>
+</th>
+<th><a href="javascript:sortTable('table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'14'', 5, 'S')"">query_user</a>
+</th>
+<th><a href="javascript:sortTable('table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'14'', 6, 'N')"">query_assn</a>
+</th>
+<th><a href="javascript:sortTable('table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'14'', 7, 'N')"">query_dur</a>
+</th>
+<th><a href="javascript:sortTable('table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'14'', 8, 'S')"">query_ended</a>
+</th>
+<tr><td style="text-align:right;">1401</td>
+<td style="text-align:left;">USE meta</td>
+<td style="text-align:left;">Use meta database</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0009</td>
+<td style="text-align:left;">2026-01-23 20:10:08</td>
+</tr>
+<tr><td style="text-align:right;">1402</td>
+<td style="text-align:left;">USE meta</td>
+<td style="text-align:left;">Use meta database</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0002</td>
+<td style="text-align:left;">2026-01-23 20:12:03</td>
+</tr>
+<tr><td style="text-align:right;">1403</td>
+<td style="text-align:left;">/* Query 1: Everything at once - COUNT(*) without index */
+SELECT COUNT(*) FROM query</td>
+<td style="text-align:left;">Task 2: Five queries to retrieve total number of queries for all assignments (03-14)</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0270</td>
+<td style="text-align:left;">2026-01-23 20:12:03</td>
+</tr>
+<tr><td style="text-align:right;">1404</td>
+<td style="text-align:left;">SELECT COUNT(*) FROM query WHERE query_assn IN ('03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14')</td>
+<td style="text-align:left;">Query 2: Using IN clause - without index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0049</td>
+<td style="text-align:left;">2026-01-23 20:12:03</td>
+</tr>
+<tr><td style="text-align:right;">1405</td>
+<td style="text-align:left;">SELECT COUNT(*) FROM query WHERE query_assn = '03' OR query_assn = '04' OR query_assn = '05' OR query_assn = '06' OR query_assn = '07' OR query_assn = '08' OR query_assn = '09' OR query_assn = '10' OR query_assn = '11' OR query_assn = '12' OR query_assn = '13' OR query_assn = '14'</td>
+<td style="text-align:left;">Query 3: Using OR clause - without index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0022</td>
+<td style="text-align:left;">2026-01-23 20:12:03</td>
+</tr>
+<tr><td style="text-align:right;">1406</td>
+<td style="text-align:left;">SELECT COUNT(*) FROM query WHERE query_assn LIKE '03' OR query_assn LIKE '04' OR query_assn LIKE '05' OR query_assn LIKE '06' OR query_assn LIKE '07' OR query_assn LIKE '08' OR query_assn LIKE '09' OR query_assn LIKE '10' OR query_assn LIKE '11' OR query_assn LIKE '12' OR query_assn LIKE '13' OR query_assn LIKE '14'</td>
+<td style="text-align:left;">Query 4: Using LIKE - without index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0019</td>
+<td style="text-align:left;">2026-01-23 20:12:03</td>
+</tr>
+<tr><td style="text-align:right;">1407</td>
+<td style="text-align:left;">SELECT SUM(cnt) as total FROM (
+    SELECT COUNT(*) as cnt FROM query WHERE query_assn = '03'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '04'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '05'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '06'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '07'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '08'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '09'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '10'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '11'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '12'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '13'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '14'
+) AS subquery</td>
+<td style="text-align:left;">Query 5: Using UNION - without index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0303</td>
+<td style="text-align:left;">2026-01-23 20:12:03</td>
+</tr>
+<tr><td style="text-align:right;">1408</td>
+<td style="text-align:left;">CREATE INDEX idx_query_assn ON query (query_assn)</td>
+<td style="text-align:left;">Task 5: Create index on query_assn column</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.1289</td>
+<td style="text-align:left;">2026-01-23 20:12:03</td>
+</tr>
+<tr><td style="text-align:right;">1409</td>
+<td style="text-align:left;">/* Query 1: Everything at once - COUNT(*) with index */
+SELECT COUNT(*) FROM query</td>
+<td style="text-align:left;">Task 7: Re-execute the five queries with index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0005</td>
+<td style="text-align:left;">2026-01-23 20:12:03</td>
+</tr>
+<tr><td style="text-align:right;">1410</td>
+<td style="text-align:left;">SELECT COUNT(*) FROM query WHERE query_assn IN ('03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14')</td>
+<td style="text-align:left;">Query 2: Using IN clause - with index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0019</td>
+<td style="text-align:left;">2026-01-23 20:12:03</td>
+</tr>
+<tr><td style="text-align:right;">1411</td>
+<td style="text-align:left;">SELECT COUNT(*) FROM query WHERE query_assn = '03' OR query_assn = '04' OR query_assn = '05' OR query_assn = '06' OR query_assn = '07' OR query_assn = '08' OR query_assn = '09' OR query_assn = '10' OR query_assn = '11' OR query_assn = '12' OR query_assn = '13' OR query_assn = '14'</td>
+<td style="text-align:left;">Query 3: Using OR clause - with index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0009</td>
+<td style="text-align:left;">2026-01-23 20:12:03</td>
+</tr>
+<tr><td style="text-align:right;">1412</td>
+<td style="text-align:left;">SELECT COUNT(*) FROM query WHERE query_assn LIKE '03' OR query_assn LIKE '04' OR query_assn LIKE '05' OR query_assn LIKE '06' OR query_assn LIKE '07' OR query_assn LIKE '08' OR query_assn LIKE '09' OR query_assn LIKE '10' OR query_assn LIKE '11' OR query_assn LIKE '12' OR query_assn LIKE '13' OR query_assn LIKE '14'</td>
+<td style="text-align:left;">Query 4: Using LIKE - with index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0007</td>
+<td style="text-align:left;">2026-01-23 20:12:03</td>
+</tr>
+<tr><td style="text-align:right;">1413</td>
+<td style="text-align:left;">SELECT SUM(cnt) as total FROM (
+    SELECT COUNT(*) as cnt FROM query WHERE query_assn = '03'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '04'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '05'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '06'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '07'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '08'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '09'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '10'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '11'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '12'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '13'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '14'
+) AS subquery</td>
+<td style="text-align:left;">Query 5: Using UNION - with index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0008</td>
+<td style="text-align:left;">2026-01-23 20:12:03</td>
+</tr>
+<tr><td style="text-align:right;">1414</td>
+<td style="text-align:left;">SELECT query_assn AS assignment, COUNT(*) AS queries, MIN(query_dur) AS fastest, MAX(query_dur) AS slowest, ROUND(AVG(query_dur),4) AS average, MIN(query_ended) AS first, MAX(query_ended) AS last FROM meta.`query` GROUP BY query_assn</td>
+<td style="text-align:left;">get a summary table for all assignments</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">10</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0053</td>
+<td style="text-align:left;">2026-01-23 20:12:03</td>
+</tr>
+<tr><td style="text-align:right;">1415</td>
+<td style="text-align:left;">SELECT * FROM meta.`query` WHERE query_assn = '14'</td>
+<td style="text-align:left;">Retrieve a query log for the current assignment</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0004</td>
+<td style="text-align:left;">2026-01-23 20:12:03</td>
+</tr>
+<tr><td style="text-align:right;">1416</td>
+<td style="text-align:left;">SELECT * FROM university.v_table_columns</td>
+<td style="text-align:left;">Retreive a list of all tables and columns across my database</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">169</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0724</td>
+<td style="text-align:left;">2026-01-23 20:12:03</td>
+</tr>
+<tr><td style="text-align:right;">1417</td>
+<td style="text-align:left;">SELECT query_assn, COUNT(CASE WHEN WEEKDAY(query_ended) = 0 THEN query_id END) as 'Monday', COUNT(CASE WHEN WEEKDAY(query_ended) = 1 THEN query_id END) as 'Tuesday', COUNT(CASE WHEN WEEKDAY(query_ended) = 2 THEN query_id END) as 'Wednesday', COUNT(CASE WHEN WEEKDAY(query_ended) = 3 THEN query_id END) as 'Thursday', COUNT(CASE WHEN WEEKDAY(query_ended) = 4 THEN query_id END) as 'Friday', COUNT(CASE WHEN WEEKDAY(query_ended) = 5 THEN query_id END) as 'Saturday', COUNT(CASE WHEN WEEKDAY(query_ended) = 6 THEN query_id END) as 'Sunday', COUNT(query_id) as 'Total_Per_Assignment' FROM meta.query GROUP BY query_assn UNION ALL SELECT 'Total_Per_day' as query_assn, COUNT(CASE WHEN WEEKDAY(query_ended) = 0 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 1 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 2 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 3 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 4 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 5 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 6 THEN query_id END), COUNT(query_id) FROM meta.query</td>
+<td style="text-align:left;">Make a pivot table of the query table by day</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">11</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0060</td>
+<td style="text-align:left;">2026-01-23 20:12:03</td>
+</tr>
+<tr><td style="text-align:right;">1418</td>
+<td style="text-align:left;">USE meta</td>
+<td style="text-align:left;">Use meta database</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:left;">2026-01-23 20:13:14</td>
+</tr>
+<tr><td style="text-align:right;">1419</td>
+<td style="text-align:left;">DROP INDEX idx_query_assn ON query</td>
+<td style="text-align:left;">Drop index if it exists (will fail if doesn't exist, but try/except handles it)</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0211</td>
+<td style="text-align:left;">2026-01-23 20:13:14</td>
+</tr>
+<tr><td style="text-align:right;">1420</td>
+<td style="text-align:left;">/* Query 1: Everything at once - COUNT(*) without index */
+SELECT COUNT(*) FROM query</td>
+<td style="text-align:left;">Task 2: Five queries to retrieve total number of queries for all assignments (03-14)</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0025</td>
+<td style="text-align:left;">2026-01-23 20:13:14</td>
+</tr>
+<tr><td style="text-align:right;">1421</td>
+<td style="text-align:left;">SELECT COUNT(*) FROM query WHERE query_assn IN ('03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14')</td>
+<td style="text-align:left;">Query 2: Using IN clause - without index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0007</td>
+<td style="text-align:left;">2026-01-23 20:13:14</td>
+</tr>
+<tr><td style="text-align:right;">1422</td>
+<td style="text-align:left;">SELECT COUNT(*) FROM query WHERE query_assn = '03' OR query_assn = '04' OR query_assn = '05' OR query_assn = '06' OR query_assn = '07' OR query_assn = '08' OR query_assn = '09' OR query_assn = '10' OR query_assn = '11' OR query_assn = '12' OR query_assn = '13' OR query_assn = '14'</td>
+<td style="text-align:left;">Query 3: Using OR clause - without index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0007</td>
+<td style="text-align:left;">2026-01-23 20:13:14</td>
+</tr>
+<tr><td style="text-align:right;">1423</td>
+<td style="text-align:left;">SELECT COUNT(*) FROM query WHERE query_assn LIKE '03' OR query_assn LIKE '04' OR query_assn LIKE '05' OR query_assn LIKE '06' OR query_assn LIKE '07' OR query_assn LIKE '08' OR query_assn LIKE '09' OR query_assn LIKE '10' OR query_assn LIKE '11' OR query_assn LIKE '12' OR query_assn LIKE '13' OR query_assn LIKE '14'</td>
+<td style="text-align:left;">Query 4: Using LIKE - without index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0005</td>
+<td style="text-align:left;">2026-01-23 20:13:14</td>
+</tr>
+<tr><td style="text-align:right;">1424</td>
+<td style="text-align:left;">SELECT SUM(cnt) as total FROM (
+    SELECT COUNT(*) as cnt FROM query WHERE query_assn = '03'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '04'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '05'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '06'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '07'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '08'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '09'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '10'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '11'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '12'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '13'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '14'
+) AS subquery</td>
+<td style="text-align:left;">Query 5: Using UNION - without index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0043</td>
+<td style="text-align:left;">2026-01-23 20:13:14</td>
+</tr>
+<tr><td style="text-align:right;">1425</td>
+<td style="text-align:left;">CREATE INDEX idx_query_assn ON query (query_assn)</td>
+<td style="text-align:left;">Task 5: Create index on query_assn column</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0140</td>
+<td style="text-align:left;">2026-01-23 20:13:14</td>
+</tr>
+<tr><td style="text-align:right;">1426</td>
+<td style="text-align:left;">/* Query 1: Everything at once - COUNT(*) with index */
+SELECT COUNT(*) FROM query</td>
+<td style="text-align:left;">Task 7: Re-execute the five queries with index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0012</td>
+<td style="text-align:left;">2026-01-23 20:13:14</td>
+</tr>
+<tr><td style="text-align:right;">1427</td>
+<td style="text-align:left;">SELECT COUNT(*) FROM query WHERE query_assn IN ('03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14')</td>
+<td style="text-align:left;">Query 2: Using IN clause - with index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0004</td>
+<td style="text-align:left;">2026-01-23 20:13:14</td>
+</tr>
+<tr><td style="text-align:right;">1428</td>
+<td style="text-align:left;">SELECT COUNT(*) FROM query WHERE query_assn = '03' OR query_assn = '04' OR query_assn = '05' OR query_assn = '06' OR query_assn = '07' OR query_assn = '08' OR query_assn = '09' OR query_assn = '10' OR query_assn = '11' OR query_assn = '12' OR query_assn = '13' OR query_assn = '14'</td>
+<td style="text-align:left;">Query 3: Using OR clause - with index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0007</td>
+<td style="text-align:left;">2026-01-23 20:13:14</td>
+</tr>
+<tr><td style="text-align:right;">1429</td>
+<td style="text-align:left;">SELECT COUNT(*) FROM query WHERE query_assn LIKE '03' OR query_assn LIKE '04' OR query_assn LIKE '05' OR query_assn LIKE '06' OR query_assn LIKE '07' OR query_assn LIKE '08' OR query_assn LIKE '09' OR query_assn LIKE '10' OR query_assn LIKE '11' OR query_assn LIKE '12' OR query_assn LIKE '13' OR query_assn LIKE '14'</td>
+<td style="text-align:left;">Query 4: Using LIKE - with index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0005</td>
+<td style="text-align:left;">2026-01-23 20:13:14</td>
+</tr>
+<tr><td style="text-align:right;">1430</td>
+<td style="text-align:left;">SELECT SUM(cnt) as total FROM (
+    SELECT COUNT(*) as cnt FROM query WHERE query_assn = '03'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '04'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '05'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '06'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '07'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '08'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '09'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '10'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '11'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '12'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '13'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '14'
+) AS subquery</td>
+<td style="text-align:left;">Query 5: Using UNION - with index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0013</td>
+<td style="text-align:left;">2026-01-23 20:13:14</td>
+</tr>
+<tr><td style="text-align:right;">1431</td>
+<td style="text-align:left;">SELECT query_assn AS assignment, COUNT(*) AS queries, MIN(query_dur) AS fastest, MAX(query_dur) AS slowest, ROUND(AVG(query_dur),4) AS average, MIN(query_ended) AS first, MAX(query_ended) AS last FROM meta.`query` GROUP BY query_assn</td>
+<td style="text-align:left;">get a summary table for all assignments</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">10</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0022</td>
+<td style="text-align:left;">2026-01-23 20:13:14</td>
+</tr>
+<tr><td style="text-align:right;">1432</td>
+<td style="text-align:left;">SELECT * FROM meta.`query` WHERE query_assn = '14'</td>
+<td style="text-align:left;">Retrieve a query log for the current assignment</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">31</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0007</td>
+<td style="text-align:left;">2026-01-23 20:13:14</td>
+</tr>
+<tr><td style="text-align:right;">1433</td>
+<td style="text-align:left;">SELECT * FROM university.v_table_columns</td>
+<td style="text-align:left;">Retreive a list of all tables and columns across my database</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">169</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0149</td>
+<td style="text-align:left;">2026-01-23 20:13:14</td>
+</tr>
+<tr><td style="text-align:right;">1434</td>
+<td style="text-align:left;">SELECT query_assn, COUNT(CASE WHEN WEEKDAY(query_ended) = 0 THEN query_id END) as 'Monday', COUNT(CASE WHEN WEEKDAY(query_ended) = 1 THEN query_id END) as 'Tuesday', COUNT(CASE WHEN WEEKDAY(query_ended) = 2 THEN query_id END) as 'Wednesday', COUNT(CASE WHEN WEEKDAY(query_ended) = 3 THEN query_id END) as 'Thursday', COUNT(CASE WHEN WEEKDAY(query_ended) = 4 THEN query_id END) as 'Friday', COUNT(CASE WHEN WEEKDAY(query_ended) = 5 THEN query_id END) as 'Saturday', COUNT(CASE WHEN WEEKDAY(query_ended) = 6 THEN query_id END) as 'Sunday', COUNT(query_id) as 'Total_Per_Assignment' FROM meta.query GROUP BY query_assn UNION ALL SELECT 'Total_Per_day' as query_assn, COUNT(CASE WHEN WEEKDAY(query_ended) = 0 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 1 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 2 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 3 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 4 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 5 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 6 THEN query_id END), COUNT(query_id) FROM meta.query</td>
+<td style="text-align:left;">Make a pivot table of the query table by day</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">11</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0018</td>
+<td style="text-align:left;">2026-01-23 20:13:14</td>
+</tr>
+<tr><td style="text-align:right;">1435</td>
+<td style="text-align:left;">USE meta</td>
+<td style="text-align:left;">Use meta database</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0013</td>
+<td style="text-align:left;">2026-01-23 20:56:32</td>
+</tr>
+<tr><td style="text-align:right;">1436</td>
+<td style="text-align:left;">DROP INDEX idx_query_assn ON query</td>
+<td style="text-align:left;">Drop index if it exists (will fail if doesn't exist, but try/except handles it)</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.1557</td>
+<td style="text-align:left;">2026-01-23 20:56:32</td>
+</tr>
+<tr><td style="text-align:right;">1437</td>
+<td style="text-align:left;">/* Query 1: Everything at once - COUNT(*) without index */
+SELECT COUNT(*) FROM query</td>
+<td style="text-align:left;">Task 2: Five queries to retrieve total number of queries for all assignments (03-14)</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0201</td>
+<td style="text-align:left;">2026-01-23 20:56:32</td>
+</tr>
+<tr><td style="text-align:right;">1438</td>
+<td style="text-align:left;">SELECT COUNT(*) FROM query WHERE query_assn IN ('03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14')</td>
+<td style="text-align:left;">Query 2: Using IN clause - without index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0194</td>
+<td style="text-align:left;">2026-01-23 20:56:32</td>
+</tr>
+<tr><td style="text-align:right;">1439</td>
+<td style="text-align:left;">SELECT COUNT(*) FROM query WHERE query_assn = '03' OR query_assn = '04' OR query_assn = '05' OR query_assn = '06' OR query_assn = '07' OR query_assn = '08' OR query_assn = '09' OR query_assn = '10' OR query_assn = '11' OR query_assn = '12' OR query_assn = '13' OR query_assn = '14'</td>
+<td style="text-align:left;">Query 3: Using OR clause - without index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0051</td>
+<td style="text-align:left;">2026-01-23 20:56:33</td>
+</tr>
+<tr><td style="text-align:right;">1440</td>
+<td style="text-align:left;">SELECT COUNT(*) FROM query WHERE query_assn LIKE '03' OR query_assn LIKE '04' OR query_assn LIKE '05' OR query_assn LIKE '06' OR query_assn LIKE '07' OR query_assn LIKE '08' OR query_assn LIKE '09' OR query_assn LIKE '10' OR query_assn LIKE '11' OR query_assn LIKE '12' OR query_assn LIKE '13' OR query_assn LIKE '14'</td>
+<td style="text-align:left;">Query 4: Using LIKE - without index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0033</td>
+<td style="text-align:left;">2026-01-23 20:56:33</td>
+</tr>
+<tr><td style="text-align:right;">1441</td>
+<td style="text-align:left;">SELECT SUM(cnt) as total FROM (
+    SELECT COUNT(*) as cnt FROM query WHERE query_assn = '03'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '04'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '05'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '06'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '07'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '08'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '09'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '10'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '11'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '12'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '13'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '14'
+) AS subquery</td>
+<td style="text-align:left;">Query 5: Using UNION - without index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0184</td>
+<td style="text-align:left;">2026-01-23 20:56:33</td>
+</tr>
+<tr><td style="text-align:right;">1442</td>
+<td style="text-align:left;">CREATE INDEX idx_query_assn ON query (query_assn)</td>
+<td style="text-align:left;">Task 5: Create index on query_assn column</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0449</td>
+<td style="text-align:left;">2026-01-23 20:56:33</td>
+</tr>
+<tr><td style="text-align:right;">1443</td>
+<td style="text-align:left;">/* Query 1: Everything at once - COUNT(*) with index */
+SELECT COUNT(*) FROM query</td>
+<td style="text-align:left;">Task 7: Re-execute the five queries with index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0006</td>
+<td style="text-align:left;">2026-01-23 20:56:33</td>
+</tr>
+<tr><td style="text-align:right;">1444</td>
+<td style="text-align:left;">SELECT COUNT(*) FROM query WHERE query_assn IN ('03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14')</td>
+<td style="text-align:left;">Query 2: Using IN clause - with index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0028</td>
+<td style="text-align:left;">2026-01-23 20:56:33</td>
+</tr>
+<tr><td style="text-align:right;">1445</td>
+<td style="text-align:left;">SELECT COUNT(*) FROM query WHERE query_assn = '03' OR query_assn = '04' OR query_assn = '05' OR query_assn = '06' OR query_assn = '07' OR query_assn = '08' OR query_assn = '09' OR query_assn = '10' OR query_assn = '11' OR query_assn = '12' OR query_assn = '13' OR query_assn = '14'</td>
+<td style="text-align:left;">Query 3: Using OR clause - with index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0015</td>
+<td style="text-align:left;">2026-01-23 20:56:33</td>
+</tr>
+<tr><td style="text-align:right;">1446</td>
+<td style="text-align:left;">SELECT COUNT(*) FROM query WHERE query_assn LIKE '03' OR query_assn LIKE '04' OR query_assn LIKE '05' OR query_assn LIKE '06' OR query_assn LIKE '07' OR query_assn LIKE '08' OR query_assn LIKE '09' OR query_assn LIKE '10' OR query_assn LIKE '11' OR query_assn LIKE '12' OR query_assn LIKE '13' OR query_assn LIKE '14'</td>
+<td style="text-align:left;">Query 4: Using LIKE - with index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0012</td>
+<td style="text-align:left;">2026-01-23 20:56:33</td>
+</tr>
+<tr><td style="text-align:right;">1447</td>
+<td style="text-align:left;">SELECT SUM(cnt) as total FROM (
+    SELECT COUNT(*) as cnt FROM query WHERE query_assn = '03'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '04'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '05'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '06'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '07'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '08'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '09'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '10'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '11'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '12'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '13'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '14'
+) AS subquery</td>
+<td style="text-align:left;">Query 5: Using UNION - with index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0028</td>
+<td style="text-align:left;">2026-01-23 20:56:33</td>
+</tr>
+<tr><td style="text-align:right;">1448</td>
+<td style="text-align:left;">/* Drop index to demonstrate before state */
+DROP INDEX idx_query_assn ON query</td>
+<td style="text-align:left;">Task 8: Compare execution plans - BEFORE index (drop index first to show before state)</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0092</td>
+<td style="text-align:left;">2026-01-23 20:56:33</td>
+</tr>
+<tr><td style="text-align:right;">1449</td>
+<td style="text-align:left;">EXPLAIN SELECT COUNT(*) FROM query</td>
+<td style="text-align:left;">EXPLAIN Query 1: COUNT(*) - BEFORE index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0013</td>
+<td style="text-align:left;">2026-01-23 20:56:33</td>
+</tr>
+<tr><td style="text-align:right;">1450</td>
+<td style="text-align:left;">EXPLAIN SELECT COUNT(*) FROM query WHERE query_assn IN ('03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14')</td>
+<td style="text-align:left;">EXPLAIN Query 2: IN clause - BEFORE index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0005</td>
+<td style="text-align:left;">2026-01-23 20:56:33</td>
+</tr>
+<tr><td style="text-align:right;">1451</td>
+<td style="text-align:left;">EXPLAIN SELECT COUNT(*) FROM query WHERE query_assn = '03' OR query_assn = '04' OR query_assn = '05' OR query_assn = '06' OR query_assn = '07' OR query_assn = '08' OR query_assn = '09' OR query_assn = '10' OR query_assn = '11' OR query_assn = '12' OR query_assn = '13' OR query_assn = '14'</td>
+<td style="text-align:left;">EXPLAIN Query 3: OR clause - BEFORE index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0003</td>
+<td style="text-align:left;">2026-01-23 20:56:33</td>
+</tr>
+<tr><td style="text-align:right;">1452</td>
+<td style="text-align:left;">EXPLAIN SELECT COUNT(*) FROM query WHERE query_assn LIKE '03' OR query_assn LIKE '04' OR query_assn LIKE '05' OR query_assn LIKE '06' OR query_assn LIKE '07' OR query_assn LIKE '08' OR query_assn LIKE '09' OR query_assn LIKE '10' OR query_assn LIKE '11' OR query_assn LIKE '12' OR query_assn LIKE '13' OR query_assn LIKE '14'</td>
+<td style="text-align:left;">EXPLAIN Query 4: LIKE - BEFORE index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0005</td>
+<td style="text-align:left;">2026-01-23 20:56:33</td>
+</tr>
+<tr><td style="text-align:right;">1453</td>
+<td style="text-align:left;">EXPLAIN SELECT SUM(cnt) as total FROM (
+    SELECT COUNT(*) as cnt FROM query WHERE query_assn = '03'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '04'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '05'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '06'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '07'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '08'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '09'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '10'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '11'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '12'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '13'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '14'
+) AS subquery</td>
+<td style="text-align:left;">EXPLAIN Query 5: UNION - BEFORE index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0028</td>
+<td style="text-align:left;">2026-01-23 20:56:33</td>
+</tr>
+<tr><td style="text-align:right;">1454</td>
+<td style="text-align:left;">CREATE INDEX idx_query_assn ON query (query_assn)</td>
+<td style="text-align:left;">Re-create index for AFTER comparison</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0270</td>
+<td style="text-align:left;">2026-01-23 20:56:33</td>
+</tr>
+<tr><td style="text-align:right;">1455</td>
+<td style="text-align:left;">EXPLAIN SELECT COUNT(*) FROM query</td>
+<td style="text-align:left;">EXPLAIN Query 1: COUNT(*) - AFTER index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0005</td>
+<td style="text-align:left;">2026-01-23 20:56:33</td>
+</tr>
+<tr><td style="text-align:right;">1456</td>
+<td style="text-align:left;">EXPLAIN SELECT COUNT(*) FROM query WHERE query_assn IN ('03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14')</td>
+<td style="text-align:left;">EXPLAIN Query 2: IN clause - AFTER index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0003</td>
+<td style="text-align:left;">2026-01-23 20:56:33</td>
+</tr>
+<tr><td style="text-align:right;">1457</td>
+<td style="text-align:left;">EXPLAIN SELECT COUNT(*) FROM query WHERE query_assn = '03' OR query_assn = '04' OR query_assn = '05' OR query_assn = '06' OR query_assn = '07' OR query_assn = '08' OR query_assn = '09' OR query_assn = '10' OR query_assn = '11' OR query_assn = '12' OR query_assn = '13' OR query_assn = '14'</td>
+<td style="text-align:left;">EXPLAIN Query 3: OR clause - AFTER index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0008</td>
+<td style="text-align:left;">2026-01-23 20:56:33</td>
+</tr>
+<tr><td style="text-align:right;">1458</td>
+<td style="text-align:left;">EXPLAIN SELECT COUNT(*) FROM query WHERE query_assn LIKE '03' OR query_assn LIKE '04' OR query_assn LIKE '05' OR query_assn LIKE '06' OR query_assn LIKE '07' OR query_assn LIKE '08' OR query_assn LIKE '09' OR query_assn LIKE '10' OR query_assn LIKE '11' OR query_assn LIKE '12' OR query_assn LIKE '13' OR query_assn LIKE '14'</td>
+<td style="text-align:left;">EXPLAIN Query 4: LIKE - AFTER index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0006</td>
+<td style="text-align:left;">2026-01-23 20:56:33</td>
+</tr>
+<tr><td style="text-align:right;">1459</td>
+<td style="text-align:left;">EXPLAIN SELECT SUM(cnt) as total FROM (
+    SELECT COUNT(*) as cnt FROM query WHERE query_assn = '03'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '04'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '05'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '06'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '07'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '08'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '09'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '10'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '11'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '12'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '13'
+    UNION ALL
+    SELECT COUNT(*) FROM query WHERE query_assn = '14'
+) AS subquery</td>
+<td style="text-align:left;">EXPLAIN Query 5: UNION - AFTER index</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0030</td>
+<td style="text-align:left;">2026-01-23 20:56:33</td>
+</tr>
+<tr><td style="text-align:right;">1460</td>
+<td style="text-align:left;">SELECT query_assn AS assignment, COUNT(*) AS queries, MIN(query_dur) AS fastest, MAX(query_dur) AS slowest, ROUND(AVG(query_dur),4) AS average, MIN(query_ended) AS first, MAX(query_ended) AS last FROM meta.`query` GROUP BY query_assn</td>
+<td style="text-align:left;">get a summary table for all assignments</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">10</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">14</td>
+<td style="text-align:right;">0.0090</td>
+<td style="text-align:left;">2026-01-23 20:56:33</td>
+</tr>
+</table>
+<h3>Retreive a list of all tables and columns across my database-----SELECT * FROM university.v_table_columns</h3>
+<table id="table-Retreive-a-list-of-all-tables-and-columns-across-my-database-----SELECT-*-FROM-university.v_table_columns" style="width:100%"><th><a href="javascript:sortTable('table-Retreive-a-list-of-all-tables-and-columns-across-my-database-----SELECT-*-FROM-university.v_table_columns', 0, 'S')"">data_base</a>
+</th>
+<th><a href="javascript:sortTable('table-Retreive-a-list-of-all-tables-and-columns-across-my-database-----SELECT-*-FROM-university.v_table_columns', 1, 'S')"">table</a>
+</th>
+<th><a href="javascript:sortTable('table-Retreive-a-list-of-all-tables-and-columns-across-my-database-----SELECT-*-FROM-university.v_table_columns', 2, 'S')"">column</a>
+</th>
+<th><a href="javascript:sortTable('table-Retreive-a-list-of-all-tables-and-columns-across-my-database-----SELECT-*-FROM-university.v_table_columns', 3, 'N')"">no</a>
+</th>
+<th><a href="javascript:sortTable('table-Retreive-a-list-of-all-tables-and-columns-across-my-database-----SELECT-*-FROM-university.v_table_columns', 4, 'S')"">nullable</a>
+</th>
+<th><a href="javascript:sortTable('table-Retreive-a-list-of-all-tables-and-columns-across-my-database-----SELECT-*-FROM-university.v_table_columns', 5, 'S')"">data_type</a>
+</th>
+<th><a href="javascript:sortTable('table-Retreive-a-list-of-all-tables-and-columns-across-my-database-----SELECT-*-FROM-university.v_table_columns', 6, 'N')"">size</a>
+</th>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">book_title</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">author</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">author_nationality</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">book_format</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">price</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">pages</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">thickness</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">publisher</td>
+<td style="text-align:right;">8</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">publisher_country</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">genre_id</td>
+<td style="text-align:right;">10</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">genre_name</td>
+<td style="text-align:right;">11</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book_subject</td>
+<td style="text-align:left;">book_title</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book_subject</td>
+<td style="text-align:left;">subject_name</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_book</td>
+<td style="text-align:left;">book_title</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_book</td>
+<td style="text-align:left;">author</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_book</td>
+<td style="text-align:left;">author_nationality</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_book</td>
+<td style="text-align:left;">pages</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_book</td>
+<td style="text-align:left;">thickness</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_book</td>
+<td style="text-align:left;">publisher</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_book</td>
+<td style="text-align:left;">publisher_country</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_book</td>
+<td style="text-align:left;">genre_id</td>
+<td style="text-align:right;">8</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_book</td>
+<td style="text-align:left;">genre_name</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_price</td>
+<td style="text-align:left;">book_title</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_price</td>
+<td style="text-align:left;">book_format</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_price</td>
+<td style="text-align:left;">price</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_author</td>
+<td style="text-align:left;">author</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_author</td>
+<td style="text-align:left;">nationality</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_book</td>
+<td style="text-align:left;">book_title</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_book</td>
+<td style="text-align:left;">author</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_book</td>
+<td style="text-align:left;">pages</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_book</td>
+<td style="text-align:left;">thickness</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_book</td>
+<td style="text-align:left;">publisher</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_book</td>
+<td style="text-align:left;">genre_id</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_genre</td>
+<td style="text-align:left;">genre_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_genre</td>
+<td style="text-align:left;">name</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_price</td>
+<td style="text-align:left;">book_title</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_price</td>
+<td style="text-align:left;">book_format</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_price</td>
+<td style="text-align:left;">price</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_publisher</td>
+<td style="text-align:left;">publisher</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_publisher</td>
+<td style="text-align:left;">country</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">book_title</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">author</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">author_nationality</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">book_format</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">price</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">book_subject</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">pages</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">thickness</td>
+<td style="text-align:right;">8</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">publisher</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">publisher_country</td>
+<td style="text-align:right;">10</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">genre_id</td>
+<td style="text-align:right;">11</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">genre_name</td>
+<td style="text-align:right;">12</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">book_title</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">author</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">author_nationality</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">pages</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">thickness</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">publisher</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">publisher_country</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">genre_id</td>
+<td style="text-align:right;">8</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">genre_name</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">book_format</td>
+<td style="text-align:right;">10</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">price</td>
+<td style="text-align:right;">11</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">backup_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">db</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">20</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">relation</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">30</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">rows</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">cols</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">csv_length</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">xml_length</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">json_length</td>
+<td style="text-align:right;">8</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">csv_data</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">mediumtext</td>
+<td style="text-align:right;">16777215</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">xml_data</td>
+<td style="text-align:right;">10</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">mediumtext</td>
+<td style="text-align:right;">16777215</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">json_data</td>
+<td style="text-align:right;">11</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">json</td>
+<td style="text-align:right;">0</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">saved_dtm</td>
+<td style="text-align:right;">12</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">timestamp</td>
+<td style="text-align:right;">0</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_text</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">9999</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_desc</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">999</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_db</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">30</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_rows</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_user</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">30</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_assn</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">30</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_dur</td>
+<td style="text-align:right;">8</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_ended</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">datetime</td>
+<td style="text-align:right;">0</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">v_table_backups</td>
+<td style="text-align:left;">backup_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">v_table_backups</td>
+<td style="text-align:left;">db</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">20</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">v_table_backups</td>
+<td style="text-align:left;">relation</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">30</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">v_table_backups</td>
+<td style="text-align:left;">rows</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">v_table_backups</td>
+<td style="text-align:left;">cols</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">v_table_backups</td>
+<td style="text-align:left;">csv_length</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">v_table_backups</td>
+<td style="text-align:left;">xml_length</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">v_table_backups</td>
+<td style="text-align:left;">json_length</td>
+<td style="text-align:right;">8</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">v_table_backups</td>
+<td style="text-align:left;">saved_dtm</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">timestamp</td>
+<td style="text-align:right;">0</td>
+</tr>
+<tr><td style="text-align:left;">sales</td>
+<td style="text-align:left;">sale</td>
+<td style="text-align:left;">product_name</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">sales</td>
+<td style="text-align:left;">sale</td>
+<td style="text-align:left;">store_location</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">sales</td>
+<td style="text-align:left;">sale</td>
+<td style="text-align:left;">num_sales</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">advisor</td>
+<td style="text-align:left;">s_ID</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">5</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">advisor</td>
+<td style="text-align:left;">i_ID</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">5</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">classroom</td>
+<td style="text-align:left;">building</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">15</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">classroom</td>
+<td style="text-align:left;">room_number</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">7</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">classroom</td>
+<td style="text-align:left;">capacity</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">4</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">course</td>
+<td style="text-align:left;">course_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">course</td>
+<td style="text-align:left;">title</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">course</td>
+<td style="text-align:left;">dept_name</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">20</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">course</td>
+<td style="text-align:left;">credits</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">department</td>
+<td style="text-align:left;">dept_name</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">20</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">department</td>
+<td style="text-align:left;">building</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">15</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">department</td>
+<td style="text-align:left;">budget</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">12</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">grade_points</td>
+<td style="text-align:left;">grade</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">grade_points</td>
+<td style="text-align:left;">points</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">instructor</td>
+<td style="text-align:left;">ID</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">5</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">instructor</td>
+<td style="text-align:left;">name</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">20</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">instructor</td>
+<td style="text-align:left;">dept_name</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">20</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">instructor</td>
+<td style="text-align:left;">salary</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">prereq</td>
+<td style="text-align:left;">course_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">prereq</td>
+<td style="text-align:left;">prereq_id</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_text</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">9999</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_desc</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">999</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_db</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">30</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_rows</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_user</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">30</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_assn</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">30</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_dur</td>
+<td style="text-align:right;">8</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_ended</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">datetime</td>
+<td style="text-align:right;">0</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">section</td>
+<td style="text-align:left;">course_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">section</td>
+<td style="text-align:left;">sec_id</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">section</td>
+<td style="text-align:left;">semester</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">6</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">section</td>
+<td style="text-align:left;">year</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">4</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">section</td>
+<td style="text-align:left;">building</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">15</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">section</td>
+<td style="text-align:left;">room_number</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">7</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">section</td>
+<td style="text-align:left;">time_slot_id</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">4</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">student</td>
+<td style="text-align:left;">ID</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">5</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">student</td>
+<td style="text-align:left;">name</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">20</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">student</td>
+<td style="text-align:left;">dept_name</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">20</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">student</td>
+<td style="text-align:left;">tot_cred</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">3</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">takes</td>
+<td style="text-align:left;">ID</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">5</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">takes</td>
+<td style="text-align:left;">course_id</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">takes</td>
+<td style="text-align:left;">sec_id</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">takes</td>
+<td style="text-align:left;">semester</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">6</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">takes</td>
+<td style="text-align:left;">year</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">4</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">takes</td>
+<td style="text-align:left;">grade</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">teaches</td>
+<td style="text-align:left;">ID</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">5</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">teaches</td>
+<td style="text-align:left;">course_id</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">teaches</td>
+<td style="text-align:left;">sec_id</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">teaches</td>
+<td style="text-align:left;">semester</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">6</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">teaches</td>
+<td style="text-align:left;">year</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">4</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">time_slot</td>
+<td style="text-align:left;">time_slot_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">4</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">time_slot</td>
+<td style="text-align:left;">day</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">1</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">time_slot</td>
+<td style="text-align:left;">start_hr</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">time_slot</td>
+<td style="text-align:left;">start_min</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">time_slot</td>
+<td style="text-align:left;">end_hr</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">time_slot</td>
+<td style="text-align:left;">end_min</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_student_gpa</td>
+<td style="text-align:left;">id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">5</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_student_gpa</td>
+<td style="text-align:left;">gpa</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">30</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_table_columns</td>
+<td style="text-align:left;">data_base</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">64</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_table_columns</td>
+<td style="text-align:left;">table</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">64</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_table_columns</td>
+<td style="text-align:left;">column</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">64</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_table_columns</td>
+<td style="text-align:left;">no</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_table_columns</td>
+<td style="text-align:left;">nullable</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">3</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_table_columns</td>
+<td style="text-align:left;">data_type</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">longtext</td>
+<td style="text-align:right;">4294967295</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_table_columns</td>
+<td style="text-align:left;">size</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">20</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_takes_points</td>
+<td style="text-align:left;">student_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">5</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_takes_points</td>
+<td style="text-align:left;">course_id</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_takes_points</td>
+<td style="text-align:left;">semester</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">6</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_takes_points</td>
+<td style="text-align:left;">year</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">4</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_takes_points</td>
+<td style="text-align:left;">grade</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_takes_points</td>
+<td style="text-align:left;">points</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_udb_datatypes</td>
+<td style="text-align:left;">DATA_TYPE</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">longtext</td>
+<td style="text-align:right;">4294967295</td>
+</tr>
+</table>
+<h3>Make a pivot table of the query table by day-----SELECT query_assn, COUNT(CASE WHEN WEEKDAY(query_ended) = 0 THEN query_id END) as 'Monday', COUNT(CASE WHEN WEEKDAY(query_ended) = 1 THEN query_id END) as 'Tuesday', COUNT(CASE WHEN WEEKDAY(query_ended) = 2 THEN query_id END) as 'Wednesday', COUNT(CASE WHEN WEEKDAY(query_ended) = 3 THEN query_id END) as 'Thursday', COUNT(CASE WHEN WEEKDAY(query_ended) = 4 THEN query_id END) as 'Friday', COUNT(CASE WHEN WEEKDAY(query_ended) = 5 THEN query_id END) as 'Saturday', COUNT(CASE WHEN WEEKDAY(query_ended) = 6 THEN query_id END) as 'Sunday', COUNT(query_id) as 'Total_Per_Assignment' FROM meta.query GROUP BY query_assn UNION ALL SELECT 'Total_Per_day' as query_assn, COUNT(CASE WHEN WEEKDAY(query_ended) = 0 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 1 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 2 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 3 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 4 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 5 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 6 THEN query_id END), COUNT(query_id) FROM meta.query</h3>
+<table id="table-Make-a-pivot-table-of-the-query-table-by-day-----SELECT-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END)-as-'Monday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END)-as-'Tuesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END)-as-'Wednesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END)-as-'Thursday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END)-as-'Friday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END)-as-'Saturday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END)-as-'Sunday',-COUNT(query_id)-as-'Total_Per_Assignment'-FROM-meta.query-GROUP-BY-query_assn-UNION-ALL-SELECT-'Total_Per_day'-as-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END),-COUNT(query_id)-FROM-meta.query" style="width:100%"><th><a href="javascript:sortTable('table-Make-a-pivot-table-of-the-query-table-by-day-----SELECT-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END)-as-'Monday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END)-as-'Tuesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END)-as-'Wednesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END)-as-'Thursday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END)-as-'Friday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END)-as-'Saturday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END)-as-'Sunday',-COUNT(query_id)-as-'Total_Per_Assignment'-FROM-meta.query-GROUP-BY-query_assn-UNION-ALL-SELECT-'Total_Per_day'-as-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END),-COUNT(query_id)-FROM-meta.query', 0, 'S')"">query_assn</a>
+</th>
+<th><a href="javascript:sortTable('table-Make-a-pivot-table-of-the-query-table-by-day-----SELECT-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END)-as-'Monday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END)-as-'Tuesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END)-as-'Wednesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END)-as-'Thursday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END)-as-'Friday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END)-as-'Saturday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END)-as-'Sunday',-COUNT(query_id)-as-'Total_Per_Assignment'-FROM-meta.query-GROUP-BY-query_assn-UNION-ALL-SELECT-'Total_Per_day'-as-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END),-COUNT(query_id)-FROM-meta.query', 1, 'N')"">Monday</a>
+</th>
+<th><a href="javascript:sortTable('table-Make-a-pivot-table-of-the-query-table-by-day-----SELECT-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END)-as-'Monday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END)-as-'Tuesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END)-as-'Wednesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END)-as-'Thursday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END)-as-'Friday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END)-as-'Saturday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END)-as-'Sunday',-COUNT(query_id)-as-'Total_Per_Assignment'-FROM-meta.query-GROUP-BY-query_assn-UNION-ALL-SELECT-'Total_Per_day'-as-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END),-COUNT(query_id)-FROM-meta.query', 2, 'N')"">Tuesday</a>
+</th>
+<th><a href="javascript:sortTable('table-Make-a-pivot-table-of-the-query-table-by-day-----SELECT-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END)-as-'Monday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END)-as-'Tuesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END)-as-'Wednesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END)-as-'Thursday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END)-as-'Friday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END)-as-'Saturday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END)-as-'Sunday',-COUNT(query_id)-as-'Total_Per_Assignment'-FROM-meta.query-GROUP-BY-query_assn-UNION-ALL-SELECT-'Total_Per_day'-as-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END),-COUNT(query_id)-FROM-meta.query', 3, 'N')"">Wednesday</a>
+</th>
+<th><a href="javascript:sortTable('table-Make-a-pivot-table-of-the-query-table-by-day-----SELECT-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END)-as-'Monday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END)-as-'Tuesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END)-as-'Wednesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END)-as-'Thursday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END)-as-'Friday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END)-as-'Saturday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END)-as-'Sunday',-COUNT(query_id)-as-'Total_Per_Assignment'-FROM-meta.query-GROUP-BY-query_assn-UNION-ALL-SELECT-'Total_Per_day'-as-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END),-COUNT(query_id)-FROM-meta.query', 4, 'N')"">Thursday</a>
+</th>
+<th><a href="javascript:sortTable('table-Make-a-pivot-table-of-the-query-table-by-day-----SELECT-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END)-as-'Monday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END)-as-'Tuesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END)-as-'Wednesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END)-as-'Thursday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END)-as-'Friday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END)-as-'Saturday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END)-as-'Sunday',-COUNT(query_id)-as-'Total_Per_Assignment'-FROM-meta.query-GROUP-BY-query_assn-UNION-ALL-SELECT-'Total_Per_day'-as-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END),-COUNT(query_id)-FROM-meta.query', 5, 'N')"">Friday</a>
+</th>
+<th><a href="javascript:sortTable('table-Make-a-pivot-table-of-the-query-table-by-day-----SELECT-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END)-as-'Monday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END)-as-'Tuesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END)-as-'Wednesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END)-as-'Thursday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END)-as-'Friday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END)-as-'Saturday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END)-as-'Sunday',-COUNT(query_id)-as-'Total_Per_Assignment'-FROM-meta.query-GROUP-BY-query_assn-UNION-ALL-SELECT-'Total_Per_day'-as-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END),-COUNT(query_id)-FROM-meta.query', 6, 'N')"">Saturday</a>
+</th>
+<th><a href="javascript:sortTable('table-Make-a-pivot-table-of-the-query-table-by-day-----SELECT-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END)-as-'Monday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END)-as-'Tuesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END)-as-'Wednesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END)-as-'Thursday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END)-as-'Friday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END)-as-'Saturday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END)-as-'Sunday',-COUNT(query_id)-as-'Total_Per_Assignment'-FROM-meta.query-GROUP-BY-query_assn-UNION-ALL-SELECT-'Total_Per_day'-as-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END),-COUNT(query_id)-FROM-meta.query', 7, 'N')"">Sunday</a>
+</th>
+<th><a href="javascript:sortTable('table-Make-a-pivot-table-of-the-query-table-by-day-----SELECT-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END)-as-'Monday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END)-as-'Tuesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END)-as-'Wednesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END)-as-'Thursday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END)-as-'Friday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END)-as-'Saturday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END)-as-'Sunday',-COUNT(query_id)-as-'Total_Per_Assignment'-FROM-meta.query-GROUP-BY-query_assn-UNION-ALL-SELECT-'Total_Per_day'-as-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END),-COUNT(query_id)-FROM-meta.query', 8, 'N')"">Total_Per_Assignment</a>
+</th>
+<tr><td style="text-align:left;">03</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">228</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">228</td>
+</tr>
+<tr><td style="text-align:left;">04</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">98</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">29</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">127</td>
+</tr>
+<tr><td style="text-align:left;">05</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">36</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">36</td>
+</tr>
+<tr><td style="text-align:left;">06</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">101</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">101</td>
+</tr>
+<tr><td style="text-align:left;">07</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">29</td>
+<td style="text-align:right;">235</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">264</td>
+</tr>
+<tr><td style="text-align:left;">09</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">144</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">144</td>
+</tr>
+<tr><td style="text-align:left;">10</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">68</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">68</td>
+</tr>
+<tr><td style="text-align:left;">12</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">54</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">54</td>
+</tr>
+<tr><td style="text-align:left;">13</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">94</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">94</td>
+</tr>
+<tr><td style="text-align:left;">14</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">62</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">62</td>
+</tr>
+<tr><td style="text-align:left;">Total_Per_day</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">29</td>
+<td style="text-align:right;">773</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">156</td>
+<td style="text-align:right;">220</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">1178</td>
+</tr>
+</table>
+<center><h6>&copy;2025 • All Rights Reserved • Generated on Jan. 23, 2026 20:56 PM</h6>
+</center>
+</body>
+</html>
