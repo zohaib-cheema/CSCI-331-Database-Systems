@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.log
+
+# Virtual Environment
+.venv/
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Sensitive files
+pwd.txt
+*.pwd
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak
+*.zip
+*restoration copy*
+
+# Database files (if any)
+*.db
+*.sqlite
+
+# HTML output files (optional - remove if you want to track them)
+# *.html
