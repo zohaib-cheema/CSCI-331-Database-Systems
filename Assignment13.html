@@ -1,0 +1,2647 @@
+<html><head><meta name="description" content="OutputUtil developed by LT. Executed by /Users/zohaibcheema/Desktop/CSCI 331L">
+<style>body {
+    background-color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}
+h1 {
+    color: blue;
+    text-align: center;
+}
+h3 {
+    color: blue;
+}
+.vericaltext {
+ writing-mode: vertical-lr;
+ text-orientation: upright;
+}
+
+table, th, td {
+    border: 1px solid;
+    text-align: center;
+    vertical-align: top
+}
+th > a {
+    color: lightblue;
+}
+th {
+    background-color: blue;
+    color: lightblue;
+}
+tr:nth-child(even) {
+    background-color: lightblue;
+}
+tr:nth-child(odd) {
+    background-color: #ffed00;
+}</style>
+<script>
+function sortTable(tableId, colNum, colType) {
+  var table, rows, switching, i, x, y, shouldSwitch, dir, switchCount = 0;
+  table = document.getElementById(tableId);
+  switching = true;
+  dir = "asc";
+  while (switching) {
+    switching = false;
+    rows = table.rows;
+    for (i = 1; i < (rows.length - 1); i++) {
+      shouldSwitch = false;
+      x = rows[i].getElementsByTagName("td")[colNum];
+      y = rows[i + 1].getElementsByTagName("td")[colNum];
+      if (colType == 'N') { 
+        if (((dir == "asc") && (Number(x.innerHTML) > Number(y.innerHTML))) ||
+            ((dir == "desc") && (Number(x.innerHTML) < Number(y.innerHTML)))) {
+          shouldSwitch = true;
+          break;
+        }
+      } else {
+        if (((dir == "asc") && (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase())) ||
+            ((dir == "desc") && (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()))) {
+          shouldSwitch = true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+      switchCount ++;
+    } else {
+     if (switchCount == 0 && dir == "asc") {
+        dir = "desc";
+        switching = true;
+      }
+    }
+  }
+}
+</script>
+</head>
+<body><h1>Assignment13</h1>
+<h3>Table of Contents</h3>
+<ol><li><a href="#table-get-a-summary-table-for-all-assignments-----SELECT-query_assn-AS-assignment,-COUNT(*)-AS-queries,-MIN(query_dur)-AS-fastest,-MAX(query_dur)-AS-slowest,-ROUND(AVG(query_dur),4)-AS-average,-MIN(query_ended)-AS-first,-MAX(query_ended)-AS-last-FROM-meta.`query`-GROUP-BY-query_assn">get a summary table for all assignments-----SELECT query_assn AS assignment, COUNT(*) AS queries, MIN(query_dur) AS fastest, MAX(query_dur) AS slowest, ROUND(AVG(query_dur),4) AS average, MIN(query_ended) AS first, MAX(query_ended) AS last FROM meta.`query` GROUP BY query_assn</a>
+</li>
+<li><a href="#table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'13'">Retrieve a query log for the current assignment-----SELECT * FROM meta.`query` WHERE query_assn = '13'</a>
+</li>
+<li><a href="#table-Retreive-a-list-of-all-tables-and-columns-across-my-database-----SELECT-*-FROM-university.v_table_columns">Retreive a list of all tables and columns across my database-----SELECT * FROM university.v_table_columns</a>
+</li>
+<li><a href="#table-Make-a-pivot-table-of-the-query-table-by-day-----SELECT-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END)-as-'Monday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END)-as-'Tuesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END)-as-'Wednesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END)-as-'Thursday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END)-as-'Friday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END)-as-'Saturday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END)-as-'Sunday',-COUNT(query_id)-as-'Total_Per_Assignment'-FROM-meta.query-GROUP-BY-query_assn-UNION-ALL-SELECT-'Total_Per_day'-as-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END),-COUNT(query_id)-FROM-meta.query">Make a pivot table of the query table by day-----SELECT query_assn, COUNT(CASE WHEN WEEKDAY(query_ended) = 0 THEN query_id END) as 'Monday', COUNT(CASE WHEN WEEKDAY(query_ended) = 1 THEN query_id END) as 'Tuesday', COUNT(CASE WHEN WEEKDAY(query_ended) = 2 THEN query_id END) as 'Wednesday', COUNT(CASE WHEN WEEKDAY(query_ended) = 3 THEN query_id END) as 'Thursday', COUNT(CASE WHEN WEEKDAY(query_ended) = 4 THEN query_id END) as 'Friday', COUNT(CASE WHEN WEEKDAY(query_ended) = 5 THEN query_id END) as 'Saturday', COUNT(CASE WHEN WEEKDAY(query_ended) = 6 THEN query_id END) as 'Sunday', COUNT(query_id) as 'Total_Per_Assignment' FROM meta.query GROUP BY query_assn UNION ALL SELECT 'Total_Per_day' as query_assn, COUNT(CASE WHEN WEEKDAY(query_ended) = 0 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 1 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 2 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 3 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 4 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 5 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 6 THEN query_id END), COUNT(query_id) FROM meta.query</a>
+</li>
+</ol>
+<h3>get a summary table for all assignments-----SELECT query_assn AS assignment, COUNT(*) AS queries, MIN(query_dur) AS fastest, MAX(query_dur) AS slowest, ROUND(AVG(query_dur),4) AS average, MIN(query_ended) AS first, MAX(query_ended) AS last FROM meta.`query` GROUP BY query_assn</h3>
+<table id="table-get-a-summary-table-for-all-assignments-----SELECT-query_assn-AS-assignment,-COUNT(*)-AS-queries,-MIN(query_dur)-AS-fastest,-MAX(query_dur)-AS-slowest,-ROUND(AVG(query_dur),4)-AS-average,-MIN(query_ended)-AS-first,-MAX(query_ended)-AS-last-FROM-meta.`query`-GROUP-BY-query_assn" style="width:100%"><th><a href="javascript:sortTable('table-get-a-summary-table-for-all-assignments-----SELECT-query_assn-AS-assignment,-COUNT(*)-AS-queries,-MIN(query_dur)-AS-fastest,-MAX(query_dur)-AS-slowest,-ROUND(AVG(query_dur),4)-AS-average,-MIN(query_ended)-AS-first,-MAX(query_ended)-AS-last-FROM-meta.`query`-GROUP-BY-query_assn', 0, 'N')"">assignment</a>
+</th>
+<th><a href="javascript:sortTable('table-get-a-summary-table-for-all-assignments-----SELECT-query_assn-AS-assignment,-COUNT(*)-AS-queries,-MIN(query_dur)-AS-fastest,-MAX(query_dur)-AS-slowest,-ROUND(AVG(query_dur),4)-AS-average,-MIN(query_ended)-AS-first,-MAX(query_ended)-AS-last-FROM-meta.`query`-GROUP-BY-query_assn', 1, 'N')"">queries</a>
+</th>
+<th><a href="javascript:sortTable('table-get-a-summary-table-for-all-assignments-----SELECT-query_assn-AS-assignment,-COUNT(*)-AS-queries,-MIN(query_dur)-AS-fastest,-MAX(query_dur)-AS-slowest,-ROUND(AVG(query_dur),4)-AS-average,-MIN(query_ended)-AS-first,-MAX(query_ended)-AS-last-FROM-meta.`query`-GROUP-BY-query_assn', 2, 'N')"">fastest</a>
+</th>
+<th><a href="javascript:sortTable('table-get-a-summary-table-for-all-assignments-----SELECT-query_assn-AS-assignment,-COUNT(*)-AS-queries,-MIN(query_dur)-AS-fastest,-MAX(query_dur)-AS-slowest,-ROUND(AVG(query_dur),4)-AS-average,-MIN(query_ended)-AS-first,-MAX(query_ended)-AS-last-FROM-meta.`query`-GROUP-BY-query_assn', 3, 'N')"">slowest</a>
+</th>
+<th><a href="javascript:sortTable('table-get-a-summary-table-for-all-assignments-----SELECT-query_assn-AS-assignment,-COUNT(*)-AS-queries,-MIN(query_dur)-AS-fastest,-MAX(query_dur)-AS-slowest,-ROUND(AVG(query_dur),4)-AS-average,-MIN(query_ended)-AS-first,-MAX(query_ended)-AS-last-FROM-meta.`query`-GROUP-BY-query_assn', 4, 'N')"">average</a>
+</th>
+<th><a href="javascript:sortTable('table-get-a-summary-table-for-all-assignments-----SELECT-query_assn-AS-assignment,-COUNT(*)-AS-queries,-MIN(query_dur)-AS-fastest,-MAX(query_dur)-AS-slowest,-ROUND(AVG(query_dur),4)-AS-average,-MIN(query_ended)-AS-first,-MAX(query_ended)-AS-last-FROM-meta.`query`-GROUP-BY-query_assn', 5, 'S')"">first</a>
+</th>
+<th><a href="javascript:sortTable('table-get-a-summary-table-for-all-assignments-----SELECT-query_assn-AS-assignment,-COUNT(*)-AS-queries,-MIN(query_dur)-AS-fastest,-MAX(query_dur)-AS-slowest,-ROUND(AVG(query_dur),4)-AS-average,-MIN(query_ended)-AS-first,-MAX(query_ended)-AS-last-FROM-meta.`query`-GROUP-BY-query_assn', 6, 'S')"">last</a>
+</th>
+<tr><td style="text-align:right;">03</td>
+<td style="text-align:right;">228</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:right;">0.1573</td>
+<td style="text-align:right;">0.0049</td>
+<td style="text-align:left;">2026-01-07 20:23:49</td>
+<td style="text-align:left;">2026-01-07 22:09:22</td>
+</tr>
+<tr><td style="text-align:right;">04</td>
+<td style="text-align:right;">127</td>
+<td style="text-align:right;">0.0000</td>
+<td style="text-align:right;">0.0319</td>
+<td style="text-align:right;">0.0049</td>
+<td style="text-align:left;">2026-01-07 21:11:34</td>
+<td style="text-align:left;">2026-01-10 21:33:04</td>
+</tr>
+<tr><td style="text-align:right;">05</td>
+<td style="text-align:right;">36</td>
+<td style="text-align:right;">0.0005</td>
+<td style="text-align:right;">0.0145</td>
+<td style="text-align:right;">0.0041</td>
+<td style="text-align:left;">2026-01-10 21:53:11</td>
+<td style="text-align:left;">2026-01-10 22:12:19</td>
+</tr>
+<tr><td style="text-align:right;">06</td>
+<td style="text-align:right;">101</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:right;">0.3740</td>
+<td style="text-align:right;">0.0297</td>
+<td style="text-align:left;">2026-01-10 22:22:35</td>
+<td style="text-align:left;">2026-01-10 22:41:30</td>
+</tr>
+<tr><td style="text-align:right;">07</td>
+<td style="text-align:right;">264</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:right;">0.1353</td>
+<td style="text-align:right;">0.0066</td>
+<td style="text-align:left;">2026-01-13 23:54:24</td>
+<td style="text-align:left;">2026-01-14 00:27:54</td>
+</tr>
+<tr><td style="text-align:right;">09</td>
+<td style="text-align:right;">144</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:right;">0.0427</td>
+<td style="text-align:right;">0.0024</td>
+<td style="text-align:left;">2026-01-14 09:27:12</td>
+<td style="text-align:left;">2026-01-14 10:02:45</td>
+</tr>
+<tr><td style="text-align:right;">10</td>
+<td style="text-align:right;">68</td>
+<td style="text-align:right;">0.0002</td>
+<td style="text-align:right;">0.0320</td>
+<td style="text-align:right;">0.0056</td>
+<td style="text-align:left;">2026-01-14 10:03:41</td>
+<td style="text-align:left;">2026-01-14 10:35:42</td>
+</tr>
+<tr><td style="text-align:right;">12</td>
+<td style="text-align:right;">54</td>
+<td style="text-align:right;">0.0003</td>
+<td style="text-align:right;">0.1626</td>
+<td style="text-align:right;">0.0116</td>
+<td style="text-align:left;">2026-01-17 02:04:08</td>
+<td style="text-align:left;">2026-01-17 02:37:57</td>
+</tr>
+<tr><td style="text-align:right;">13</td>
+<td style="text-align:right;">89</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:right;">0.1074</td>
+<td style="text-align:right;">0.0073</td>
+<td style="text-align:left;">2026-01-23 19:18:51</td>
+<td style="text-align:left;">2026-01-23 19:31:57</td>
+</tr>
+</table>
+<h3>Retrieve a query log for the current assignment-----SELECT * FROM meta.`query` WHERE query_assn = '13'</h3>
+<table id="table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'13'" style="width:100%"><th><a href="javascript:sortTable('table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'13'', 0, 'N')"">query_id</a>
+</th>
+<th><a href="javascript:sortTable('table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'13'', 1, 'S')"">query_text</a>
+</th>
+<th><a href="javascript:sortTable('table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'13'', 2, 'S')"">query_desc</a>
+</th>
+<th><a href="javascript:sortTable('table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'13'', 3, 'S')"">query_db</a>
+</th>
+<th><a href="javascript:sortTable('table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'13'', 4, 'N')"">query_rows</a>
+</th>
+<th><a href="javascript:sortTable('table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'13'', 5, 'S')"">query_user</a>
+</th>
+<th><a href="javascript:sortTable('table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'13'', 6, 'N')"">query_assn</a>
+</th>
+<th><a href="javascript:sortTable('table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'13'', 7, 'N')"">query_dur</a>
+</th>
+<th><a href="javascript:sortTable('table-Retrieve-a-query-log-for-the-current-assignment-----SELECT-*-FROM-meta.`query`-WHERE-query_assn-=-'13'', 8, 'S')"">query_ended</a>
+</th>
+<tr><td style="text-align:right;">1226</td>
+<td style="text-align:left;">DROP SCHEMA IF EXISTS sales</td>
+<td style="text-align:left;">Drop schema sales</td>
+<td style="text-align:left;">mysql</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0029</td>
+<td style="text-align:left;">2026-01-23 19:18:51</td>
+</tr>
+<tr><td style="text-align:right;">1227</td>
+<td style="text-align:left;">CREATE SCHEMA sales</td>
+<td style="text-align:left;">Create schema sales</td>
+<td style="text-align:left;">mysql</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0031</td>
+<td style="text-align:left;">2026-01-23 19:18:51</td>
+</tr>
+<tr><td style="text-align:right;">1228</td>
+<td style="text-align:left;">USE sales</td>
+<td style="text-align:left;">Make it the default</td>
+<td style="text-align:left;">mysql</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0003</td>
+<td style="text-align:left;">2026-01-23 19:18:51</td>
+</tr>
+<tr><td style="text-align:right;">1229</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS sale</td>
+<td style="text-align:left;">Drop table sale</td>
+<td style="text-align:left;">mysql</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0009</td>
+<td style="text-align:left;">2026-01-23 19:18:51</td>
+</tr>
+<tr><td style="text-align:right;">1239</td>
+<td style="text-align:left;">SELECT DISTINCT store_location FROM sale</td>
+<td style="text-align:left;">Get all distinct values of store_location from sale for pivot table</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0004</td>
+<td style="text-align:left;">2026-01-23 19:18:51</td>
+</tr>
+<tr><td style="text-align:right;">1240</td>
+<td style="text-align:left;">DROP SCHEMA IF EXISTS sales</td>
+<td style="text-align:left;">Drop schema sales</td>
+<td style="text-align:left;">mysql</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0259</td>
+<td style="text-align:left;">2026-01-23 19:19:26</td>
+</tr>
+<tr><td style="text-align:right;">1241</td>
+<td style="text-align:left;">CREATE SCHEMA sales</td>
+<td style="text-align:left;">Create schema sales</td>
+<td style="text-align:left;">mysql</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0017</td>
+<td style="text-align:left;">2026-01-23 19:19:26</td>
+</tr>
+<tr><td style="text-align:right;">1242</td>
+<td style="text-align:left;">USE sales</td>
+<td style="text-align:left;">Make it the default</td>
+<td style="text-align:left;">mysql</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0005</td>
+<td style="text-align:left;">2026-01-23 19:19:26</td>
+</tr>
+<tr><td style="text-align:right;">1243</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS sale</td>
+<td style="text-align:left;">Drop table sale</td>
+<td style="text-align:left;">mysql</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0019</td>
+<td style="text-align:left;">2026-01-23 19:19:26</td>
+</tr>
+<tr><td style="text-align:right;">1253</td>
+<td style="text-align:left;">SELECT DISTINCT store_location FROM sale</td>
+<td style="text-align:left;">Get all distinct values of store_location from sale for pivot table</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0006</td>
+<td style="text-align:left;">2026-01-23 19:19:26</td>
+</tr>
+<tr><td style="text-align:right;">1254</td>
+<td style="text-align:left;">SELECT DISTINCT dept_name FROM instructor</td>
+<td style="text-align:left;">Get all distinct values of dept_name from instructor for pivot table</td>
+<td style="text-align:left;">university</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0102</td>
+<td style="text-align:left;">2026-01-23 19:19:26</td>
+</tr>
+<tr><td style="text-align:right;">1255</td>
+<td style="text-align:left;">SELECT name, SUM(CASE WHEN dept_name = 'Biology' THEN salary ELSE 0 END) AS Biology,
+SUM(CASE WHEN dept_name = 'Comp. Sci.' THEN salary ELSE 0 END) AS Comp__Sci_,
+SUM(CASE WHEN dept_name = 'Elec. Eng.' THEN salary ELSE 0 END) AS Elec__Eng_,
+SUM(CASE WHEN dept_name = 'Finance' THEN salary ELSE 0 END) AS Finance,
+SUM(CASE WHEN dept_name = 'History' THEN salary ELSE 0 END) AS History,
+SUM(CASE WHEN dept_name = 'Music' THEN salary ELSE 0 END) AS Music,
+SUM(CASE WHEN dept_name = 'Physics' THEN salary ELSE 0 END) AS Physics FROM instructor GROUP BY name</td>
+<td style="text-align:left;">Build a pivot table for name vs dept_name for instructor</td>
+<td style="text-align:left;">university</td>
+<td style="text-align:right;">12</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0019</td>
+<td style="text-align:left;">2026-01-23 19:19:26</td>
+</tr>
+<tr><td style="text-align:right;">1256</td>
+<td style="text-align:left;">SELECT DISTINCT query_db FROM query</td>
+<td style="text-align:left;">Get all distinct values of query_db from query for pivot table</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0037</td>
+<td style="text-align:left;">2026-01-23 19:19:26</td>
+</tr>
+<tr><td style="text-align:right;">1257</td>
+<td style="text-align:left;">SELECT query_assn, SUM(CASE WHEN query_db = 'university' THEN query_dur ELSE 0 END) AS university,
+SUM(CASE WHEN query_db = 'meta' THEN query_dur ELSE 0 END) AS meta,
+SUM(CASE WHEN query_db = 'books' THEN query_dur ELSE 0 END) AS books,
+SUM(CASE WHEN query_db = 'mysql' THEN query_dur ELSE 0 END) AS mysql,
+SUM(CASE WHEN query_db = 'sales' THEN query_dur ELSE 0 END) AS sales FROM query GROUP BY query_assn</td>
+<td style="text-align:left;">Build a pivot table for query_assn vs query_db for query</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0028</td>
+<td style="text-align:left;">2026-01-23 19:19:26</td>
+</tr>
+<tr><td style="text-align:right;">1258</td>
+<td style="text-align:left;">DROP SCHEMA IF EXISTS sales</td>
+<td style="text-align:left;">Drop schema sales</td>
+<td style="text-align:left;">mysql</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0263</td>
+<td style="text-align:left;">2026-01-23 19:20:34</td>
+</tr>
+<tr><td style="text-align:right;">1259</td>
+<td style="text-align:left;">CREATE SCHEMA sales</td>
+<td style="text-align:left;">Create schema sales</td>
+<td style="text-align:left;">mysql</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0032</td>
+<td style="text-align:left;">2026-01-23 19:20:34</td>
+</tr>
+<tr><td style="text-align:right;">1260</td>
+<td style="text-align:left;">USE sales</td>
+<td style="text-align:left;">Make it the default</td>
+<td style="text-align:left;">mysql</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0011</td>
+<td style="text-align:left;">2026-01-23 19:20:34</td>
+</tr>
+<tr><td style="text-align:right;">1261</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS sale</td>
+<td style="text-align:left;">Drop table sale</td>
+<td style="text-align:left;">mysql</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0030</td>
+<td style="text-align:left;">2026-01-23 19:20:34</td>
+</tr>
+<tr><td style="text-align:right;">1271</td>
+<td style="text-align:left;">SELECT DISTINCT store_location FROM sale</td>
+<td style="text-align:left;">Get all distinct values of store_location from sale for pivot table</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0003</td>
+<td style="text-align:left;">2026-01-23 19:20:34</td>
+</tr>
+<tr><td style="text-align:right;">1272</td>
+<td style="text-align:left;">SELECT DISTINCT dept_name FROM instructor</td>
+<td style="text-align:left;">Get all distinct values of dept_name from instructor for pivot table</td>
+<td style="text-align:left;">university</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0024</td>
+<td style="text-align:left;">2026-01-23 19:20:34</td>
+</tr>
+<tr><td style="text-align:right;">1273</td>
+<td style="text-align:left;">SELECT name, SUM(CASE WHEN dept_name = 'Biology' THEN salary ELSE 0 END) AS Biology,
+SUM(CASE WHEN dept_name = 'Comp. Sci.' THEN salary ELSE 0 END) AS Comp__Sci_,
+SUM(CASE WHEN dept_name = 'Elec. Eng.' THEN salary ELSE 0 END) AS Elec__Eng_,
+SUM(CASE WHEN dept_name = 'Finance' THEN salary ELSE 0 END) AS Finance,
+SUM(CASE WHEN dept_name = 'History' THEN salary ELSE 0 END) AS History,
+SUM(CASE WHEN dept_name = 'Music' THEN salary ELSE 0 END) AS Music,
+SUM(CASE WHEN dept_name = 'Physics' THEN salary ELSE 0 END) AS Physics FROM instructor GROUP BY name</td>
+<td style="text-align:left;">Build a pivot table for name vs dept_name for instructor</td>
+<td style="text-align:left;">university</td>
+<td style="text-align:right;">12</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0018</td>
+<td style="text-align:left;">2026-01-23 19:20:34</td>
+</tr>
+<tr><td style="text-align:right;">1274</td>
+<td style="text-align:left;">SELECT DISTINCT query_db FROM query</td>
+<td style="text-align:left;">Get all distinct values of query_db from query for pivot table</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0269</td>
+<td style="text-align:left;">2026-01-23 19:20:35</td>
+</tr>
+<tr><td style="text-align:right;">1275</td>
+<td style="text-align:left;">SELECT query_assn, SUM(CASE WHEN query_db = 'university' THEN query_dur ELSE 0 END) AS university,
+SUM(CASE WHEN query_db = 'meta' THEN query_dur ELSE 0 END) AS meta,
+SUM(CASE WHEN query_db = 'books' THEN query_dur ELSE 0 END) AS books,
+SUM(CASE WHEN query_db = 'mysql' THEN query_dur ELSE 0 END) AS mysql,
+SUM(CASE WHEN query_db = 'sales' THEN query_dur ELSE 0 END) AS sales FROM query GROUP BY query_assn</td>
+<td style="text-align:left;">Build a pivot table for query_assn vs query_db for query</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0131</td>
+<td style="text-align:left;">2026-01-23 19:20:35</td>
+</tr>
+<tr><td style="text-align:right;">1276</td>
+<td style="text-align:left;">DROP SCHEMA IF EXISTS sales</td>
+<td style="text-align:left;">Drop schema sales</td>
+<td style="text-align:left;">mysql</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0194</td>
+<td style="text-align:left;">2026-01-23 19:23:28</td>
+</tr>
+<tr><td style="text-align:right;">1277</td>
+<td style="text-align:left;">CREATE SCHEMA sales</td>
+<td style="text-align:left;">Create schema sales</td>
+<td style="text-align:left;">mysql</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0008</td>
+<td style="text-align:left;">2026-01-23 19:23:28</td>
+</tr>
+<tr><td style="text-align:right;">1278</td>
+<td style="text-align:left;">USE sales</td>
+<td style="text-align:left;">Make it the default</td>
+<td style="text-align:left;">mysql</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0002</td>
+<td style="text-align:left;">2026-01-23 19:23:28</td>
+</tr>
+<tr><td style="text-align:right;">1279</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS sale</td>
+<td style="text-align:left;">Drop table sale</td>
+<td style="text-align:left;">mysql</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0013</td>
+<td style="text-align:left;">2026-01-23 19:23:28</td>
+</tr>
+<tr><td style="text-align:right;">1289</td>
+<td style="text-align:left;">SELECT COUNT(*) as row_count FROM sale</td>
+<td style="text-align:left;">Verify data was inserted into sale table</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0024</td>
+<td style="text-align:left;">2026-01-23 19:23:28</td>
+</tr>
+<tr><td style="text-align:right;">1290</td>
+<td style="text-align:left;">SELECT DISTINCT store_location FROM sale</td>
+<td style="text-align:left;">Get all distinct values of store_location from sale for pivot table</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0002</td>
+<td style="text-align:left;">2026-01-23 19:23:28</td>
+</tr>
+<tr><td style="text-align:right;">1291</td>
+<td style="text-align:left;">SELECT COUNT(*) as total_rows FROM sale</td>
+<td style="text-align:left;">Check if sale has data</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0002</td>
+<td style="text-align:left;">2026-01-23 19:23:28</td>
+</tr>
+<tr><td style="text-align:right;">1292</td>
+<td style="text-align:left;">SELECT DISTINCT dept_name FROM instructor</td>
+<td style="text-align:left;">Get all distinct values of dept_name from instructor for pivot table</td>
+<td style="text-align:left;">university</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0033</td>
+<td style="text-align:left;">2026-01-23 19:23:29</td>
+</tr>
+<tr><td style="text-align:right;">1293</td>
+<td style="text-align:left;">SELECT name, SUM(CASE WHEN dept_name = 'Biology' THEN salary ELSE 0 END) AS Biology,
+SUM(CASE WHEN dept_name = 'Comp. Sci.' THEN salary ELSE 0 END) AS Comp__Sci_,
+SUM(CASE WHEN dept_name = 'Elec. Eng.' THEN salary ELSE 0 END) AS Elec__Eng_,
+SUM(CASE WHEN dept_name = 'Finance' THEN salary ELSE 0 END) AS Finance,
+SUM(CASE WHEN dept_name = 'History' THEN salary ELSE 0 END) AS History,
+SUM(CASE WHEN dept_name = 'Music' THEN salary ELSE 0 END) AS Music,
+SUM(CASE WHEN dept_name = 'Physics' THEN salary ELSE 0 END) AS Physics FROM instructor GROUP BY name</td>
+<td style="text-align:left;">Build a pivot table for name vs dept_name for instructor</td>
+<td style="text-align:left;">university</td>
+<td style="text-align:right;">12</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0030</td>
+<td style="text-align:left;">2026-01-23 19:23:29</td>
+</tr>
+<tr><td style="text-align:right;">1294</td>
+<td style="text-align:left;">SELECT DISTINCT query_db FROM query</td>
+<td style="text-align:left;">Get all distinct values of query_db from query for pivot table</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0041</td>
+<td style="text-align:left;">2026-01-23 19:23:29</td>
+</tr>
+<tr><td style="text-align:right;">1295</td>
+<td style="text-align:left;">SELECT query_assn, SUM(CASE WHEN query_db = 'university' THEN query_dur ELSE 0 END) AS university,
+SUM(CASE WHEN query_db = 'meta' THEN query_dur ELSE 0 END) AS meta,
+SUM(CASE WHEN query_db = 'books' THEN query_dur ELSE 0 END) AS books,
+SUM(CASE WHEN query_db = 'mysql' THEN query_dur ELSE 0 END) AS mysql,
+SUM(CASE WHEN query_db = 'sales' THEN query_dur ELSE 0 END) AS sales FROM query GROUP BY query_assn</td>
+<td style="text-align:left;">Build a pivot table for query_assn vs query_db for query</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0063</td>
+<td style="text-align:left;">2026-01-23 19:23:29</td>
+</tr>
+<tr><td style="text-align:right;">1296</td>
+<td style="text-align:left;">DROP SCHEMA IF EXISTS sales</td>
+<td style="text-align:left;">Drop schema sales if it exists</td>
+<td style="text-align:left;">mysql</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0294</td>
+<td style="text-align:left;">2026-01-23 19:27:43</td>
+</tr>
+<tr><td style="text-align:right;">1297</td>
+<td style="text-align:left;">CREATE SCHEMA sales</td>
+<td style="text-align:left;">Create schema sales</td>
+<td style="text-align:left;">mysql</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0024</td>
+<td style="text-align:left;">2026-01-23 19:27:43</td>
+</tr>
+<tr><td style="text-align:right;">1298</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS sale</td>
+<td style="text-align:left;">Drop table sale</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0021</td>
+<td style="text-align:left;">2026-01-23 19:27:43</td>
+</tr>
+<tr><td style="text-align:right;">1308</td>
+<td style="text-align:left;">SELECT query_assn AS assignment, COUNT(*) AS queries, MIN(query_dur) AS fastest, MAX(query_dur) AS slowest, ROUND(AVG(query_dur),4) AS average, MIN(query_ended) AS first, MAX(query_ended) AS last FROM meta.`query` GROUP BY query_assn</td>
+<td style="text-align:left;">get a summary table for all assignments</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0129</td>
+<td style="text-align:left;">2026-01-23 19:27:43</td>
+</tr>
+<tr><td style="text-align:right;">1309</td>
+<td style="text-align:left;">SELECT * FROM meta.`query` WHERE query_assn = '13'</td>
+<td style="text-align:left;">Retrieve a query log for the current assignment</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">38</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0018</td>
+<td style="text-align:left;">2026-01-23 19:27:43</td>
+</tr>
+<tr><td style="text-align:right;">1310</td>
+<td style="text-align:left;">SELECT * FROM university.v_table_columns</td>
+<td style="text-align:left;">Retreive a list of all tables and columns across my database</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">169</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0592</td>
+<td style="text-align:left;">2026-01-23 19:27:43</td>
+</tr>
+<tr><td style="text-align:right;">1311</td>
+<td style="text-align:left;">SELECT query_assn, COUNT(CASE WHEN WEEKDAY(query_ended) = 0 THEN query_id END) as 'Monday', COUNT(CASE WHEN WEEKDAY(query_ended) = 1 THEN query_id END) as 'Tuesday', COUNT(CASE WHEN WEEKDAY(query_ended) = 2 THEN query_id END) as 'Wednesday', COUNT(CASE WHEN WEEKDAY(query_ended) = 3 THEN query_id END) as 'Thursday', COUNT(CASE WHEN WEEKDAY(query_ended) = 4 THEN query_id END) as 'Friday', COUNT(CASE WHEN WEEKDAY(query_ended) = 5 THEN query_id END) as 'Saturday', COUNT(CASE WHEN WEEKDAY(query_ended) = 6 THEN query_id END) as 'Sunday', COUNT(query_id) as 'Total_Per_Assignment' FROM meta.query GROUP BY query_assn UNION ALL SELECT 'Total_Per_day' as query_assn, COUNT(CASE WHEN WEEKDAY(query_ended) = 0 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 1 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 2 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 3 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 4 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 5 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 6 THEN query_id END), COUNT(query_id) FROM meta.query</td>
+<td style="text-align:left;">Make a pivot table of the query table by day</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">10</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0021</td>
+<td style="text-align:left;">2026-01-23 19:27:43</td>
+</tr>
+<tr><td style="text-align:right;">1312</td>
+<td style="text-align:left;">SELECT COUNT(*) as row_count FROM sale</td>
+<td style="text-align:left;">Verify data was inserted into sale table</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0006</td>
+<td style="text-align:left;">2026-01-23 19:27:44</td>
+</tr>
+<tr><td style="text-align:right;">1313</td>
+<td style="text-align:left;">SELECT DISTINCT store_location FROM sale</td>
+<td style="text-align:left;">Get all distinct values of store_location from sale for pivot table</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0007</td>
+<td style="text-align:left;">2026-01-23 19:27:44</td>
+</tr>
+<tr><td style="text-align:right;">1314</td>
+<td style="text-align:left;">SELECT COUNT(*) as total_rows FROM sale</td>
+<td style="text-align:left;">Check if sale has data</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0007</td>
+<td style="text-align:left;">2026-01-23 19:27:44</td>
+</tr>
+<tr><td style="text-align:right;">1315</td>
+<td style="text-align:left;">SELECT DISTINCT dept_name FROM instructor</td>
+<td style="text-align:left;">Get all distinct values of dept_name from instructor for pivot table</td>
+<td style="text-align:left;">university</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0012</td>
+<td style="text-align:left;">2026-01-23 19:27:44</td>
+</tr>
+<tr><td style="text-align:right;">1316</td>
+<td style="text-align:left;">SELECT name, SUM(CASE WHEN dept_name = 'Biology' THEN salary ELSE 0 END) AS Biology,
+SUM(CASE WHEN dept_name = 'Comp. Sci.' THEN salary ELSE 0 END) AS Comp__Sci_,
+SUM(CASE WHEN dept_name = 'Elec. Eng.' THEN salary ELSE 0 END) AS Elec__Eng_,
+SUM(CASE WHEN dept_name = 'Finance' THEN salary ELSE 0 END) AS Finance,
+SUM(CASE WHEN dept_name = 'History' THEN salary ELSE 0 END) AS History,
+SUM(CASE WHEN dept_name = 'Music' THEN salary ELSE 0 END) AS Music,
+SUM(CASE WHEN dept_name = 'Physics' THEN salary ELSE 0 END) AS Physics FROM instructor GROUP BY name</td>
+<td style="text-align:left;">Build a pivot table for name vs dept_name for instructor</td>
+<td style="text-align:left;">university</td>
+<td style="text-align:right;">12</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0006</td>
+<td style="text-align:left;">2026-01-23 19:27:44</td>
+</tr>
+<tr><td style="text-align:right;">1317</td>
+<td style="text-align:left;">SELECT DISTINCT query_db FROM query</td>
+<td style="text-align:left;">Get all distinct values of query_db from query for pivot table</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0031</td>
+<td style="text-align:left;">2026-01-23 19:27:44</td>
+</tr>
+<tr><td style="text-align:right;">1318</td>
+<td style="text-align:left;">SELECT query_assn, SUM(CASE WHEN query_db = 'university' THEN query_dur ELSE 0 END) AS university,
+SUM(CASE WHEN query_db = 'meta' THEN query_dur ELSE 0 END) AS meta,
+SUM(CASE WHEN query_db = 'books' THEN query_dur ELSE 0 END) AS books,
+SUM(CASE WHEN query_db = 'mysql' THEN query_dur ELSE 0 END) AS mysql,
+SUM(CASE WHEN query_db = 'sales' THEN query_dur ELSE 0 END) AS sales FROM query GROUP BY query_assn</td>
+<td style="text-align:left;">Build a pivot table for query_assn vs query_db for query</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0038</td>
+<td style="text-align:left;">2026-01-23 19:27:44</td>
+</tr>
+<tr><td style="text-align:right;">1319</td>
+<td style="text-align:left;">DROP SCHEMA IF EXISTS sales</td>
+<td style="text-align:left;">Drop schema sales if it exists</td>
+<td style="text-align:left;">mysql</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0127</td>
+<td style="text-align:left;">2026-01-23 19:27:54</td>
+</tr>
+<tr><td style="text-align:right;">1320</td>
+<td style="text-align:left;">CREATE SCHEMA sales</td>
+<td style="text-align:left;">Create schema sales</td>
+<td style="text-align:left;">mysql</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0012</td>
+<td style="text-align:left;">2026-01-23 19:27:54</td>
+</tr>
+<tr><td style="text-align:right;">1321</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS sale</td>
+<td style="text-align:left;">Drop table sale</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0064</td>
+<td style="text-align:left;">2026-01-23 19:27:54</td>
+</tr>
+<tr><td style="text-align:right;">1331</td>
+<td style="text-align:left;">SELECT query_assn AS assignment, COUNT(*) AS queries, MIN(query_dur) AS fastest, MAX(query_dur) AS slowest, ROUND(AVG(query_dur),4) AS average, MIN(query_ended) AS first, MAX(query_ended) AS last FROM meta.`query` GROUP BY query_assn</td>
+<td style="text-align:left;">get a summary table for all assignments</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0024</td>
+<td style="text-align:left;">2026-01-23 19:27:55</td>
+</tr>
+<tr><td style="text-align:right;">1332</td>
+<td style="text-align:left;">SELECT * FROM meta.`query` WHERE query_assn = '13'</td>
+<td style="text-align:left;">Retrieve a query log for the current assignment</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">52</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0010</td>
+<td style="text-align:left;">2026-01-23 19:27:55</td>
+</tr>
+<tr><td style="text-align:right;">1333</td>
+<td style="text-align:left;">SELECT * FROM university.v_table_columns</td>
+<td style="text-align:left;">Retreive a list of all tables and columns across my database</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">169</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0132</td>
+<td style="text-align:left;">2026-01-23 19:27:55</td>
+</tr>
+<tr><td style="text-align:right;">1334</td>
+<td style="text-align:left;">SELECT query_assn, COUNT(CASE WHEN WEEKDAY(query_ended) = 0 THEN query_id END) as 'Monday', COUNT(CASE WHEN WEEKDAY(query_ended) = 1 THEN query_id END) as 'Tuesday', COUNT(CASE WHEN WEEKDAY(query_ended) = 2 THEN query_id END) as 'Wednesday', COUNT(CASE WHEN WEEKDAY(query_ended) = 3 THEN query_id END) as 'Thursday', COUNT(CASE WHEN WEEKDAY(query_ended) = 4 THEN query_id END) as 'Friday', COUNT(CASE WHEN WEEKDAY(query_ended) = 5 THEN query_id END) as 'Saturday', COUNT(CASE WHEN WEEKDAY(query_ended) = 6 THEN query_id END) as 'Sunday', COUNT(query_id) as 'Total_Per_Assignment' FROM meta.query GROUP BY query_assn UNION ALL SELECT 'Total_Per_day' as query_assn, COUNT(CASE WHEN WEEKDAY(query_ended) = 0 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 1 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 2 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 3 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 4 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 5 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 6 THEN query_id END), COUNT(query_id) FROM meta.query</td>
+<td style="text-align:left;">Make a pivot table of the query table by day</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">10</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0016</td>
+<td style="text-align:left;">2026-01-23 19:27:55</td>
+</tr>
+<tr><td style="text-align:right;">1335</td>
+<td style="text-align:left;">SELECT COUNT(*) as row_count FROM sale</td>
+<td style="text-align:left;">Verify data was inserted into sale table</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0003</td>
+<td style="text-align:left;">2026-01-23 19:27:55</td>
+</tr>
+<tr><td style="text-align:right;">1336</td>
+<td style="text-align:left;">SELECT DISTINCT store_location FROM sale</td>
+<td style="text-align:left;">Get all distinct values of store_location from sale for pivot table</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0007</td>
+<td style="text-align:left;">2026-01-23 19:27:55</td>
+</tr>
+<tr><td style="text-align:right;">1337</td>
+<td style="text-align:left;">SELECT COUNT(*) as total_rows FROM sale</td>
+<td style="text-align:left;">Check if sale has data</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0004</td>
+<td style="text-align:left;">2026-01-23 19:27:55</td>
+</tr>
+<tr><td style="text-align:right;">1338</td>
+<td style="text-align:left;">SELECT DISTINCT dept_name FROM instructor</td>
+<td style="text-align:left;">Get all distinct values of dept_name from instructor for pivot table</td>
+<td style="text-align:left;">university</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0035</td>
+<td style="text-align:left;">2026-01-23 19:27:55</td>
+</tr>
+<tr><td style="text-align:right;">1339</td>
+<td style="text-align:left;">SELECT name, SUM(CASE WHEN dept_name = 'Biology' THEN salary ELSE 0 END) AS Biology,
+SUM(CASE WHEN dept_name = 'Comp. Sci.' THEN salary ELSE 0 END) AS Comp__Sci_,
+SUM(CASE WHEN dept_name = 'Elec. Eng.' THEN salary ELSE 0 END) AS Elec__Eng_,
+SUM(CASE WHEN dept_name = 'Finance' THEN salary ELSE 0 END) AS Finance,
+SUM(CASE WHEN dept_name = 'History' THEN salary ELSE 0 END) AS History,
+SUM(CASE WHEN dept_name = 'Music' THEN salary ELSE 0 END) AS Music,
+SUM(CASE WHEN dept_name = 'Physics' THEN salary ELSE 0 END) AS Physics FROM instructor GROUP BY name</td>
+<td style="text-align:left;">Build a pivot table for name vs dept_name for instructor</td>
+<td style="text-align:left;">university</td>
+<td style="text-align:right;">12</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0029</td>
+<td style="text-align:left;">2026-01-23 19:27:55</td>
+</tr>
+<tr><td style="text-align:right;">1340</td>
+<td style="text-align:left;">SELECT DISTINCT query_db FROM query</td>
+<td style="text-align:left;">Get all distinct values of query_db from query for pivot table</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0011</td>
+<td style="text-align:left;">2026-01-23 19:27:55</td>
+</tr>
+<tr><td style="text-align:right;">1341</td>
+<td style="text-align:left;">SELECT query_assn, SUM(CASE WHEN query_db = 'university' THEN query_dur ELSE 0 END) AS university,
+SUM(CASE WHEN query_db = 'meta' THEN query_dur ELSE 0 END) AS meta,
+SUM(CASE WHEN query_db = 'books' THEN query_dur ELSE 0 END) AS books,
+SUM(CASE WHEN query_db = 'mysql' THEN query_dur ELSE 0 END) AS mysql,
+SUM(CASE WHEN query_db = 'sales' THEN query_dur ELSE 0 END) AS sales FROM query GROUP BY query_assn</td>
+<td style="text-align:left;">Build a pivot table for query_assn vs query_db for query</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0034</td>
+<td style="text-align:left;">2026-01-23 19:27:55</td>
+</tr>
+<tr><td style="text-align:right;">1342</td>
+<td style="text-align:left;">DROP SCHEMA IF EXISTS sales</td>
+<td style="text-align:left;">Drop schema sales if it exists</td>
+<td style="text-align:left;">mysql</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0227</td>
+<td style="text-align:left;">2026-01-23 19:29:02</td>
+</tr>
+<tr><td style="text-align:right;">1343</td>
+<td style="text-align:left;">CREATE SCHEMA sales</td>
+<td style="text-align:left;">Create schema sales</td>
+<td style="text-align:left;">mysql</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0010</td>
+<td style="text-align:left;">2026-01-23 19:29:02</td>
+</tr>
+<tr><td style="text-align:right;">1344</td>
+<td style="text-align:left;">USE sales</td>
+<td style="text-align:left;">Make it the default</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0001</td>
+<td style="text-align:left;">2026-01-23 19:29:02</td>
+</tr>
+<tr><td style="text-align:right;">1345</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS sale</td>
+<td style="text-align:left;">Drop table sale</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0016</td>
+<td style="text-align:left;">2026-01-23 19:29:02</td>
+</tr>
+<tr><td style="text-align:right;">1355</td>
+<td style="text-align:left;">SELECT COUNT(*) as row_count FROM sale</td>
+<td style="text-align:left;">Verify data was inserted into sale table</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0003</td>
+<td style="text-align:left;">2026-01-23 19:29:02</td>
+</tr>
+<tr><td style="text-align:right;">1356</td>
+<td style="text-align:left;">SHOW TABLES</td>
+<td style="text-align:left;">Check tables in sales database</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0046</td>
+<td style="text-align:left;">2026-01-23 19:29:02</td>
+</tr>
+<tr><td style="text-align:right;">1357</td>
+<td style="text-align:left;">SELECT query_assn AS assignment, COUNT(*) AS queries, MIN(query_dur) AS fastest, MAX(query_dur) AS slowest, ROUND(AVG(query_dur),4) AS average, MIN(query_ended) AS first, MAX(query_ended) AS last FROM meta.`query` GROUP BY query_assn</td>
+<td style="text-align:left;">get a summary table for all assignments</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0021</td>
+<td style="text-align:left;">2026-01-23 19:29:02</td>
+</tr>
+<tr><td style="text-align:right;">1358</td>
+<td style="text-align:left;">SELECT * FROM meta.`query` WHERE query_assn = '13'</td>
+<td style="text-align:left;">Retrieve a query log for the current assignment</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">69</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0010</td>
+<td style="text-align:left;">2026-01-23 19:29:02</td>
+</tr>
+<tr><td style="text-align:right;">1359</td>
+<td style="text-align:left;">SELECT * FROM university.v_table_columns</td>
+<td style="text-align:left;">Retreive a list of all tables and columns across my database</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">169</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0078</td>
+<td style="text-align:left;">2026-01-23 19:29:02</td>
+</tr>
+<tr><td style="text-align:right;">1360</td>
+<td style="text-align:left;">SELECT query_assn, COUNT(CASE WHEN WEEKDAY(query_ended) = 0 THEN query_id END) as 'Monday', COUNT(CASE WHEN WEEKDAY(query_ended) = 1 THEN query_id END) as 'Tuesday', COUNT(CASE WHEN WEEKDAY(query_ended) = 2 THEN query_id END) as 'Wednesday', COUNT(CASE WHEN WEEKDAY(query_ended) = 3 THEN query_id END) as 'Thursday', COUNT(CASE WHEN WEEKDAY(query_ended) = 4 THEN query_id END) as 'Friday', COUNT(CASE WHEN WEEKDAY(query_ended) = 5 THEN query_id END) as 'Saturday', COUNT(CASE WHEN WEEKDAY(query_ended) = 6 THEN query_id END) as 'Sunday', COUNT(query_id) as 'Total_Per_Assignment' FROM meta.query GROUP BY query_assn UNION ALL SELECT 'Total_Per_day' as query_assn, COUNT(CASE WHEN WEEKDAY(query_ended) = 0 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 1 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 2 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 3 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 4 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 5 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 6 THEN query_id END), COUNT(query_id) FROM meta.query</td>
+<td style="text-align:left;">Make a pivot table of the query table by day</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">10</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0016</td>
+<td style="text-align:left;">2026-01-23 19:29:02</td>
+</tr>
+<tr><td style="text-align:right;">1361</td>
+<td style="text-align:left;">SELECT DISTINCT store_location FROM sale</td>
+<td style="text-align:left;">Get all distinct values of store_location from sale for pivot table</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0015</td>
+<td style="text-align:left;">2026-01-23 19:29:03</td>
+</tr>
+<tr><td style="text-align:right;">1362</td>
+<td style="text-align:left;">SELECT COUNT(*) as total_rows FROM sale</td>
+<td style="text-align:left;">Check if sale has data</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0008</td>
+<td style="text-align:left;">2026-01-23 19:29:03</td>
+</tr>
+<tr><td style="text-align:right;">1363</td>
+<td style="text-align:left;">SELECT DISTINCT dept_name FROM instructor</td>
+<td style="text-align:left;">Get all distinct values of dept_name from instructor for pivot table</td>
+<td style="text-align:left;">university</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0009</td>
+<td style="text-align:left;">2026-01-23 19:29:03</td>
+</tr>
+<tr><td style="text-align:right;">1364</td>
+<td style="text-align:left;">SELECT name, SUM(CASE WHEN dept_name = 'Biology' THEN salary ELSE 0 END) AS Biology,
+SUM(CASE WHEN dept_name = 'Comp. Sci.' THEN salary ELSE 0 END) AS Comp__Sci_,
+SUM(CASE WHEN dept_name = 'Elec. Eng.' THEN salary ELSE 0 END) AS Elec__Eng_,
+SUM(CASE WHEN dept_name = 'Finance' THEN salary ELSE 0 END) AS Finance,
+SUM(CASE WHEN dept_name = 'History' THEN salary ELSE 0 END) AS History,
+SUM(CASE WHEN dept_name = 'Music' THEN salary ELSE 0 END) AS Music,
+SUM(CASE WHEN dept_name = 'Physics' THEN salary ELSE 0 END) AS Physics FROM instructor GROUP BY name</td>
+<td style="text-align:left;">Build a pivot table for name vs dept_name for instructor</td>
+<td style="text-align:left;">university</td>
+<td style="text-align:right;">12</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0020</td>
+<td style="text-align:left;">2026-01-23 19:29:03</td>
+</tr>
+<tr><td style="text-align:right;">1365</td>
+<td style="text-align:left;">SELECT DISTINCT query_db FROM query</td>
+<td style="text-align:left;">Get all distinct values of query_db from query for pivot table</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0018</td>
+<td style="text-align:left;">2026-01-23 19:29:03</td>
+</tr>
+<tr><td style="text-align:right;">1366</td>
+<td style="text-align:left;">SELECT query_assn, SUM(CASE WHEN query_db = 'university' THEN query_dur ELSE 0 END) AS university,
+SUM(CASE WHEN query_db = 'meta' THEN query_dur ELSE 0 END) AS meta,
+SUM(CASE WHEN query_db = 'books' THEN query_dur ELSE 0 END) AS books,
+SUM(CASE WHEN query_db = 'mysql' THEN query_dur ELSE 0 END) AS mysql,
+SUM(CASE WHEN query_db = 'sales' THEN query_dur ELSE 0 END) AS sales FROM query GROUP BY query_assn</td>
+<td style="text-align:left;">Build a pivot table for query_assn vs query_db for query</td>
+<td style="text-align:left;">meta</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0057</td>
+<td style="text-align:left;">2026-01-23 19:29:03</td>
+</tr>
+<tr><td style="text-align:right;">1367</td>
+<td style="text-align:left;">DROP SCHEMA IF EXISTS sales</td>
+<td style="text-align:left;">Drop schema sales if it exists</td>
+<td style="text-align:left;">mysql</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0330</td>
+<td style="text-align:left;">2026-01-23 19:31:30</td>
+</tr>
+<tr><td style="text-align:right;">1368</td>
+<td style="text-align:left;">CREATE SCHEMA sales</td>
+<td style="text-align:left;">Create schema sales</td>
+<td style="text-align:left;">mysql</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0018</td>
+<td style="text-align:left;">2026-01-23 19:31:30</td>
+</tr>
+<tr><td style="text-align:right;">1369</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS sale</td>
+<td style="text-align:left;">Drop table sale</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0039</td>
+<td style="text-align:left;">2026-01-23 19:31:30</td>
+</tr>
+<tr><td style="text-align:right;">1379</td>
+<td style="text-align:left;">SELECT query_assn AS assignment, COUNT(*) AS queries, MIN(query_dur) AS fastest, MAX(query_dur) AS slowest, ROUND(AVG(query_dur),4) AS average, MIN(query_ended) AS first, MAX(query_ended) AS last FROM meta.`query` GROUP BY query_assn</td>
+<td style="text-align:left;">get a summary table for all assignments</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0147</td>
+<td style="text-align:left;">2026-01-23 19:31:31</td>
+</tr>
+<tr><td style="text-align:right;">1380</td>
+<td style="text-align:left;">SELECT * FROM meta.`query` WHERE query_assn = '13'</td>
+<td style="text-align:left;">Retrieve a query log for the current assignment</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">82</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0081</td>
+<td style="text-align:left;">2026-01-23 19:31:31</td>
+</tr>
+<tr><td style="text-align:right;">1381</td>
+<td style="text-align:left;">SELECT * FROM university.v_table_columns</td>
+<td style="text-align:left;">Retreive a list of all tables and columns across my database</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">169</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.1074</td>
+<td style="text-align:left;">2026-01-23 19:31:31</td>
+</tr>
+<tr><td style="text-align:right;">1382</td>
+<td style="text-align:left;">SELECT query_assn, COUNT(CASE WHEN WEEKDAY(query_ended) = 0 THEN query_id END) as 'Monday', COUNT(CASE WHEN WEEKDAY(query_ended) = 1 THEN query_id END) as 'Tuesday', COUNT(CASE WHEN WEEKDAY(query_ended) = 2 THEN query_id END) as 'Wednesday', COUNT(CASE WHEN WEEKDAY(query_ended) = 3 THEN query_id END) as 'Thursday', COUNT(CASE WHEN WEEKDAY(query_ended) = 4 THEN query_id END) as 'Friday', COUNT(CASE WHEN WEEKDAY(query_ended) = 5 THEN query_id END) as 'Saturday', COUNT(CASE WHEN WEEKDAY(query_ended) = 6 THEN query_id END) as 'Sunday', COUNT(query_id) as 'Total_Per_Assignment' FROM meta.query GROUP BY query_assn UNION ALL SELECT 'Total_Per_day' as query_assn, COUNT(CASE WHEN WEEKDAY(query_ended) = 0 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 1 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 2 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 3 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 4 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 5 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 6 THEN query_id END), COUNT(query_id) FROM meta.query</td>
+<td style="text-align:left;">Make a pivot table of the query table by day</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">10</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0081</td>
+<td style="text-align:left;">2026-01-23 19:31:31</td>
+</tr>
+<tr><td style="text-align:right;">1383</td>
+<td style="text-align:left;">SELECT COUNT(*) as row_count FROM sale</td>
+<td style="text-align:left;">Verify data was inserted into sale table</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0084</td>
+<td style="text-align:left;">2026-01-23 19:31:31</td>
+</tr>
+<tr><td style="text-align:right;">1384</td>
+<td style="text-align:left;">DROP SCHEMA IF EXISTS sales</td>
+<td style="text-align:left;">Drop schema sales if it exists</td>
+<td style="text-align:left;">mysql</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0479</td>
+<td style="text-align:left;">2026-01-23 19:31:57</td>
+</tr>
+<tr><td style="text-align:right;">1385</td>
+<td style="text-align:left;">CREATE SCHEMA sales</td>
+<td style="text-align:left;">Create schema sales</td>
+<td style="text-align:left;">mysql</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0039</td>
+<td style="text-align:left;">2026-01-23 19:31:57</td>
+</tr>
+<tr><td style="text-align:right;">1386</td>
+<td style="text-align:left;">DROP TABLE IF EXISTS sale</td>
+<td style="text-align:left;">Drop table sale</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0054</td>
+<td style="text-align:left;">2026-01-23 19:31:57</td>
+</tr>
+<tr><td style="text-align:right;">1396</td>
+<td style="text-align:left;">SELECT query_assn AS assignment, COUNT(*) AS queries, MIN(query_dur) AS fastest, MAX(query_dur) AS slowest, ROUND(AVG(query_dur),4) AS average, MIN(query_ended) AS first, MAX(query_ended) AS last FROM meta.`query` GROUP BY query_assn</td>
+<td style="text-align:left;">get a summary table for all assignments</td>
+<td style="text-align:left;">sales</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">Zohaib</td>
+<td style="text-align:right;">13</td>
+<td style="text-align:right;">0.0113</td>
+<td style="text-align:left;">2026-01-23 19:31:57</td>
+</tr>
+</table>
+<h3>Retreive a list of all tables and columns across my database-----SELECT * FROM university.v_table_columns</h3>
+<table id="table-Retreive-a-list-of-all-tables-and-columns-across-my-database-----SELECT-*-FROM-university.v_table_columns" style="width:100%"><th><a href="javascript:sortTable('table-Retreive-a-list-of-all-tables-and-columns-across-my-database-----SELECT-*-FROM-university.v_table_columns', 0, 'S')"">data_base</a>
+</th>
+<th><a href="javascript:sortTable('table-Retreive-a-list-of-all-tables-and-columns-across-my-database-----SELECT-*-FROM-university.v_table_columns', 1, 'S')"">table</a>
+</th>
+<th><a href="javascript:sortTable('table-Retreive-a-list-of-all-tables-and-columns-across-my-database-----SELECT-*-FROM-university.v_table_columns', 2, 'S')"">column</a>
+</th>
+<th><a href="javascript:sortTable('table-Retreive-a-list-of-all-tables-and-columns-across-my-database-----SELECT-*-FROM-university.v_table_columns', 3, 'N')"">no</a>
+</th>
+<th><a href="javascript:sortTable('table-Retreive-a-list-of-all-tables-and-columns-across-my-database-----SELECT-*-FROM-university.v_table_columns', 4, 'S')"">nullable</a>
+</th>
+<th><a href="javascript:sortTable('table-Retreive-a-list-of-all-tables-and-columns-across-my-database-----SELECT-*-FROM-university.v_table_columns', 5, 'S')"">data_type</a>
+</th>
+<th><a href="javascript:sortTable('table-Retreive-a-list-of-all-tables-and-columns-across-my-database-----SELECT-*-FROM-university.v_table_columns', 6, 'N')"">size</a>
+</th>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">book_title</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">author</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">author_nationality</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">book_format</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">price</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">pages</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">thickness</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">publisher</td>
+<td style="text-align:right;">8</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">publisher_country</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">genre_id</td>
+<td style="text-align:right;">10</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book</td>
+<td style="text-align:left;">genre_name</td>
+<td style="text-align:right;">11</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book_subject</td>
+<td style="text-align:left;">book_title</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF1_book_subject</td>
+<td style="text-align:left;">subject_name</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_book</td>
+<td style="text-align:left;">book_title</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_book</td>
+<td style="text-align:left;">author</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_book</td>
+<td style="text-align:left;">author_nationality</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_book</td>
+<td style="text-align:left;">pages</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_book</td>
+<td style="text-align:left;">thickness</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_book</td>
+<td style="text-align:left;">publisher</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_book</td>
+<td style="text-align:left;">publisher_country</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_book</td>
+<td style="text-align:left;">genre_id</td>
+<td style="text-align:right;">8</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_book</td>
+<td style="text-align:left;">genre_name</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_price</td>
+<td style="text-align:left;">book_title</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_price</td>
+<td style="text-align:left;">book_format</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF2_price</td>
+<td style="text-align:left;">price</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_author</td>
+<td style="text-align:left;">author</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_author</td>
+<td style="text-align:left;">nationality</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_book</td>
+<td style="text-align:left;">book_title</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_book</td>
+<td style="text-align:left;">author</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_book</td>
+<td style="text-align:left;">pages</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_book</td>
+<td style="text-align:left;">thickness</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_book</td>
+<td style="text-align:left;">publisher</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_book</td>
+<td style="text-align:left;">genre_id</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_genre</td>
+<td style="text-align:left;">genre_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_genre</td>
+<td style="text-align:left;">name</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_price</td>
+<td style="text-align:left;">book_title</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_price</td>
+<td style="text-align:left;">book_format</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_price</td>
+<td style="text-align:left;">price</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_publisher</td>
+<td style="text-align:left;">publisher</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">NF3_publisher</td>
+<td style="text-align:left;">country</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">book_title</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">author</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">author_nationality</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">book_format</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">price</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">book_subject</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">pages</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">thickness</td>
+<td style="text-align:right;">8</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">publisher</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">publisher_country</td>
+<td style="text-align:right;">10</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">genre_id</td>
+<td style="text-align:right;">11</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">ONF_book</td>
+<td style="text-align:left;">genre_name</td>
+<td style="text-align:right;">12</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">book_title</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">author</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">author_nationality</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">pages</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">thickness</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">publisher</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">publisher_country</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">genre_id</td>
+<td style="text-align:right;">8</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">genre_name</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">255</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">book_format</td>
+<td style="text-align:right;">10</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">books</td>
+<td style="text-align:left;">v_everything</td>
+<td style="text-align:left;">price</td>
+<td style="text-align:right;">11</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">backup_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">db</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">20</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">relation</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">30</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">rows</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">cols</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">csv_length</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">xml_length</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">json_length</td>
+<td style="text-align:right;">8</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">csv_data</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">mediumtext</td>
+<td style="text-align:right;">16777215</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">xml_data</td>
+<td style="text-align:right;">10</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">mediumtext</td>
+<td style="text-align:right;">16777215</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">json_data</td>
+<td style="text-align:right;">11</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">json</td>
+<td style="text-align:right;">0</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">backup</td>
+<td style="text-align:left;">saved_dtm</td>
+<td style="text-align:right;">12</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">timestamp</td>
+<td style="text-align:right;">0</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_text</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">9999</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_desc</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">999</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_db</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">30</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_rows</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_user</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">30</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_assn</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">30</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_dur</td>
+<td style="text-align:right;">8</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_ended</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">datetime</td>
+<td style="text-align:right;">0</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">v_table_backups</td>
+<td style="text-align:left;">backup_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">v_table_backups</td>
+<td style="text-align:left;">db</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">20</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">v_table_backups</td>
+<td style="text-align:left;">relation</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">30</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">v_table_backups</td>
+<td style="text-align:left;">rows</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">v_table_backups</td>
+<td style="text-align:left;">cols</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">v_table_backups</td>
+<td style="text-align:left;">csv_length</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">v_table_backups</td>
+<td style="text-align:left;">xml_length</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">v_table_backups</td>
+<td style="text-align:left;">json_length</td>
+<td style="text-align:right;">8</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">meta</td>
+<td style="text-align:left;">v_table_backups</td>
+<td style="text-align:left;">saved_dtm</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">timestamp</td>
+<td style="text-align:right;">0</td>
+</tr>
+<tr><td style="text-align:left;">sales</td>
+<td style="text-align:left;">sale</td>
+<td style="text-align:left;">product_name</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">100</td>
+</tr>
+<tr><td style="text-align:left;">sales</td>
+<td style="text-align:left;">sale</td>
+<td style="text-align:left;">store_location</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">sales</td>
+<td style="text-align:left;">sale</td>
+<td style="text-align:left;">num_sales</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">advisor</td>
+<td style="text-align:left;">s_ID</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">5</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">advisor</td>
+<td style="text-align:left;">i_ID</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">5</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">classroom</td>
+<td style="text-align:left;">building</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">15</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">classroom</td>
+<td style="text-align:left;">room_number</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">7</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">classroom</td>
+<td style="text-align:left;">capacity</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">4</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">course</td>
+<td style="text-align:left;">course_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">course</td>
+<td style="text-align:left;">title</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">50</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">course</td>
+<td style="text-align:left;">dept_name</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">20</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">course</td>
+<td style="text-align:left;">credits</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">department</td>
+<td style="text-align:left;">dept_name</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">20</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">department</td>
+<td style="text-align:left;">building</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">15</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">department</td>
+<td style="text-align:left;">budget</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">12</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">grade_points</td>
+<td style="text-align:left;">grade</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">grade_points</td>
+<td style="text-align:left;">points</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">instructor</td>
+<td style="text-align:left;">ID</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">5</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">instructor</td>
+<td style="text-align:left;">name</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">20</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">instructor</td>
+<td style="text-align:left;">dept_name</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">20</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">instructor</td>
+<td style="text-align:left;">salary</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">prereq</td>
+<td style="text-align:left;">course_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">prereq</td>
+<td style="text-align:left;">prereq_id</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_text</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">9999</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_desc</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">999</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_db</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">30</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_rows</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_user</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">30</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_assn</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">30</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_dur</td>
+<td style="text-align:right;">8</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">query</td>
+<td style="text-align:left;">query_ended</td>
+<td style="text-align:right;">9</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">datetime</td>
+<td style="text-align:right;">0</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">section</td>
+<td style="text-align:left;">course_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">section</td>
+<td style="text-align:left;">sec_id</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">section</td>
+<td style="text-align:left;">semester</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">6</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">section</td>
+<td style="text-align:left;">year</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">4</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">section</td>
+<td style="text-align:left;">building</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">15</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">section</td>
+<td style="text-align:left;">room_number</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">7</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">section</td>
+<td style="text-align:left;">time_slot_id</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">4</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">student</td>
+<td style="text-align:left;">ID</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">5</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">student</td>
+<td style="text-align:left;">name</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">20</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">student</td>
+<td style="text-align:left;">dept_name</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">20</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">student</td>
+<td style="text-align:left;">tot_cred</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">3</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">takes</td>
+<td style="text-align:left;">ID</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">5</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">takes</td>
+<td style="text-align:left;">course_id</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">takes</td>
+<td style="text-align:left;">sec_id</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">takes</td>
+<td style="text-align:left;">semester</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">6</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">takes</td>
+<td style="text-align:left;">year</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">4</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">takes</td>
+<td style="text-align:left;">grade</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">teaches</td>
+<td style="text-align:left;">ID</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">5</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">teaches</td>
+<td style="text-align:left;">course_id</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">teaches</td>
+<td style="text-align:left;">sec_id</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">teaches</td>
+<td style="text-align:left;">semester</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">6</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">teaches</td>
+<td style="text-align:left;">year</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">4</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">time_slot</td>
+<td style="text-align:left;">time_slot_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">4</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">time_slot</td>
+<td style="text-align:left;">day</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">1</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">time_slot</td>
+<td style="text-align:left;">start_hr</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">time_slot</td>
+<td style="text-align:left;">start_min</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">time_slot</td>
+<td style="text-align:left;">end_hr</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">time_slot</td>
+<td style="text-align:left;">end_min</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_student_gpa</td>
+<td style="text-align:left;">id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">5</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_student_gpa</td>
+<td style="text-align:left;">gpa</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">30</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_table_columns</td>
+<td style="text-align:left;">data_base</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">64</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_table_columns</td>
+<td style="text-align:left;">table</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">64</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_table_columns</td>
+<td style="text-align:left;">column</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">64</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_table_columns</td>
+<td style="text-align:left;">no</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">int</td>
+<td style="text-align:right;">10</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_table_columns</td>
+<td style="text-align:left;">nullable</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">3</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_table_columns</td>
+<td style="text-align:left;">data_type</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">longtext</td>
+<td style="text-align:right;">4294967295</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_table_columns</td>
+<td style="text-align:left;">size</td>
+<td style="text-align:right;">7</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">20</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_takes_points</td>
+<td style="text-align:left;">student_id</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">5</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_takes_points</td>
+<td style="text-align:left;">course_id</td>
+<td style="text-align:right;">2</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">8</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_takes_points</td>
+<td style="text-align:left;">semester</td>
+<td style="text-align:right;">3</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">6</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_takes_points</td>
+<td style="text-align:left;">year</td>
+<td style="text-align:right;">4</td>
+<td style="text-align:left;">NO</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">4</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_takes_points</td>
+<td style="text-align:left;">grade</td>
+<td style="text-align:right;">5</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">varchar</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_takes_points</td>
+<td style="text-align:left;">points</td>
+<td style="text-align:right;">6</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">decimal</td>
+<td style="text-align:right;">2</td>
+</tr>
+<tr><td style="text-align:left;">university</td>
+<td style="text-align:left;">v_udb_datatypes</td>
+<td style="text-align:left;">DATA_TYPE</td>
+<td style="text-align:right;">1</td>
+<td style="text-align:left;">YES</td>
+<td style="text-align:left;">longtext</td>
+<td style="text-align:right;">4294967295</td>
+</tr>
+</table>
+<h3>Make a pivot table of the query table by day-----SELECT query_assn, COUNT(CASE WHEN WEEKDAY(query_ended) = 0 THEN query_id END) as 'Monday', COUNT(CASE WHEN WEEKDAY(query_ended) = 1 THEN query_id END) as 'Tuesday', COUNT(CASE WHEN WEEKDAY(query_ended) = 2 THEN query_id END) as 'Wednesday', COUNT(CASE WHEN WEEKDAY(query_ended) = 3 THEN query_id END) as 'Thursday', COUNT(CASE WHEN WEEKDAY(query_ended) = 4 THEN query_id END) as 'Friday', COUNT(CASE WHEN WEEKDAY(query_ended) = 5 THEN query_id END) as 'Saturday', COUNT(CASE WHEN WEEKDAY(query_ended) = 6 THEN query_id END) as 'Sunday', COUNT(query_id) as 'Total_Per_Assignment' FROM meta.query GROUP BY query_assn UNION ALL SELECT 'Total_Per_day' as query_assn, COUNT(CASE WHEN WEEKDAY(query_ended) = 0 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 1 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 2 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 3 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 4 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 5 THEN query_id END), COUNT(CASE WHEN WEEKDAY(query_ended) = 6 THEN query_id END), COUNT(query_id) FROM meta.query</h3>
+<table id="table-Make-a-pivot-table-of-the-query-table-by-day-----SELECT-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END)-as-'Monday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END)-as-'Tuesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END)-as-'Wednesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END)-as-'Thursday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END)-as-'Friday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END)-as-'Saturday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END)-as-'Sunday',-COUNT(query_id)-as-'Total_Per_Assignment'-FROM-meta.query-GROUP-BY-query_assn-UNION-ALL-SELECT-'Total_Per_day'-as-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END),-COUNT(query_id)-FROM-meta.query" style="width:100%"><th><a href="javascript:sortTable('table-Make-a-pivot-table-of-the-query-table-by-day-----SELECT-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END)-as-'Monday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END)-as-'Tuesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END)-as-'Wednesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END)-as-'Thursday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END)-as-'Friday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END)-as-'Saturday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END)-as-'Sunday',-COUNT(query_id)-as-'Total_Per_Assignment'-FROM-meta.query-GROUP-BY-query_assn-UNION-ALL-SELECT-'Total_Per_day'-as-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END),-COUNT(query_id)-FROM-meta.query', 0, 'S')"">query_assn</a>
+</th>
+<th><a href="javascript:sortTable('table-Make-a-pivot-table-of-the-query-table-by-day-----SELECT-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END)-as-'Monday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END)-as-'Tuesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END)-as-'Wednesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END)-as-'Thursday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END)-as-'Friday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END)-as-'Saturday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END)-as-'Sunday',-COUNT(query_id)-as-'Total_Per_Assignment'-FROM-meta.query-GROUP-BY-query_assn-UNION-ALL-SELECT-'Total_Per_day'-as-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END),-COUNT(query_id)-FROM-meta.query', 1, 'N')"">Monday</a>
+</th>
+<th><a href="javascript:sortTable('table-Make-a-pivot-table-of-the-query-table-by-day-----SELECT-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END)-as-'Monday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END)-as-'Tuesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END)-as-'Wednesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END)-as-'Thursday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END)-as-'Friday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END)-as-'Saturday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END)-as-'Sunday',-COUNT(query_id)-as-'Total_Per_Assignment'-FROM-meta.query-GROUP-BY-query_assn-UNION-ALL-SELECT-'Total_Per_day'-as-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END),-COUNT(query_id)-FROM-meta.query', 2, 'N')"">Tuesday</a>
+</th>
+<th><a href="javascript:sortTable('table-Make-a-pivot-table-of-the-query-table-by-day-----SELECT-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END)-as-'Monday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END)-as-'Tuesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END)-as-'Wednesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END)-as-'Thursday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END)-as-'Friday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END)-as-'Saturday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END)-as-'Sunday',-COUNT(query_id)-as-'Total_Per_Assignment'-FROM-meta.query-GROUP-BY-query_assn-UNION-ALL-SELECT-'Total_Per_day'-as-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END),-COUNT(query_id)-FROM-meta.query', 3, 'N')"">Wednesday</a>
+</th>
+<th><a href="javascript:sortTable('table-Make-a-pivot-table-of-the-query-table-by-day-----SELECT-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END)-as-'Monday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END)-as-'Tuesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END)-as-'Wednesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END)-as-'Thursday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END)-as-'Friday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END)-as-'Saturday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END)-as-'Sunday',-COUNT(query_id)-as-'Total_Per_Assignment'-FROM-meta.query-GROUP-BY-query_assn-UNION-ALL-SELECT-'Total_Per_day'-as-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END),-COUNT(query_id)-FROM-meta.query', 4, 'N')"">Thursday</a>
+</th>
+<th><a href="javascript:sortTable('table-Make-a-pivot-table-of-the-query-table-by-day-----SELECT-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END)-as-'Monday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END)-as-'Tuesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END)-as-'Wednesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END)-as-'Thursday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END)-as-'Friday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END)-as-'Saturday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END)-as-'Sunday',-COUNT(query_id)-as-'Total_Per_Assignment'-FROM-meta.query-GROUP-BY-query_assn-UNION-ALL-SELECT-'Total_Per_day'-as-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END),-COUNT(query_id)-FROM-meta.query', 5, 'N')"">Friday</a>
+</th>
+<th><a href="javascript:sortTable('table-Make-a-pivot-table-of-the-query-table-by-day-----SELECT-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END)-as-'Monday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END)-as-'Tuesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END)-as-'Wednesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END)-as-'Thursday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END)-as-'Friday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END)-as-'Saturday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END)-as-'Sunday',-COUNT(query_id)-as-'Total_Per_Assignment'-FROM-meta.query-GROUP-BY-query_assn-UNION-ALL-SELECT-'Total_Per_day'-as-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END),-COUNT(query_id)-FROM-meta.query', 6, 'N')"">Saturday</a>
+</th>
+<th><a href="javascript:sortTable('table-Make-a-pivot-table-of-the-query-table-by-day-----SELECT-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END)-as-'Monday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END)-as-'Tuesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END)-as-'Wednesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END)-as-'Thursday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END)-as-'Friday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END)-as-'Saturday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END)-as-'Sunday',-COUNT(query_id)-as-'Total_Per_Assignment'-FROM-meta.query-GROUP-BY-query_assn-UNION-ALL-SELECT-'Total_Per_day'-as-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END),-COUNT(query_id)-FROM-meta.query', 7, 'N')"">Sunday</a>
+</th>
+<th><a href="javascript:sortTable('table-Make-a-pivot-table-of-the-query-table-by-day-----SELECT-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END)-as-'Monday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END)-as-'Tuesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END)-as-'Wednesday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END)-as-'Thursday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END)-as-'Friday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END)-as-'Saturday',-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END)-as-'Sunday',-COUNT(query_id)-as-'Total_Per_Assignment'-FROM-meta.query-GROUP-BY-query_assn-UNION-ALL-SELECT-'Total_Per_day'-as-query_assn,-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-0-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-1-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-2-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-3-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-4-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-5-THEN-query_id-END),-COUNT(CASE-WHEN-WEEKDAY(query_ended)-=-6-THEN-query_id-END),-COUNT(query_id)-FROM-meta.query', 8, 'N')"">Total_Per_Assignment</a>
+</th>
+<tr><td style="text-align:left;">03</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">228</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">228</td>
+</tr>
+<tr><td style="text-align:left;">04</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">98</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">29</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">127</td>
+</tr>
+<tr><td style="text-align:left;">05</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">36</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">36</td>
+</tr>
+<tr><td style="text-align:left;">06</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">101</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">101</td>
+</tr>
+<tr><td style="text-align:left;">07</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">29</td>
+<td style="text-align:right;">235</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">264</td>
+</tr>
+<tr><td style="text-align:left;">09</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">144</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">144</td>
+</tr>
+<tr><td style="text-align:left;">10</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">68</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">68</td>
+</tr>
+<tr><td style="text-align:left;">12</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">54</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">54</td>
+</tr>
+<tr><td style="text-align:left;">13</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">92</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">92</td>
+</tr>
+<tr><td style="text-align:left;">Total_Per_day</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">29</td>
+<td style="text-align:right;">773</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">92</td>
+<td style="text-align:right;">220</td>
+<td style="text-align:right;">0</td>
+<td style="text-align:right;">1114</td>
+</tr>
+</table>
+<center><h6>&copy;2025 • All Rights Reserved • Generated on Jan. 23, 2026 19:31 PM</h6>
+</center>
+</body>
+</html>
