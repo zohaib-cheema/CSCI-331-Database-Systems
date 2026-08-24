@@ -189,6 +189,7 @@ document.addEventListener('DOMContentLoaded', function () {
   if (firstLegacyHeading && footer) {
     const evidence = document.createElement('details');
     evidence.className = 'evidence';
+    evidence.open = true;
     const summary = document.createElement('summary');
     summary.textContent = 'Detailed SQL output and execution plans';
     evidence.appendChild(summary);
