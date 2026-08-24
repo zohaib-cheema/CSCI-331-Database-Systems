@@ -31,6 +31,8 @@ Thumbs.db
 *.bak
 *.zip
 *restoration copy*
+_site/
+node_modules/
 
 # Database files (if any)
 *.db

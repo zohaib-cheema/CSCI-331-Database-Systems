@@ -1,0 +1,66 @@
+{
+  "source": "Assignment14_explain.json",
+  "methodology": "MySQL EXPLAIN row estimates from the captured before/after plans; not measured physical reads.",
+  "summary": {
+    "planCount": 10,
+    "planRowCount": 34,
+    "filteredQueryCount": 4,
+    "indexedBefore": 0,
+    "indexedAfter": 4,
+    "unionBeforeRows": 14124,
+    "unionAfterRows": 1193,
+    "unionReductionPercent": 91.6
+  },
+  "queries": [
+    {
+      "label": "Q1 \u00b7 COUNT(*)",
+      "fullLabel": "Query 1: COUNT(*)",
+      "beforeRows": 1176,
+      "afterRows": 1176,
+      "beforeAccess": "index",
+      "afterAccess": "index",
+      "beforeKey": "PRIMARY",
+      "afterKey": "idx_query_assn"
+    },
+    {
+      "label": "Q2 \u00b7 IN clause",
+      "fullLabel": "Query 2: IN clause",
+      "beforeRows": 1176,
+      "afterRows": 1176,
+      "beforeAccess": "ALL",
+      "afterAccess": "index",
+      "beforeKey": "\u2014",
+      "afterKey": "idx_query_assn"
+    },
+    {
+      "label": "Q3 \u00b7 OR clause",
+      "fullLabel": "Query 3: OR clause",
+      "beforeRows": 1176,
+      "afterRows": 1176,
+      "beforeAccess": "ALL",
+      "afterAccess": "index",
+      "beforeKey": "\u2014",
+      "afterKey": "idx_query_assn"
+    },
+    {
+      "label": "Q4 \u00b7 LIKE clause",
+      "fullLabel": "Query 4: LIKE clause",
+      "beforeRows": 1176,
+      "afterRows": 1176,
+      "beforeAccess": "ALL",
+      "afterAccess": "index",
+      "beforeKey": "\u2014",
+      "afterKey": "idx_query_assn"
+    },
+    {
+      "label": "Q5 \u00b7 UNION ALL",
+      "fullLabel": "Query 5: UNION ALL",
+      "beforeRows": 14124,
+      "afterRows": 1193,
+      "beforeAccess": "ALL \u00d712",
+      "afterAccess": "ref \u00d712",
+      "beforeKey": "\u2014",
+      "afterKey": "idx_query_assn"
+    }
+  ]
+}

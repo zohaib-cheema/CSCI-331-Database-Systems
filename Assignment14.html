@@ -1,12 +1,42 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Assignment 14: MySQL indexing and query optimization results by Zohaib Cheema.">
 <title>Assignment 14 — MySQL Query Optimization</title>
 <style>
-:root { --ink:#17191d; --muted:#646a73; --line:#dfe2e7; --soft:#f6f7f9; --accent:#2457d6; --notice:#fff8df; }
+:root { --ink:#17191d; --muted:#646a73; --line:#dfe2e7; --soft:#f6f7f9; --accent:#2457d6; --accent-soft:#eef3ff; --good:#167351; --notice:#fff8df; }
 * { box-sizing:border-box; }
 html { scroll-behavior:smooth; }
 body { width:min(calc(100% - 36px),1120px); margin:0 auto; padding:70px 0; color:var(--ink); background:#fff; font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; line-height:1.5; }
 h1 { margin:0 0 14px; font-size:clamp(2.8rem,7vw,5.4rem); line-height:.98; letter-spacing:-.06em; }
 h1::after { content:"MySQL indexing and query optimization"; display:block; max-width:620px; margin-top:22px; color:var(--muted); font-size:clamp(1rem,2vw,1.2rem); font-weight:450; line-height:1.5; letter-spacing:0; }
+.dashboard { margin:44px 0 76px; }
+.dashboard-header { display:flex; justify-content:space-between; gap:28px; align-items:end; padding-bottom:24px; border-bottom:1px solid var(--line); }
+.eyebrow { margin:0 0 8px; color:var(--accent); font-size:.72rem; font-weight:800; letter-spacing:.11em; text-transform:uppercase; }
+.dashboard h2 { max-width:760px; margin:0; font-size:clamp(1.55rem,3vw,2.35rem); line-height:1.12; letter-spacing:-.035em; }
+.byline { flex:0 0 auto; margin:0; color:var(--muted); font-size:.82rem; font-weight:700; text-align:right; }
+.kpis { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; margin:1px 0 38px; background:var(--line); border-bottom:1px solid var(--line); }
+.kpi { min-height:150px; padding:26px 24px; background:#fff; }
+.kpi-value { display:block; font-size:clamp(2.15rem,5vw,3.5rem); font-weight:780; line-height:1; letter-spacing:-.055em; }
+.kpi-label { display:block; margin-top:12px; color:var(--muted); font-size:.86rem; line-height:1.45; }
+.dashboard-grid { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(350px,.8fr); gap:34px; align-items:start; }
+.panel { min-width:0; }
+.panel h3 { margin:0 0 4px; padding:0; border:0; font-size:1rem; letter-spacing:-.01em; }
+.panel-intro { margin:0 0 14px; color:var(--muted); font-size:.82rem; }
+#plan-chart { width:100%; height:380px; }
+.matrix { overflow-x:auto; border:1px solid var(--line); }
+.matrix table { width:100%; display:table; overflow:visible; font-size:.8rem; }
+.matrix th,.matrix td { min-width:0; padding:10px 12px; }
+.matrix th { position:static; color:var(--muted); background:var(--soft); font-size:.67rem; }
+.matrix td { font-family:inherit; font-size:.78rem; vertical-align:middle; }
+.matrix td:first-child { font-weight:700; }
+.access-pill { display:inline-block; padding:3px 7px; border-radius:999px; color:#95451d; background:#fff0e8; font:700 .7rem ui-monospace,SFMono-Regular,Menlo,monospace; }
+.access-pill.after { color:var(--good); background:#eaf8f2; }
+.finding { margin:18px 0 0; padding:17px 18px; border-left:3px solid var(--accent); color:#333842; background:var(--accent-soft); font-size:.87rem; line-height:1.55; }
+.method { margin:24px 0 0; color:var(--muted); font-size:.75rem; }
+.dashboard-error { padding:20px; border:1px solid #e4b9b9; color:#7a2727; background:#fff4f4; }
+.evidence { margin-top:42px; border-top:1px solid var(--line); }
+.evidence > summary { cursor:pointer; padding:22px 0; font-size:1.05rem; font-weight:750; list-style:none; }
+.evidence > summary::-webkit-details-marker { display:none; }
+.evidence > summary::after { content:"+"; float:right; color:var(--muted); font-size:1.35rem; font-weight:400; }
+.evidence[open] > summary::after { content:"−"; }
 h3 { margin:64px 0 14px; padding-top:24px; border-top:1px solid var(--line); font-size:clamp(1.18rem,2vw,1.5rem); line-height:1.35; letter-spacing:-.02em; overflow-wrap:anywhere; }
 h3 code { display:block; margin-top:14px; padding:16px; color:#333842; background:var(--soft); font-size:.78rem; font-weight:500; line-height:1.6; letter-spacing:0; white-space:pre-wrap; overflow-wrap:anywhere; }
 body > h3:first-of-type, body > ol { display:none; }
@@ -24,9 +54,11 @@ td { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size
 center { margin-top:70px; padding-top:20px; border-top:1px solid var(--line); color:var(--muted); }
 h6 { font-size:.75rem; font-weight:500; }
 a:focus-visible { outline:3px solid #9bb7ff; outline-offset:3px; }
-@media(max-width:640px) { body { width:min(calc(100% - 24px),1120px); padding-top:44px; } h3 { margin-top:46px; } th,td { min-width:95px; padding:10px; } }
+@media(max-width:780px) { .dashboard-header { display:block; } .byline { margin-top:12px; text-align:left; } .dashboard-grid { grid-template-columns:1fr; } }
+@media(max-width:640px) { body { width:min(calc(100% - 24px),1120px); padding-top:44px; } h3 { margin-top:46px; } th,td { min-width:95px; padding:10px; } .kpis { grid-template-columns:1fr; } .kpi { min-height:0; } #plan-chart { height:330px; } }
 @media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
 </style>
+<script src="assets/echarts.min.js" defer></script>
 <script>
 function sortTable(tableId, colNum, colType) {
   var table, rows, switching, i, x, y, shouldSwitch, dir, switchCount = 0;
@@ -117,7 +149,7 @@ document.addEventListener('DOMContentLoaded', function () {
       return response.json();
     })
     .then(function (artifact) {
-      const explainHeadings = Array.from(document.querySelectorAll('body > h3'))
+      const explainHeadings = Array.from(document.querySelectorAll('.evidence > h3, body > h3'))
         .filter(function (heading) { return heading.textContent.trim().startsWith('EXPLAIN'); });
 
       artifact.plans.forEach(function (plan, index) {
@@ -151,10 +183,118 @@ document.addEventListener('DOMContentLoaded', function () {
     .catch(function () {
       // Keep the explicit capture notice when the external artifact cannot load.
     });
+
+  const firstLegacyHeading = document.querySelector('body > h3');
+  const footer = document.querySelector('body > center');
+  if (firstLegacyHeading && footer) {
+    const evidence = document.createElement('details');
+    evidence.className = 'evidence';
+    const summary = document.createElement('summary');
+    summary.textContent = 'Detailed SQL output and execution plans';
+    evidence.appendChild(summary);
+    firstLegacyHeading.before(evidence);
+    let node = firstLegacyHeading;
+    while (node && node !== footer) {
+      const next = node.nextSibling;
+      evidence.appendChild(node);
+      node = next;
+    }
+  }
+
+  fetch('dashboard-data.json')
+    .then(function (response) {
+      if (!response.ok) throw new Error('Dashboard data unavailable');
+      return response.json();
+    })
+    .then(renderDashboard)
+    .catch(function (error) {
+      const dashboard = document.querySelector('.dashboard');
+      if (dashboard) dashboard.innerHTML = '<p class="dashboard-error">The validated dashboard data could not be loaded. The detailed assignment evidence remains available below.</p>';
+      console.error(error);
+    });
 });
+
+function renderDashboard(data) {
+  const summary = data.summary;
+  document.getElementById('plan-count').textContent = summary.planCount;
+  document.getElementById('index-coverage').textContent = summary.indexedAfter + '/' + summary.filteredQueryCount;
+  document.getElementById('union-reduction').textContent = summary.unionReductionPercent + '%';
+  document.getElementById('union-detail').textContent = summary.unionBeforeRows.toLocaleString() + ' → ' + summary.unionAfterRows.toLocaleString() + ' estimated rows';
+  document.getElementById('methodology').textContent = 'Source: ' + data.source + '. ' + data.methodology;
+
+  const matrixBody = document.getElementById('access-matrix');
+  data.queries.slice(1).forEach(function (query) {
+    const row = document.createElement('tr');
+    [query.fullLabel.replace(/^Query \d+: /, ''), query.beforeAccess, query.afterAccess, query.afterKey].forEach(function (value, index) {
+      const cell = document.createElement('td');
+      if (index === 1 || index === 2) {
+        const pill = document.createElement('span');
+        pill.className = 'access-pill' + (index === 2 ? ' after' : '');
+        pill.textContent = value;
+        cell.appendChild(pill);
+      } else {
+        cell.textContent = value;
+      }
+      row.appendChild(cell);
+    });
+    matrixBody.appendChild(row);
+  });
+
+  if (!window.echarts) throw new Error('Chart library unavailable');
+  const chartNode = document.getElementById('plan-chart');
+  const chart = echarts.init(chartNode, null, { renderer: 'svg' });
+  chart.setOption({
+    aria: { enabled: true, description: 'Grouped bar chart comparing estimated rows before and after adding the assignment index for five query forms.' },
+    animationDuration: 650,
+    color: ['#bcc2cc', '#2457d6'],
+    grid: { top: 24, right: 18, bottom: 64, left: 58 },
+    legend: { bottom: 4, itemWidth: 12, itemHeight: 8, textStyle: { color: '#646a73' } },
+    tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, valueFormatter: function (value) { return Number(value).toLocaleString() + ' estimated rows'; } },
+    xAxis: { type: 'category', data: data.queries.map(function (query) { return query.fullLabel.replace(/^Query \d+: /, ''); }), axisLabel: { color: '#646a73', interval: 0, rotate: 22 }, axisLine: { lineStyle: { color: '#dfe2e7' } }, axisTick: { show: false } },
+    yAxis: { type: 'log', logBase: 10, min: 1, name: 'Estimated rows · log scale', nameTextStyle: { color: '#646a73', padding: [0, 0, 8, 0] }, axisLabel: { color: '#646a73', formatter: function (value) { return Number(value).toLocaleString(); } }, splitLine: { lineStyle: { color: '#eceef1' } } },
+    series: [
+      { name: 'Before index', type: 'bar', data: data.queries.map(function (query) { return query.beforeRows; }), barMaxWidth: 34, itemStyle: { borderRadius: [3, 3, 0, 0] } },
+      { name: 'After index', type: 'bar', data: data.queries.map(function (query) { return query.afterRows; }), barMaxWidth: 34, itemStyle: { borderRadius: [3, 3, 0, 0] } }
+    ]
+  });
+  window.addEventListener('resize', function () { chart.resize(); });
+}
 </script>
 </head>
 <body><h1>Assignment 14</h1>
+<section class="dashboard" aria-labelledby="dashboard-title">
+  <header class="dashboard-header">
+    <div>
+      <p class="eyebrow">Query health dashboard</p>
+      <h2 id="dashboard-title">How one index changed five MySQL execution plans</h2>
+    </div>
+    <p class="byline">Zohaib Cheema<br>CS 711 · Winter 2026</p>
+  </header>
+  <div class="kpis" aria-label="Optimization summary">
+    <div class="kpi"><strong class="kpi-value" id="plan-count">—</strong><span class="kpi-label">captured plans<br>five before, five after</span></div>
+    <div class="kpi"><strong class="kpi-value" id="index-coverage">—</strong><span class="kpi-label">filtered query forms using<br><code>idx_query_assn</code> afterward</span></div>
+    <div class="kpi"><strong class="kpi-value" id="union-reduction">—</strong><span class="kpi-label">fewer estimated rows for UNION ALL<br><span id="union-detail">before → after</span></span></div>
+  </div>
+  <div class="dashboard-grid">
+    <article class="panel">
+      <h3>Estimated work by query form</h3>
+      <p class="panel-intro">Lower is better. A logarithmic scale keeps the UNION comparison readable.</p>
+      <div id="plan-chart" role="img" aria-label="Before and after estimated rows by query form"></div>
+    </article>
+    <article class="panel">
+      <h3>Access strategy after indexing</h3>
+      <p class="panel-intro">The filtered forms moved from full scans to indexed access.</p>
+      <div class="matrix">
+        <table>
+          <thead><tr><th>Query</th><th>Before</th><th>After</th><th>Selected key</th></tr></thead>
+          <tbody id="access-matrix"></tbody>
+        </table>
+      </div>
+      <p class="finding"><strong>Finding.</strong> Equivalent SQL can return the same result while creating very different optimizer work. The largest change appears in UNION ALL, where its twelve filtered branches move from full scans to <code>ref</code> access.</p>
+    </article>
+  </div>
+  <p class="method" id="methodology">Loading validated plan metadata…</p>
+</section>
 <h3>Table of Contents</h3>
 <ol><li><a href="#table-Use-meta-database">Use meta database</a>
 </li>

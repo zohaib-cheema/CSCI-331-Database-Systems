@@ -27,14 +27,29 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install pinned dashboard dependency
+        run: npm ci
+
+      - name: Validate dashboard data
+        run: python3 scripts/build_dashboard.py
+
       - name: Prepare site
         run: |
-          mkdir -p _site
+          mkdir -p _site/assets
           cp index.html _site/index.html
           cp Assignment14.html _site/Assignment14.html
-          cp Assignment14.sql Assignment14.py Assignment14_explain.json _site/
+          cp Assignment14.sql Assignment14.py Assignment14_explain.json dashboard-data.json _site/
+          cp node_modules/echarts/dist/echarts.min.js _site/assets/echarts.min.js
           touch _site/.nojekyll
           test -s _site/index.html
+          test -s _site/dashboard-data.json
+          test -s _site/assets/echarts.min.js
 
       - name: Upload site
         uses: actions/upload-pages-artifact@v4

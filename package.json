@@ -1,0 +1,9 @@
+{
+  "name": "csci-331-assignment-14-dashboard",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Static query-plan dashboard assets for Assignment 14",
+  "dependencies": {
+    "echarts": "6.1.0"
+  }
+}
