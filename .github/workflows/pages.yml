@@ -24,14 +24,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
       - name: Prepare site
         run: |
           mkdir -p _site
           cp Assignment14.html _site/index.html
           cp Assignment14.html _site/Assignment14.html
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
+          touch _site/.nojekyll
+          test -s _site/index.html
 
       - name: Upload site
         uses: actions/upload-pages-artifact@v4
