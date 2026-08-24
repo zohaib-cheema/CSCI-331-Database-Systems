@@ -12,6 +12,8 @@ h1::after { content:"MySQL indexing and query optimization"; display:block; max-
 .eyebrow { margin:0 0 8px; color:var(--accent); font-size:.72rem; font-weight:800; letter-spacing:.11em; text-transform:uppercase; }
 .dashboard h2 { max-width:760px; margin:0; font-size:clamp(1.55rem,3vw,2.35rem); line-height:1.12; letter-spacing:-.035em; }
 .byline { flex:0 0 auto; margin:0; color:var(--muted); font-size:.82rem; font-weight:700; text-align:right; }
+.author-link { display:inline-block; margin-bottom:3px; color:var(--ink); font-size:1.02rem; font-weight:800; letter-spacing:-.015em; text-decoration-color:#aeb3bb; text-decoration-thickness:1px; text-underline-offset:4px; }
+.author-link:hover { color:var(--accent); text-decoration-color:var(--accent); }
 .kpis { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; margin:1px 0 38px; background:var(--line); border-bottom:1px solid var(--line); }
 .kpi { min-height:150px; padding:26px 24px; background:#fff; }
 .kpi-value { display:block; font-size:clamp(2.15rem,5vw,3.5rem); font-weight:780; line-height:1; letter-spacing:-.055em; }
@@ -269,7 +271,7 @@ function renderDashboard(data) {
       <p class="eyebrow">Query health dashboard</p>
       <h2 id="dashboard-title">How one index changed five MySQL execution plans</h2>
     </div>
-    <p class="byline">Zohaib Cheema<br>CS 711 · Winter 2026</p>
+    <p class="byline"><a class="author-link" href="https://zohaibcheema.com">Zohaib Cheema</a><br>CS 711 · Winter 2026</p>
   </header>
   <div class="kpis" aria-label="Optimization summary">
     <div class="kpi"><strong class="kpi-value" id="plan-count">—</strong><span class="kpi-label">captured plans<br>five before, five after</span></div>

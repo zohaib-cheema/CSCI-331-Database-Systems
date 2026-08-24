@@ -11,6 +11,8 @@
     main { width: min(100%, 920px); }
     h1 { margin: 0; font-size: clamp(3rem, 9vw, 6.4rem); line-height: .95; letter-spacing: -.065em; }
     .byline { margin: 20px 0 0; color: #111; font-size: .9rem; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
+    .byline .author-link { display:inline; min-height:0; padding:0; border:0; color:inherit; background:transparent; text-decoration-color:#aeb3bb; text-decoration-thickness:1px; text-underline-offset:4px; transition:color .15s ease,text-decoration-color .15s ease; }
+    .byline .author-link:hover { color:#2457d6; background:transparent; text-decoration-color:#2457d6; }
     .intro { max-width: 650px; margin: 22px 0 34px; color: #565b65; font-size: clamp(1.05rem, 2vw, 1.25rem); line-height: 1.65; }
     .actions { display: flex; flex-wrap: wrap; gap: 12px; }
     a { display: inline-flex; min-height: 48px; align-items: center; padding: 0 20px; border: 1px solid #15171a; color: #15171a; background: #fff; font-weight: 700; text-decoration: none; transition: .15s ease; }
@@ -43,7 +45,7 @@
 <body>
   <main>
     <h1>SQL query optimization.</h1>
-    <p class="byline">By Zohaib Cheema · CS 711</p>
+    <p class="byline">By <a class="author-link" href="https://zohaibcheema.com">Zohaib Cheema</a> · CS 711</p>
     <p class="intro">A MySQL and Python project exploring equivalent query forms, indexing, execution plans, and the data-quality decisions behind trustworthy measurement.</p>
     <div class="actions">
       <a href="Assignment14.html">View Assignment 14</a>
