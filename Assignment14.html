@@ -32,11 +32,9 @@ h1::after { content:"MySQL indexing and query optimization"; display:block; max-
 .finding { margin:18px 0 0; padding:17px 18px; border-left:3px solid var(--accent); color:#333842; background:var(--accent-soft); font-size:.87rem; line-height:1.55; }
 .method { margin:24px 0 0; color:var(--muted); font-size:.75rem; }
 .dashboard-error { padding:20px; border:1px solid #e4b9b9; color:#7a2727; background:#fff4f4; }
-.evidence { margin-top:42px; border-top:1px solid var(--line); }
-.evidence > summary { cursor:pointer; padding:22px 0; font-size:1.05rem; font-weight:750; list-style:none; }
-.evidence > summary::-webkit-details-marker { display:none; }
-.evidence > summary::after { content:"+"; float:right; color:var(--muted); font-size:1.35rem; font-weight:400; }
-.evidence[open] > summary::after { content:"−"; }
+.evidence { margin-top:56px; padding-top:34px; border-top:1px solid var(--line); }
+.evidence-title { margin:0 0 28px; font-size:clamp(1.45rem,3vw,2rem); line-height:1.2; letter-spacing:-.035em; }
+.evidence > h3:first-of-type,.evidence > ol { display:none; }
 h3 { margin:64px 0 14px; padding-top:24px; border-top:1px solid var(--line); font-size:clamp(1.18rem,2vw,1.5rem); line-height:1.35; letter-spacing:-.02em; overflow-wrap:anywhere; }
 h3 code { display:block; margin-top:14px; padding:16px; color:#333842; background:var(--soft); font-size:.78rem; font-weight:500; line-height:1.6; letter-spacing:0; white-space:pre-wrap; overflow-wrap:anywhere; }
 body > h3:first-of-type, body > ol { display:none; }
@@ -187,12 +185,14 @@ document.addEventListener('DOMContentLoaded', function () {
   const firstLegacyHeading = document.querySelector('body > h3');
   const footer = document.querySelector('body > center');
   if (firstLegacyHeading && footer) {
-    const evidence = document.createElement('details');
+    const evidence = document.createElement('section');
     evidence.className = 'evidence';
-    evidence.open = true;
-    const summary = document.createElement('summary');
-    summary.textContent = 'Detailed SQL output and execution plans';
-    evidence.appendChild(summary);
+    evidence.setAttribute('aria-labelledby', 'evidence-title');
+    const title = document.createElement('h2');
+    title.id = 'evidence-title';
+    title.className = 'evidence-title';
+    title.textContent = 'Detailed results';
+    evidence.appendChild(title);
     firstLegacyHeading.before(evidence);
     let node = firstLegacyHeading;
     while (node && node !== footer) {
