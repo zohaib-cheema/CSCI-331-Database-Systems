@@ -3,30 +3,57 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Zohaib Cheema's MySQL indexing and query optimization project.">
-  <title>Zohaib Cheema — SQL Query Optimization</title>
+  <meta name="description" content="Zohaib Cheema's CS 711 MySQL indexing and query optimization project.">
+  <title>Zohaib Cheema — CS 711 Query Optimization</title>
   <style>
     * { box-sizing: border-box; }
-    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 32px; color: #111; background: #fff; font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-    main { width: min(100%, 720px); }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 56px 32px; color: #111; background: #fff; font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    main { width: min(100%, 920px); }
     h1 { margin: 0; font-size: clamp(3rem, 9vw, 6.4rem); line-height: .95; letter-spacing: -.065em; }
-    p { max-width: 610px; margin: 28px 0 34px; color: #565b65; font-size: clamp(1.05rem, 2vw, 1.25rem); line-height: 1.65; }
+    .byline { margin: 20px 0 0; color: #111; font-size: .9rem; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
+    .intro { max-width: 650px; margin: 22px 0 34px; color: #565b65; font-size: clamp(1.05rem, 2vw, 1.25rem); line-height: 1.65; }
     .actions { display: flex; flex-wrap: wrap; gap: 12px; }
     a { display: inline-flex; min-height: 48px; align-items: center; padding: 0 20px; border: 1px solid #15171a; color: #15171a; background: #fff; font-weight: 700; text-decoration: none; transition: .15s ease; }
     a:first-child, a:hover { color: #fff; background: #15171a; }
     a:first-child:hover { background: #34383f; }
     a:focus-visible { outline: 3px solid #8db1ff; outline-offset: 4px; }
-    @media (max-width: 500px) { body { place-items: start; padding-top: 18vh; } .actions { flex-direction: column; } a { justify-content: center; } }
-    @media (prefers-reduced-motion: reduce) { a { transition: none; } }
+    .workflow { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 54px; border-top: 1px solid #d9dce1; border-bottom: 1px solid #d9dce1; }
+    .stage { position: relative; min-height: 120px; padding: 24px 24px 22px 0; }
+    .stage:not(:last-child) { border-right: 1px solid #d9dce1; }
+    .stage:not(:first-child) { padding-left: 24px; }
+    .stage:not(:last-child)::after { content: ""; position: absolute; z-index: 2; top: 57px; right: -5px; width: 9px; height: 9px; border-radius: 50%; background: #111; animation: pulse 1.8s ease-in-out infinite; }
+    .stage:nth-child(2)::after { animation-delay: .3s; }
+    .stage:nth-child(3)::after { animation-delay: .6s; }
+    .number { display: block; margin-bottom: 20px; color: #737984; font: 700 .7rem ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .1em; }
+    .stage strong { display: block; font-size: 1rem; }
+    .stage span:last-child { display: block; margin-top: 5px; color: #737984; font-size: .83rem; line-height: 1.45; }
+    @keyframes pulse { 0%, 100% { transform: scale(.7); opacity: .25; } 50% { transform: scale(1.15); opacity: 1; } }
+    @media (max-width: 680px) {
+      body { place-items: start; padding: 15vh 22px 48px; }
+      .actions { flex-direction: column; }
+      a { justify-content: center; }
+      .workflow { grid-template-columns: 1fr; }
+      .stage, .stage:not(:first-child) { min-height: auto; padding: 20px 0; border-right: 0; border-bottom: 1px solid #d9dce1; }
+      .stage:last-child { border-bottom: 0; }
+      .stage:not(:last-child)::after { top: auto; right: 2px; bottom: -5px; }
+    }
+    @media (prefers-reduced-motion: reduce) { a { transition: none; } .stage::after { animation: none !important; opacity: 1 !important; } }
   </style>
 </head>
 <body>
   <main>
     <h1>SQL query optimization.</h1>
-    <p>A MySQL and Python project exploring equivalent query forms, indexing, execution plans, and the data-quality decisions behind trustworthy measurement.</p>
+    <p class="byline">By Zohaib Cheema · CS 711</p>
+    <p class="intro">A MySQL and Python project exploring equivalent query forms, indexing, execution plans, and the data-quality decisions behind trustworthy measurement.</p>
     <div class="actions">
       <a href="Assignment14.html">View Assignment 14</a>
       <a href="https://github.com/zohaib-cheema/CSCI-331-Database-Systems">View repository</a>
+    </div>
+    <div class="workflow" aria-label="Project workflow">
+      <div class="stage"><span class="number">01 / INPUT</span><strong>SQL workload</strong><span>Equivalent query forms and index states</span></div>
+      <div class="stage"><span class="number">02 / RUN</span><strong>Python runner</strong><span>Parses, executes, times, and logs</span></div>
+      <div class="stage"><span class="number">03 / QUERY</span><strong>MySQL</strong><span>Executes statements and query plans</span></div>
+      <div class="stage"><span class="number">04 / OUTPUT</span><strong>HTML report</strong><span>Presents results and observations</span></div>
     </div>
   </main>
 </body>
