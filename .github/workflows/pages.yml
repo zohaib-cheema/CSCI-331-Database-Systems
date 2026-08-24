@@ -30,8 +30,9 @@ jobs:
       - name: Prepare site
         run: |
           mkdir -p _site
-          cp Assignment14.html _site/index.html
+          cp index.html _site/index.html
           cp Assignment14.html _site/Assignment14.html
+          cp Assignment14.sql Assignment14.py _site/
           touch _site/.nojekyll
           test -s _site/index.html
 

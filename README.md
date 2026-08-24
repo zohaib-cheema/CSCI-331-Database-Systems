@@ -1,6 +1,12 @@
-# CSCI 331 - Database Systems
+# CSCI 331 — Database Systems
 
 Database Systems course assignments (Winter 2026)
+
+## Featured case study
+
+[Assignment 14: SQL Query Optimization](https://zohaib-cheema.github.io/CSCI-331-Database-Systems/) compares equivalent MySQL query forms and index states, then audits the experiment's own measurement pipeline. The portfolio view links directly to the SQL, Python runner, and unchanged raw output.
+
+**Demonstrates:** non-trivial SQL, Python database automation, indexing, execution-plan analysis, query telemetry, and data-quality reasoning.
 
 ## Setup Instructions
 
