@@ -3,184 +3,31 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Zohaib Cheema's MySQL query optimization case study: SQL, Python, execution plans, indexing, and a candid data-quality audit.">
-  <title>SQL Query Optimization Case Study — Zohaib Cheema</title>
+  <meta name="description" content="Zohaib Cheema's MySQL indexing and query optimization project.">
+  <title>Zohaib Cheema — SQL Query Optimization</title>
   <style>
-    :root { --ink:#111318; --muted:#59606c; --blue:#064edc; --blue-soft:#e9f0ff; --mint:#c8f3e2; --line:#d7dbe2; --paper:#fff; --max:1180px; }
-    * { box-sizing:border-box; }
-    html { scroll-behavior:smooth; }
-    body { margin:0; color:var(--ink); background:var(--paper); font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; line-height:1.55; }
-    a { color:inherit; text-underline-offset:4px; }
-    a:focus-visible, summary:focus-visible { outline:3px solid #8fb2ff; outline-offset:4px; border-radius:2px; }
-    .wrap { width:min(calc(100% - 40px),var(--max)); margin:auto; }
-    header { position:sticky; top:0; z-index:10; border-bottom:1px solid var(--line); background:rgba(255,255,255,.96); backdrop-filter:blur(12px); }
-    nav { min-height:68px; display:flex; align-items:center; gap:34px; }
-    .brand { margin-right:auto; font-size:1.18rem; font-weight:760; text-decoration:none; }
-    .nav-link { color:#272b32; font-size:.92rem; text-decoration:none; }
-    .button { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:0 20px; border:1px solid var(--blue); color:var(--blue); background:#fff; font-weight:680; text-decoration:none; transition:.18s ease; }
-    .button:hover { background:var(--blue-soft); }
-    .button.primary { color:#fff; background:var(--blue); }
-    .button.primary:hover { background:#003cad; }
-    .hero { position:relative; overflow:hidden; padding:88px 0 44px; border-bottom:1px solid var(--line); }
-    .contours { position:absolute; inset:0 0 auto 48%; height:430px; opacity:.65; background:repeating-radial-gradient(ellipse at 50% 45%,transparent 0 26px,#dbe6ff 27px 28px,transparent 29px 48px); transform:rotate(-8deg); pointer-events:none; }
-    .hero-content { position:relative; max-width:760px; }
-    h1 { margin:0; max-width:720px; font-size:clamp(3.2rem,7vw,6rem); letter-spacing:-.065em; line-height:.98; }
-    .lede { max-width:690px; margin:30px 0; color:#313641; font-size:clamp(1.08rem,2vw,1.35rem); }
-    .actions { display:flex; flex-wrap:wrap; gap:16px; }
-    .evidence-rail { position:relative; display:grid; grid-template-columns:1.25fr repeat(5,1fr); margin-top:56px; border-top:1px solid var(--ink); }
-    .evidence-rail > * { min-height:82px; display:flex; align-items:center; padding:18px; border-right:1px solid var(--line); font-size:.9rem; font-weight:650; }
-    .evidence-rail > *:last-child { border-right:0; }
-    .rail-label { align-items:flex-start; text-transform:uppercase; letter-spacing:.08em; font-size:.72rem; }
-    main section { padding:74px 0; border-bottom:1px solid var(--line); scroll-margin-top:72px; }
-    h2 { margin:0 0 22px; font-size:clamp(2rem,4vw,3.25rem); letter-spacing:-.045em; line-height:1.08; }
-    h3 { margin:0 0 10px; font-size:1.15rem; }
-    .section-intro { max-width:760px; color:var(--muted); font-size:1.1rem; }
-    .flow { display:grid; grid-template-columns:repeat(5,1fr); gap:1px; margin-top:40px; background:var(--line); border:1px solid var(--line); }
-    .flow article { position:relative; min-height:150px; padding:24px; background:#fff; }
-    .flow article:not(:last-child)::after { content:"→"; position:absolute; right:-13px; top:58px; z-index:2; width:26px; text-align:center; color:var(--blue); background:#fff; }
-    .step { display:block; margin-bottom:28px; color:var(--blue); font:700 .75rem ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:.08em; }
-    .flow p, .production p { margin:8px 0 0; color:var(--muted); font-size:.9rem; }
-    .findings { display:grid; grid-template-columns:minmax(0,1.65fr) minmax(240px,.75fr); gap:50px; align-items:start; }
-    .finding-list { border-top:1px solid var(--ink); }
-    .finding { display:grid; grid-template-columns:40px 1fr 1.35fr; gap:20px; padding:20px 0; border-bottom:1px solid var(--line); }
-    .finding strong { font-size:.98rem; }
-    .finding span:last-child { color:var(--muted); }
-    .finding-number { color:var(--blue); font:700 .78rem ui-monospace,SFMono-Regular,Menlo,monospace; }
-    .takeaway { padding:28px 0 28px 34px; border-left:1px solid var(--line); }
-    .takeaway .mark { width:42px; height:42px; display:grid; place-items:center; margin-bottom:28px; border-radius:50%; background:var(--mint); font-weight:800; }
-    .takeaway blockquote { margin:12px 0 0; font-size:1.7rem; letter-spacing:-.025em; line-height:1.25; }
-    details { margin-top:26px; padding:16px 0; border-bottom:1px solid var(--line); }
-    summary { cursor:pointer; color:var(--blue); font-weight:700; }
-    details p { max-width:780px; color:var(--muted); }
-    code { font:inherit; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.92em; background:#f3f5f8; padding:.12em .3em; }
-    .production { display:grid; grid-template-columns:repeat(5,1fr); gap:24px; margin-top:42px; counter-reset:item; }
-    .production article { counter-increment:item; }
-    .production article::before { content:counter(item); width:38px; height:38px; display:grid; place-items:center; margin-bottom:20px; border-radius:50%; background:var(--mint); font-weight:800; }
-    .source-list { display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid var(--ink); border-bottom:1px solid var(--line); }
-    .source-list a { min-height:88px; display:flex; align-items:center; padding:20px; border-right:1px solid var(--line); color:var(--blue); font-weight:700; text-decoration:none; }
-    .source-list a:last-child { border:0; }
-    footer { padding:34px 0 48px; color:var(--muted); font-size:.88rem; text-align:center; }
-    @media (max-width:840px) {
-      nav .nav-link { display:none; }
-      .hero { padding-top:62px; }
-      .contours { left:55%; opacity:.38; }
-      .evidence-rail { grid-template-columns:repeat(2,1fr); }
-      .evidence-rail > * { border-bottom:1px solid var(--line); }
-      .rail-label { grid-column:1/-1; }
-      .flow, .production { grid-template-columns:1fr; }
-      .flow article { min-height:auto; }
-      .flow article:not(:last-child)::after { content:"↓"; right:24px; top:auto; bottom:-14px; }
-      .findings { grid-template-columns:1fr; }
-      .takeaway { border-left:0; border-top:1px solid var(--line); padding-left:0; }
-      .source-list { grid-template-columns:1fr 1fr; }
-    }
-    @media (max-width:560px) {
-      .wrap { width:min(calc(100% - 28px),var(--max)); }
-      nav { min-height:60px; }
-      nav .button { min-height:40px; padding:0 12px; font-size:.82rem; }
-      h1 { font-size:3.35rem; }
-      main section { padding:56px 0; }
-      .finding { grid-template-columns:30px 1fr; }
-      .finding span:last-child { grid-column:2; }
-      .source-list { grid-template-columns:1fr; }
-      .source-list a { min-height:68px; border-right:0; border-bottom:1px solid var(--line); }
-    }
-    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } * { transition:none !important; } }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 32px; color: #111; background: #fff; font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    main { width: min(100%, 720px); }
+    h1 { margin: 0; font-size: clamp(3rem, 9vw, 6.4rem); line-height: .95; letter-spacing: -.065em; }
+    p { max-width: 610px; margin: 28px 0 34px; color: #565b65; font-size: clamp(1.05rem, 2vw, 1.25rem); line-height: 1.65; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    a { display: inline-flex; min-height: 48px; align-items: center; padding: 0 20px; border: 1px solid #15171a; color: #15171a; background: #fff; font-weight: 700; text-decoration: none; transition: .15s ease; }
+    a:first-child, a:hover { color: #fff; background: #15171a; }
+    a:first-child:hover { background: #34383f; }
+    a:focus-visible { outline: 3px solid #8db1ff; outline-offset: 4px; }
+    @media (max-width: 500px) { body { place-items: start; padding-top: 18vh; } .actions { flex-direction: column; } a { justify-content: center; } }
+    @media (prefers-reduced-motion: reduce) { a { transition: none; } }
   </style>
 </head>
 <body>
-  <header>
-    <nav class="wrap" aria-label="Primary navigation">
-      <a class="brand" href="#top">Zohaib Cheema</a>
-      <a class="nav-link" href="#overview">Overview</a>
-      <a class="nav-link" href="#method">Method</a>
-      <a class="nav-link" href="#findings">Findings</a>
-      <a class="nav-link" href="#source">Source</a>
-      <a class="button" href="Assignment14.html">View raw output ↗</a>
-    </nav>
-  </header>
-
-  <div class="hero" id="top">
-    <div class="contours" aria-hidden="true"></div>
-    <div class="wrap">
-      <div class="hero-content">
-        <h1>Query optimization, measured carefully.</h1>
-        <p class="lede">A MySQL case study comparing equivalent query forms, index behavior, and execution plans—plus a candid audit of the measurement pipeline.</p>
-        <div class="actions">
-          <a class="button primary" href="#findings">Explore the analysis →</a>
-          <a class="button" href="https://github.com/zohaib-cheema/CSCI-331-Database-Systems">View source on GitHub ↗</a>
-        </div>
-      </div>
-      <div class="evidence-rail" aria-label="Technologies demonstrated">
-        <div class="rail-label">Evidence in this study</div><div>SQL</div><div>Python</div><div>MySQL</div><div>EXPLAIN</div><div>Data quality</div>
-      </div>
+  <main>
+    <h1>SQL query optimization.</h1>
+    <p>A MySQL and Python project exploring equivalent query forms, indexing, execution plans, and the data-quality decisions behind trustworthy measurement.</p>
+    <div class="actions">
+      <a href="Assignment14.html">View Assignment 14</a>
+      <a href="https://github.com/zohaib-cheema/CSCI-331-Database-Systems">View repository</a>
     </div>
-  </div>
-
-  <main id="overview">
-    <section id="method">
-      <div class="wrap">
-        <h2>What I built</h2>
-        <p class="section-intro">A Python runner parses a SQL workload, executes it against MySQL, records duration and row counts in a metadata database, and generates a browsable HTML report. Assignment 14 compares several logically similar count queries before and after indexing <code>query_assn</code>.</p>
-        <div class="flow" aria-label="Data flow">
-          <article><span class="step">01 / INPUT</span><h3>SQL workload</h3><p>Five query forms and index-state changes.</p></article>
-          <article><span class="step">02 / ORCHESTRATE</span><h3>Python runner</h3><p>Parses, executes, times, and logs each statement.</p></article>
-          <article><span class="step">03 / EXECUTE</span><h3>MySQL</h3><p>Runs the workload against the meta database.</p></article>
-          <article><span class="step">04 / OBSERVE</span><h3>Query log</h3><p>Stores durations, row counts, and assignment metadata.</p></article>
-          <article><span class="step">05 / PRESENT</span><h3>HTML report</h3><p>Publishes results and supporting database views.</p></article>
-        </div>
-      </div>
-    </section>
-
-    <section id="findings">
-      <div class="wrap findings">
-        <div>
-          <h2>What the raw output reveals</h2>
-          <div class="finding-list">
-            <div class="finding"><span class="finding-number">01</span><strong>Equivalent predicates returned changing counts</strong><span>The reported totals rise across sequential queries because the same table is also used for instrumentation.</span></div>
-            <div class="finding"><span class="finding-number">02</span><strong><code>EXPLAIN</code> output was not rendered</strong><span>The runner executes plans but treats only <code>SELECT</code>, <code>SHOW</code>, and <code>DESC</code> as tabular result sets.</span></div>
-            <div class="finding"><span class="finding-number">03</span><strong>Instrumentation changed the dataset</strong><span>Logging each measured query into <code>meta.query</code> invalidates direct before/after count comparisons.</span></div>
-            <div class="finding"><span class="finding-number">04</span><strong>Index creation succeeded, but evidence was incomplete</strong><span>The artifact shows the DDL path, while the missing plan tables prevent a defensible claim about optimizer behavior.</span></div>
-          </div>
-          <details>
-            <summary>View the audit trail</summary>
-            <p>The raw report records counts of 1,153–1,156 before indexing and 1,159–1,162 afterward. That monotonic pattern is consistent with telemetry writes, not a change in query semantics. The right conclusion is to repair the experiment before claiming a speedup.</p>
-          </details>
-        </div>
-        <aside class="takeaway">
-          <div class="mark" aria-hidden="true">✓</div>
-          <h3>The important finding</h3>
-          <blockquote>Benchmark design matters as much as query syntax.</blockquote>
-        </aside>
-      </div>
-    </section>
-
-    <section>
-      <div class="wrap">
-        <h2>How I would productionize it</h2>
-        <div class="production">
-          <article><h3>Freeze a fixture dataset</h3><p>Run every trial against the same versioned, read-only snapshot.</p></article>
-          <article><h3>Separate telemetry writes</h3><p>Log to another schema or buffer measurements until each trial ends.</p></article>
-          <article><h3>Use EXPLAIN ANALYZE</h3><p>Capture actual timing, row estimates, access type, and chosen keys.</p></article>
-          <article><h3>Run repeated trials</h3><p>Warm the cache, randomize order, and report median plus variance.</p></article>
-          <article><h3>Monitor pipeline health</h3><p>Validate stable row counts and alert on failures, drift, or missing plans.</p></article>
-        </div>
-      </div>
-    </section>
-
-    <section id="source">
-      <div class="wrap">
-        <h2>Evidence, not decoration</h2>
-        <div class="source-list">
-          <a href="Assignment14.sql">Assignment14.sql ↗</a>
-          <a href="Assignment14.py">Assignment14.py ↗</a>
-          <a href="Assignment14.html">Raw generated report ↗</a>
-          <a href="https://github.com/zohaib-cheema/CSCI-331-Database-Systems">Repository ↗</a>
-        </div>
-      </div>
-    </section>
   </main>
-
-  <footer><div class="wrap">Zohaib Cheema · Database Systems · 2026</div></footer>
 </body>
 </html>

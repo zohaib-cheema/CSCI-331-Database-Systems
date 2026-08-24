@@ -1,38 +1,30 @@
-<html><head><meta name="description" content="OutputUtil developed by LT. Executed by /Users/zohaibcheema/Desktop/CSCI 331L">
-<style>body {
-    background-color: white;
-    font-family: Arial, Helvetica, sans-serif;
-}
-h1 {
-    color: blue;
-    text-align: center;
-}
-h3 {
-    color: blue;
-}
-.vericaltext {
- writing-mode: vertical-lr;
- text-orientation: upright;
-}
-
-table, th, td {
-    border: 1px solid;
-    text-align: center;
-    vertical-align: top
-}
-th > a {
-    color: lightblue;
-}
-th {
-    background-color: blue;
-    color: lightblue;
-}
-tr:nth-child(even) {
-    background-color: lightblue;
-}
-tr:nth-child(odd) {
-    background-color: #ffed00;
-}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Assignment 14: MySQL indexing and query optimization results by Zohaib Cheema.">
+<title>Assignment 14 — MySQL Query Optimization</title>
+<style>
+:root { --ink:#17191d; --muted:#646a73; --line:#dfe2e7; --soft:#f6f7f9; --accent:#2457d6; --notice:#fff8df; }
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { width:min(calc(100% - 36px),1120px); margin:0 auto; padding:70px 0; color:var(--ink); background:#fff; font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; line-height:1.5; }
+h1 { margin:0 0 14px; font-size:clamp(2.8rem,7vw,5.4rem); line-height:.98; letter-spacing:-.06em; }
+h1::after { content:"MySQL indexing and query optimization"; display:block; max-width:620px; margin-top:22px; color:var(--muted); font-size:clamp(1rem,2vw,1.2rem); font-weight:450; line-height:1.5; letter-spacing:0; }
+h3 { margin:64px 0 14px; padding-top:24px; border-top:1px solid var(--line); font-size:clamp(1.18rem,2vw,1.5rem); line-height:1.35; letter-spacing:-.02em; overflow-wrap:anywhere; }
+h3 code { display:block; margin-top:14px; padding:16px; color:#333842; background:var(--soft); font-size:.78rem; font-weight:500; line-height:1.6; letter-spacing:0; white-space:pre-wrap; overflow-wrap:anywhere; }
+body > h3:first-of-type, body > ol { display:none; }
+table { width:100%; display:block; overflow-x:auto; border-collapse:collapse; border-spacing:0; font-size:.88rem; }
+th,td { min-width:110px; padding:12px 14px; border:1px solid var(--line); text-align:left !important; vertical-align:top; }
+th { position:sticky; top:0; color:#fff; background:var(--ink); font-size:.75rem; text-transform:uppercase; letter-spacing:.055em; }
+th>a { color:inherit; text-decoration:none; }
+tbody tr:nth-child(even), tr:nth-child(even) { background:var(--soft); }
+tbody tr:hover, tr:hover { background:#edf2ff; }
+td { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.82rem; overflow-wrap:anywhere; }
+.status-note { padding:16px 18px; border:1px solid #eadca0; color:#5c4b08; background:var(--notice); font-family:inherit; font-size:.92rem; }
+.statement-ok { color:#286044; background:#eef9f3; border-color:#bfe2cf; }
+center { margin-top:70px; padding-top:20px; border-top:1px solid var(--line); color:var(--muted); }
+h6 { font-size:.75rem; font-weight:500; }
+a:focus-visible { outline:3px solid #9bb7ff; outline-offset:3px; }
+@media(max-width:640px) { body { width:min(calc(100% - 24px),1120px); padding-top:44px; } h3 { margin-top:46px; } th,td { min-width:95px; padding:10px; } }
+@media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
+</style>
 <script>
 function sortTable(tableId, colNum, colType) {
   var table, rows, switching, i, x, y, shouldSwitch, dir, switchCount = 0;
@@ -72,9 +64,54 @@ function sortTable(tableId, colNum, colType) {
     }
   }
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+  const headings = Array.from(document.querySelectorAll('body > h3'));
+
+  headings.forEach(function (heading) {
+    const table = heading.nextElementSibling;
+    const nextHeading = table && table.nextElementSibling;
+    if (table && nextHeading && nextHeading.tagName === 'H3' && nextHeading.textContent.trim() === heading.textContent.trim()) {
+      heading.remove();
+      table.remove();
+    }
+  });
+
+  Array.from(document.querySelectorAll('body > h3')).forEach(function (heading) {
+    const table = heading.nextElementSibling;
+    if (!table || table.tagName !== 'TABLE') return;
+
+    const divider = heading.textContent.indexOf('-----');
+    if (divider !== -1) {
+      const title = heading.textContent.slice(0, divider).trim();
+      const sql = heading.textContent.slice(divider + 5).trim();
+      heading.textContent = title;
+      const code = document.createElement('code');
+      code.textContent = sql;
+      heading.appendChild(code);
+    }
+
+    const headerText = table.querySelector('th')?.textContent.trim();
+    if (headerText === '/*') {
+      table.remove();
+      return;
+    }
+
+    const cells = Array.from(table.querySelectorAll('td'));
+    const onlyNone = cells.length === 1 && cells[0].textContent.trim() === 'NONE';
+    if (!onlyNone) return;
+
+    const isExplain = heading.textContent.trim().startsWith('EXPLAIN');
+    cells[0].textContent = isExplain
+      ? 'Execution-plan rows were not captured by the original HTML generator. See Assignment14.sql for the EXPLAIN statements.'
+      : 'Statement executed successfully; this command does not return a result set.';
+    cells[0].colSpan = Math.max(1, table.querySelectorAll('th').length);
+    cells[0].className = isExplain ? 'status-note' : 'status-note statement-ok';
+  });
+});
 </script>
 </head>
-<body><h1>Assignment14</h1>
+<body><h1>Assignment 14</h1>
 <h3>Table of Contents</h3>
 <ol><li><a href="#table-Use-meta-database">Use meta database</a>
 </li>
