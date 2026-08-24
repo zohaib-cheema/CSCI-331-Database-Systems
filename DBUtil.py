@@ -276,7 +276,10 @@ def run_queries(queries, user, db, assignment, add_stats=False, frmt=None):
             sql = sql.strip()                       # to get rid of any white space before or after the query
             log_query(conn, sql, desc, db, len(rows), user, assignment, duration)
             cmd = sql.split(' ')[0].upper()         # what is the first word in the query
-            if cmd in ["SELECT", "SHOW", "DESC"]:  # formatting headers etc. to formate data in html
+            # MySQL exposes metadata for every statement that returns a result set,
+            # including EXPLAIN. Checking cursor.description is more reliable than
+            # maintaining a hard-coded list of SQL command names.
+            if cursor.description is not None:
                 headers = [desc[0] for desc in cursor.description]
                 data = [[str(col) for col in row] for row in rows]  # getting data
                 original_col_count = len(headers)
@@ -303,8 +306,7 @@ def run_queries(queries, user, db, assignment, add_stats=False, frmt=None):
             else:
                 title = desc
                 headers = [cmd]
-                data = [["NONE"]]
-                tables.append([title, headers, ["S"], ["l"], data])
+                data = [["Statement executed successfully"]]
 
                 alignments = ["l"] * len(headers) # left alignment
                 types = ["S"] * len(headers)        # makes everything a string
@@ -516,141 +518,3 @@ def to_csv(headers, data):
     s_headers = ','.join(headers)
     s_data = '\n'.join([",".join([str(col) for col in row]) for row in data])
     return s_headers + "\n" + s_data
-
-
-# [2b] Create a Python function to_xml(headers, data) that converts the headers and data into XML format
-def xml_clean(item):
-    return str(item).replace("&", "&amp;")
-
-
-def to_xml(title, headers, data):
-    nl = "\n"
-    headers = [header.replace(" ", "") for header in headers]
-    x_header = '<?xml version="1.0" encoding="UTF-8"' + '?>'
-    x_title = nl + ou.create_element("title", xml_clean(title))
-    content = ""
-    for row in data:
-        x_items = nl + "".join([ou.create_element(headers[i], xml_clean(row[i])) for i in range(len(row))])
-        x_row = ou.create_element("row", x_items)
-        content += x_row
-    x_body = nl + ou.create_element("root", x_title + content)
-    xml = x_header + x_body
-    return xml
-
-
-# [2c] Create a Python function to_json(headers, data) that converts the headers and data into JSON format
-def to_json(title, headers, data):
-    rows = []
-    for i in range(len(data)):
-        s = '{' + ', '.join(['"' + headers[j] + '":"' + str(data[i][j]) + '"' for j in range(len(headers))]) + '}'
-        rows.append(s)
-    return '{' + '"' + title + '":[\n' + ",\n".join(rows) + ']}'
-
-
-# [3a] Create a Python function from_csv(csv) that converts the csv into headers (1D) and data (2D)
-def from_csv(csv):
-    lines = csv.split("\n")
-    if len(lines) == 0:
-        return [], []
-    headers = lines[0].split(",")
-    data = [lines[i].split(",") for i in range(1, len(lines)) if lines[i].strip()]
-    return headers, data
-
-
-# [3b] Create a Python function from_xml(xml) that converts the xml into headers (1D) and data (2D)
-def from_xml(xml):
-    headers = []
-    data = []
-    idx_row = xml.find("<row>")
-    while idx_row > 0:
-        idx_endrow = xml.find("</row>", idx_row)
-        row = xml[idx_row + 5:idx_endrow]
-        elements = row.strip().split("\n")
-        datum = []
-        for element in elements:
-            idx_begin_content = element.find(">") + 1
-            idx_end_content = element.find("</")
-            content = element[idx_begin_content:idx_end_content]
-            datum.append(content)
-            if len(headers) < len(elements):
-                header = element[1:idx_begin_content - 1]
-                headers.append(header)
-        data.append(datum)
-        idx_row = xml.find("<row>", idx_endrow)
-    return headers, data
-
-
-# [3c] Create a Python function from_json(json) that converts the json into headers (1D) and data (2D)
-def from_json(json_text, name):
-    json_data = json.loads(json_text)
-    headers = []
-    data = []
-    do_headers = True
-    for items in json_data[name]:
-        row = []
-        for item in items:
-            row.append(items[item])
-            if do_headers:
-                headers.append(item)
-        do_headers = False
-        data.append(row)
-    return headers, data
-
-
-# [4] Create a Python function backup_table(name) that will backup a table
-def backup_table(name, user, db, assignment):
-    query = f"SELECT * FROM {name}"
-    desc = f"Retrieve rows from {name} for backup"
-    headers, data = run_query(query, desc, user, db, assignment)
-    
-    if len(headers) == 0 or len(data) == 0:
-        return
-    
-    csv_data = to_csv(headers, data)
-    xml_data = to_xml(name, headers, data)
-    json_data = to_json(name, headers, data)
-    
-    # Escape special characters in the data for SQL - need to escape backslashes first, then quotes
-    csv_data_escaped = csv_data.replace("\\", "\\\\").replace("'", "\\'")
-    xml_data_escaped = xml_data.replace("\\", "\\\\").replace("'", "\\'")
-    json_data_escaped = json_data.replace("\\", "\\\\").replace("'", "\\'")
-    
-    query2 = (
-        f"INSERT into meta.backup (db, relation, `rows`, cols, csv_length, xml_length, json_length, csv_data, xml_data, json_data) "
-        f"values ('{db}','{name}',{len(data)},{len(headers)},{len(csv_data)},{len(xml_data)},{len(json_data)},'{csv_data_escaped}', '{xml_data_escaped}', '{json_data_escaped}')")
-    desc2 = f"Save copy of table {name} in different formats"
-    # Skip logging for backup INSERTs as they contain large data that exceeds query_text column size
-    headers2, data2 = run_query(query2, desc2, user, "meta", assignment, skip_log=True)
-
-
-# [5] Create a Python function restore_data(name) that will restore data from backup
-def restore_data(name, db, assignment, user="Zohaib"):
-    query = f"SELECT * FROM meta.backup where lower(relation) = '{name.lower()}' and saved_dtm = (SELECT MAX(saved_dtm) FROM meta.backup where lower(relation) = '{name.lower()}')"
-    desc = f"Retrieve the latest backup row for the table {name}"
-    headers, data = run_query(query, desc, user, "meta", assignment)
-    
-    if len(data) == 0:
-        return []
-    
-    if len(data[0]) < 11:
-        return []
-    
-    # Column indices: backup_id=0, db=1, relation=2, rows=3, cols=4, csv_length=5, xml_length=6, json_length=7, csv_data=8, xml_data=9, json_data=10, saved_dtm=11
-    headers_csv, data_csv = from_csv(data[0][8])
-    headers_xml, data_xml = from_xml(data[0][9])
-    headers_json, data_json = from_json(data[0][10], name)
-    
-    tables = []
-    for pair in [(headers_csv, data_csv, "CSV"), (headers_xml, data_xml, "XML"), (headers_json, data_json, "JSON")]:
-        headers, data, format = pair
-        title = f"Restoration of data for table {name} in {format} format"
-        if len(data) > 0 and len(data[0]) > 0:
-            numeric = [all([is_numeric(data[i][j].replace('.', '')) for i in range(len(data))]) for j in range(len(data[0]))]
-            types = ["N" if numeric[j] else "S" for j in range(len(numeric))]
-            alignments = ["r" if numeric[j] else "l" for j in range(len(numeric))]
-        else:
-            types = ["S"] * len(headers)
-            alignments = ["l"] * len(headers)
-        table = [title, headers, types, alignments, data]
-        tables.append(table)
-    return tables
