@@ -62,3 +62,8 @@ python3 auto_commit.py
 - Python
 - SQL (MySQL)
 - HTML
+
+
+## Source language accounting
+
+The assignment result pages are generated HTML artifacts. Their data tables remain available for inspection, while `.gitattributes` identifies those result files as generated for GitHub language statistics. The authored index page and entity relationship diagram page remain counted as HTML source. SQL files are explicitly included because the queries are part of the implementation.
